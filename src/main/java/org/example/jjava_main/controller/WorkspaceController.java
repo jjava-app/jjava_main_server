@@ -2,7 +2,6 @@ package org.example.jjava_main.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.jjava_main._core.util.Resp;
-import org.example.jjava_main.domain.workspace.Workspace;
 import org.example.jjava_main.domain.workspace.WorkspaceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
