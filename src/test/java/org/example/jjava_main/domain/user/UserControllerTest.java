@@ -1,5 +1,6 @@
 package org.example.jjava_main.domain.user;
 
+import org.example.jjava_main.controller.UserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -79,7 +80,7 @@ class UserControllerTest {
         when(userService.getUser(any(User.class))).thenReturn(response);
 
         // when
-        MvcResult result = mockMvc.perform(get("/user"))
+        MvcResult result = mockMvc.perform(get("/users/mypage"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andExpect(jsonPath("$.body.email").value("test@example.com"))
@@ -109,7 +110,7 @@ class UserControllerTest {
                 .thenReturn(respDTO);
 
         // when & then
-        MvcResult result = mockMvc.perform(put("/user/level")
+        MvcResult result = mockMvc.perform(put("/users/mypage/level")
                         .contentType("application/json")
                         .content("""
                                 {
