@@ -19,17 +19,23 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private String username;
+
+    @Enumerated(EnumType.STRING)
     private UserLevel level;
+
+    @Enumerated(EnumType.STRING)
     private UserRole role;
+    private Integer score;
 
     @Builder
-    public User(Integer id, String email, String password, String username, UserLevel level, UserRole role) {
+    public User(Integer id, String email, String password, String username, UserLevel level, UserRole role, Integer score) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.username = username;
         this.level = level;
         this.role = role;
+        this.score = score;
     }
 
     @Override
