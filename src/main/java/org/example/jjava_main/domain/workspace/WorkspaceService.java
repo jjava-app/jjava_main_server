@@ -20,4 +20,18 @@ public class WorkspaceService {
         workspaceRepository.create(workspace);
         return "created : " + workspace.getId();
     }
+
+    public void workspaceList() {
+    }
+
+    public void workspaceDetail() {
+    }
+
+    @Transactional
+    public void workspaceDelete() {
+    }
+
+    @Transactional
+    public void workspaceUpdate() {
+    }
 }
