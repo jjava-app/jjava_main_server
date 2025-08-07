@@ -8,4 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class WorkspaceRepository {
     private final EntityManager em;
+
+    public void create(Workspace workspace) {
+        em.persist(workspace);
+    }
 }
