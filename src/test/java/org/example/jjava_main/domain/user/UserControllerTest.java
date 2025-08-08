@@ -100,12 +100,17 @@ class UserControllerTest {
     @Test
     void updateUserLevel_success() throws Exception {
         // given
-        UserRequest.LevelUpdateDTO reqDTO = new UserRequest.LevelUpdateDTO(UserLevel.EXPERT);
+        String reqJson = """
+                {
+                  "level": "BEGINNER",
+                  "username": "cos"
+                }
+                """;
 
         User updatedUser = User.builder()
                 .id(1)
                 .email("ssar@naver.com")
-                .username("ssar")
+                .username("cos")
                 .level(UserLevel.BEGINNER)
                 .role(UserRole.USER)
                 .score(2530)
@@ -118,13 +123,10 @@ class UserControllerTest {
         // when & then
         MvcResult result = mockMvc.perform(put("/users/mypage/level")
                         .contentType("application/json")
-                        .content("""
-                                {
-                                  "level": "BEGINNER"
-                                }
-                                """))
+                        .content(reqJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.level").value("BEGINNER"))
+                .andExpect(jsonPath("$.body.username").value("cos"))
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andReturn();
 

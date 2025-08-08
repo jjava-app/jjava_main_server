@@ -50,8 +50,9 @@ public class User implements UserDetails {
         return authorities;
     }
 
-    public void levelUpdate(UserLevel level) {
+    public void userUpdate(UserLevel level, String username) {
         this.level = level;
+        this.username = username;
     }
 
 }

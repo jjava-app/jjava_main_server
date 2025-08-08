@@ -9,9 +9,11 @@ public class UserRequest {
     @Data
     public static class LevelUpdateDTO {
         private UserLevel level;
+        private String username;
 
-        public LevelUpdateDTO(UserLevel level) {
+        public LevelUpdateDTO(UserLevel level, String username) {
             this.level = level;
+            this.username = username;
         }
     }
 }

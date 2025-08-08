@@ -21,7 +21,7 @@ public class UserService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new RuntimeException());
 
-        userPS.levelUpdate(reqDTO.getLevel());
+        userPS.userUpdate(reqDTO.getLevel(), reqDTO.getUsername());
 
         // user 객체 그대로 응답에 사용
         return new UserResponse(userPS);
