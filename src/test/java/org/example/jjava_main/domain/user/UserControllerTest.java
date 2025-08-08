@@ -1,6 +1,8 @@
 package org.example.jjava_main.domain.user;
 
 import org.example.jjava_main.controller.UserController;
+import org.example.jjava_main.dto.UserRequest;
+import org.example.jjava_main.dto.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -64,6 +66,7 @@ class UserControllerTest {
                 .username("ssar")
                 .level(UserLevel.EXPERT)
                 .role(UserRole.USER)
+                .score(2530)
                 .build();
 
         // ✅ 인증 객체 수동 등록
@@ -84,7 +87,9 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andExpect(jsonPath("$.body.email").value("ssar@naver.com"))
+                .andExpect(jsonPath("$.body.username").value("ssar"))
                 .andExpect(jsonPath("$.body.level").value("EXPERT"))
+                .andExpect(jsonPath("$.body.score").value(2530))
                 .andReturn();
 
         // then
@@ -103,6 +108,7 @@ class UserControllerTest {
                 .username("ssar")
                 .level(UserLevel.BEGINNER)
                 .role(UserRole.USER)
+                .score(2530)
                 .build();
 
         UserResponse respDTO = new UserResponse(updatedUser);
