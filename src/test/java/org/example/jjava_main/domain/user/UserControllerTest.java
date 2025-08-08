@@ -60,8 +60,8 @@ class UserControllerTest {
         // ✅ mock 유저 생성
         mockUser = User.builder()
                 .id(1)
-                .email("test@example.com")
-                .username("짜바")
+                .email("ssar@naver.com")
+                .username("ssar")
                 .level(UserLevel.EXPERT)
                 .role(UserRole.USER)
                 .build();
@@ -74,10 +74,10 @@ class UserControllerTest {
     }
 
     @Test
-    void 마이페이지_프로필_조회_성공() throws Exception {
+    void getMyPageProfile_success() throws Exception {
         // given
         UserResponse response = new UserResponse(mockUser);
-        when(userService.getUser(any(User.class))).thenReturn(response);
+        when(userService.userGet(any(User.class))).thenReturn(response);
 
         // when
         MvcResult result = mockMvc.perform(get("/users/mypage"))
@@ -89,24 +89,24 @@ class UserControllerTest {
 
         // then
         String responseBody = result.getResponse().getContentAsString();
-        System.out.println("🔍 마이페이지 응답 JSON: " + responseBody);
+        System.out.println("🔍 MyPage response JSON: " + responseBody);
     }
 
     @Test
-    void 유저_학습난이도_변경_성공() throws Exception {
+    void updateUserLevel_success() throws Exception {
         // given
-        UserRequest.UpdateLevelDTO reqDTO = new UserRequest.UpdateLevelDTO(UserLevel.EXPERT);
+        UserRequest.LevelUpdateDTO reqDTO = new UserRequest.LevelUpdateDTO(UserLevel.EXPERT);
 
         User updatedUser = User.builder()
                 .id(1)
-                .email("test@example.com")
-                .username("짜바")
+                .email("ssar@naver.com")
+                .username("ssar")
                 .level(UserLevel.BEGINNER)
                 .role(UserRole.USER)
                 .build();
 
         UserResponse respDTO = new UserResponse(updatedUser);
-        when(userService.updateLevel(any(UserRequest.UpdateLevelDTO.class), any(User.class)))
+        when(userService.levelUpdate(any(UserRequest.LevelUpdateDTO.class), any(User.class)))
                 .thenReturn(respDTO);
 
         // when & then
@@ -123,7 +123,7 @@ class UserControllerTest {
                 .andReturn();
 
         String responseBody = result.getResponse().getContentAsString();
-        System.out.println("🔁 난이도 변경 응답 JSON: " + responseBody);
+        System.out.println("🔁 Update level response JSON: " + responseBody);
 
 
     }

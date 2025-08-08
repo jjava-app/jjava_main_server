@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserResponse getUser(User user) {
+    public UserResponse userGet(User user) {
         return new UserResponse(user);
     }
 
 
     @Transactional
-    public UserResponse updateLevel(UserRequest.UpdateLevelDTO reqDTO, User user) {
+    public UserResponse levelUpdate(UserRequest.LevelUpdateDTO reqDTO, User user) {
         userRepository.updateLevelById(reqDTO.getLevel(), user.getId());
 
         // user 객체 그대로 응답에 사용

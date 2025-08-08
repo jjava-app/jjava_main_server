@@ -17,13 +17,13 @@ public class UserController {
 
     @GetMapping("/mypage")
     public ResponseEntity<?> getUser(@AuthenticationPrincipal User user) {
-        var respDTO = userService.getUser(user);
+        var respDTO = userService.userGet(user);
         return Resp.ok(respDTO);
     }
 
     @PutMapping("/mypage/level")
-    public ResponseEntity<?> updateLevel(@AuthenticationPrincipal User user, @RequestBody UserRequest.UpdateLevelDTO reqDTO) {
-        var respDTO = userService.updateLevel(reqDTO, user);
+    public ResponseEntity<?> updateLevel(@AuthenticationPrincipal User user, @RequestBody UserRequest.LevelUpdateDTO reqDTO) {
+        var respDTO = userService.levelUpdate(reqDTO, user);
         return Resp.ok(respDTO);
     }
 }

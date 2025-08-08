@@ -5,10 +5,10 @@ import lombok.Data;
 public class UserRequest {
 
     @Data
-    public static class UpdateLevelDTO {
+    public static class LevelUpdateDTO {
         private UserLevel level;
 
-        public UpdateLevelDTO(UserLevel level) {
+        public LevelUpdateDTO(UserLevel level) {
             this.level = level;
         }
     }
