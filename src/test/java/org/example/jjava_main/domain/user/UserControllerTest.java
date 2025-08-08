@@ -1,6 +1,8 @@
 package org.example.jjava_main.domain.user;
 
 import org.example.jjava_main.controller.UserController;
+import org.example.jjava_main.dto.UserRequest;
+import org.example.jjava_main.dto.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -64,6 +66,7 @@ class UserControllerTest {
                 .username("ssar")
                 .level(UserLevel.EXPERT)
                 .role(UserRole.USER)
+                .score(2530)
                 .build();
 
         // ✅ 인증 객체 수동 등록
@@ -83,8 +86,10 @@ class UserControllerTest {
         MvcResult result = mockMvc.perform(get("/users/mypage"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.id").value(1))
-                .andExpect(jsonPath("$.body.email").value("test@example.com"))
+                .andExpect(jsonPath("$.body.email").value("ssar@naver.com"))
+                .andExpect(jsonPath("$.body.username").value("ssar"))
                 .andExpect(jsonPath("$.body.level").value("EXPERT"))
+                .andExpect(jsonPath("$.body.score").value(2530))
                 .andReturn();
 
         // then
@@ -95,14 +100,20 @@ class UserControllerTest {
     @Test
     void updateUserLevel_success() throws Exception {
         // given
-        UserRequest.LevelUpdateDTO reqDTO = new UserRequest.LevelUpdateDTO(UserLevel.EXPERT);
+        String reqJson = """
+                {
+                  "level": "BEGINNER",
+                  "username": "cos"
+                }
+                """;
 
         User updatedUser = User.builder()
                 .id(1)
                 .email("ssar@naver.com")
-                .username("ssar")
+                .username("cos")
                 .level(UserLevel.BEGINNER)
                 .role(UserRole.USER)
+                .score(2530)
                 .build();
 
         UserResponse respDTO = new UserResponse(updatedUser);
@@ -112,13 +123,10 @@ class UserControllerTest {
         // when & then
         MvcResult result = mockMvc.perform(put("/users/mypage/level")
                         .contentType("application/json")
-                        .content("""
-                                {
-                                  "level": "BEGINNER"
-                                }
-                                """))
+                        .content(reqJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.level").value("BEGINNER"))
+                .andExpect(jsonPath("$.body.username").value("cos"))
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andReturn();
 
