@@ -4,12 +4,28 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Repository
 public class WorkspaceRepository {
     private final EntityManager em;
 
-    public void create(Workspace workspace) {
+    public Workspace create(Workspace workspace) {
         em.persist(workspace);
+        return workspace;
+    }
+
+    public List<Workspace> findAllbyUserId(Integer userId) {
+        return em.createQuery("select w from Workspace w where w.userId =: userId", Workspace.class).setParameter("userId", userId).getResultList();
+    }
+
+    public Optional<Workspace> findWorkspaceById(Integer workspaceId) {
+        return Optional.ofNullable(em.find(Workspace.class, workspaceId));
+    }
+
+    public void deleteById(Integer workspaceId) {
+        em.remove(em.find(Workspace.class, workspaceId));
     }
 }

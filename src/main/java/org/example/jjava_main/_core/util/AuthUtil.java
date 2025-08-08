@@ -7,6 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class AuthUtil {
     public static User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof User)) {
+            throw new IllegalStateException("인증된 사용자가 없습니다.");
+        }
         return (User) authentication.getPrincipal();
     }
 
