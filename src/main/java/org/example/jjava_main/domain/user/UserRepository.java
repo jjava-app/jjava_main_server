@@ -11,7 +11,7 @@ public class UserRepository {
     private final EntityManager em;
 
     @Transactional
-    public void updateLevelById(UserLevel level, Integer id) {
+    public void levelUpdateById(UserLevel level, Integer id) {
         String q = "UPDATE User u SET u.level = :level WHERE u.id = :id";
         em.createQuery(q)
                 .setParameter("level", level)
