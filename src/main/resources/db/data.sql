@@ -5,3 +5,6 @@ VALUES
     ('cos1234@nate.com', '1234', 'cos', 'BEGINNER', 'USER', 65),
     ('love1234@nate.com', '1234', 'love', 'INTERMEDIATE', 'USER', 28),
     ('haha1234@nate.com', '1234', 'haha', 'INTERMEDIATE', 'USER', 45);
+
+
+INSERT INTO provider_tb (name) VALUES ('GOOGLE'), ('NAVER'), ('KAKAO');
