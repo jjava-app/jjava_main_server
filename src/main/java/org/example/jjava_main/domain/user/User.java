@@ -1,11 +1,14 @@
 package org.example.jjava_main.domain.user;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @NoArgsConstructor
 @Getter
@@ -46,4 +49,10 @@ public class User implements UserDetails {
 
         return authorities;
     }
+
+    public void userUpdate(UserLevel level, String username) {
+        this.level = level;
+        this.username = username;
+    }
+
 }
