@@ -16,7 +16,7 @@ public class UserService {
 
     @Transactional
     public UserResponse levelUpdate(UserRequest.LevelUpdateDTO reqDTO, User user) {
-        userRepository.updateLevelById(reqDTO.getLevel(), user.getId());
+        userRepository.levelUpdateById(reqDTO.getLevel(), user.getId());
 
         // user 객체 그대로 응답에 사용
         return new UserResponse(user);

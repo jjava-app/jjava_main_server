@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
-public class CompileClient {
+public class HttpUtil {
 
     private final WebClient webClient;
 
@@ -18,7 +18,7 @@ public class CompileClient {
     private static final String BASE_URL = "http://localhost:8081"; // 컴파일 서버 주소
     private static final String COMPILE_ENDPOINT = "/compile";
 
-    public CompileClient() {
+    public HttpUtil() {
         this.webClient = WebClient.builder()
                 .baseUrl(BASE_URL)
                 .build();
@@ -30,7 +30,7 @@ public class CompileClient {
      * reqDTO: 프론트에서 받은 요청(JSON)
      * return: 컴파일 서버 응답(JSON String)
      */
-    public CompileResponse.DTO compileServerSend(CompileRequest.DTO reqDTO) {
+    public CompileResponse.DTO compileServerSend(CompileRequest.DTO reqDTO, Integer userId) {
         try {
             Resp<CompileResponse.DTO> resp = webClient.post()
                     .uri(COMPILE_ENDPOINT)
@@ -47,11 +47,14 @@ public class CompileClient {
 
             if (resp.getStatus() != 200) {
                 // 실패 응답이지만 통신은 정상 → 프론트로 그대로 전달
-                return new CompileResponse.DTO(null, resp.getMsg());
+                return new CompileResponse.DTO(userId, null, resp.getMsg());
             }
 
+            // 컴파일 서버 응답에 userId를 추가
+            CompileResponse.DTO respDTO = resp.getBody();
+            respDTO.setUserId(userId);  // 응답에 userId 세팅
 
-            return resp.getBody();
+            return respDTO;
         } catch (Exception e) {
             log.error("컴파일 서버 요청 실패: {}", e.getMessage(), e);
             throw new RuntimeException("컴파일 서버와 통신 중 오류 발생");
