@@ -1,0 +1,42 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+:compile: compile-controller-test
+:check: check-controller-test
+
+= REST API
+:toc: left
+:toclevels: 2
+:source-highlighter: highlightjs
+
+== 코드 원격 컴파일
+=== 1. 컴파일 성공
+===== Request Example
+include::{snippets}/{compile}/compile_proxy_success_test/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{compile}/compile_proxy_success_test/http-response.adoc[]
+
+=== 2. 컴파일 실패
+===== Request Example
+include::{snippets}/{compile}/compile_proxy_fail_test/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{compile}/compile_proxy_fail_test/http-response.adoc[]
+
+
+== 문제 검산
+=== 1. 검산 성공
+===== Request Example
+include::{snippets}/{post}/save_테스트/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{post}/save_테스트/http-response.adoc[]
+
+=== 2. 검산 실패
+===== Request Example
+include::{snippets}/{post}/find_한건_테스트/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{post}/find_한건_테스트/http-response.adoc[]
