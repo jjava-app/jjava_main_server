@@ -90,7 +90,7 @@ class UserControllerTest {
         MvcResult result = mockMvc.perform(get("/users/mypage"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.id").value(1))
-                .andExpect(jsonPath("$.body.email").value("ssar@naver.com"))
+                .andExpect(jsonPath("$.body.email").value("ssar1234@nate.com"))
                 .andExpect(jsonPath("$.body.username").value("ssar"))
                 .andExpect(jsonPath("$.body.level").value("EXPERT"))
                 .andExpect(jsonPath("$.body.score").value(2530))
@@ -107,14 +107,14 @@ class UserControllerTest {
         String reqJson = """
                 {
                   "level": "BEGINNER",
-                  "username": "cos"
+                  "username": "ssar"
                 }
                 """;
 
         User updatedUser = User.builder()
                 .id(1)
-                .email("ssar@naver.com")
-                .username("cos")
+                .email("ssar@nate.com")
+                .username("ssar")
                 .level(UserLevel.BEGINNER)
                 .role(UserRole.USER)
                 .score(2530)
@@ -130,7 +130,7 @@ class UserControllerTest {
                         .content(reqJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.level").value("BEGINNER"))
-                .andExpect(jsonPath("$.body.username").value("cos"))
+                .andExpect(jsonPath("$.body.username").value("ssar"))
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andReturn();
 
