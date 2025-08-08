@@ -1,6 +1,8 @@
 package org.example.jjava_main.domain.user;
 
 import lombok.RequiredArgsConstructor;
+import org.example.jjava_main.dto.UserRequest;
+import org.example.jjava_main.dto.UserResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +18,12 @@ public class UserService {
 
     @Transactional
     public UserResponse levelUpdate(UserRequest.LevelUpdateDTO reqDTO, User user) {
-        userRepository.levelUpdateById(reqDTO.getLevel(), user.getId());
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException());
+
+        userPS.userUpdate(reqDTO.getLevel(), reqDTO.getUsername());
 
         // user 객체 그대로 응답에 사용
-        return new UserResponse(user);
+        return new UserResponse(userPS);
     }
 }
