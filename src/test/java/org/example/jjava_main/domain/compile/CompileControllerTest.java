@@ -84,10 +84,10 @@ public class CompileControllerTest extends MyRestDoc {
         CompileRequest.DTO reqDTO = new CompileRequest.DTO(type, payload);
 
         // 가짜 응답 세팅
-        CompileResponse.DTO mockResp = new CompileResponse.DTO(userId, payload, "정의되지 않은 변수를 사용하고 있습니다.");
+        CompileResponse.DTO mockResp = new CompileResponse.DTO(userId, null, "정의되지 않은 변수를 사용하고 있습니다.");
         Mockito.when(httpUtil.compileServerSend(Mockito.any(), Mockito.any()))
                 .thenReturn(mockResp);
-
+s
         String requestBody = om.writeValueAsString(reqDTO);
 
 
