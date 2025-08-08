@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.jjava_main._core.util.AuthUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class WorkspaceService {
@@ -21,17 +23,22 @@ public class WorkspaceService {
         return "created : " + workspace.getId();
     }
 
-    public void workspaceList() {
+    public List<Workspace> workspaceList() {
+        List<Workspace> workspaceList = workspaceRepository.findAll();
+        return workspaceList;
     }
 
-    public void workspaceDetail() {
+    public Workspace workspaceDetail(Integer workspaceId) {
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId);
+        return workspace;
     }
 
     @Transactional
-    public void workspaceDelete() {
+    public void workspaceDelete(Integer workspaceId) {
+        workspaceRepository.deleteById(workspaceId);
     }
 
     @Transactional
-    public void workspaceUpdate() {
+    public void workspaceUpdate(Integer workspaceId) {
     }
 }
