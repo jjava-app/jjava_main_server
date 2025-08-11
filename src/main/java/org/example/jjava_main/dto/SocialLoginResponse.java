@@ -1,8 +1,6 @@
 package org.example.jjava_main.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -50,7 +48,6 @@ public class SocialLoginResponse {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
-        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class NaverMeResponse {
             private String resultcode;
             private String message;
@@ -60,35 +57,25 @@ public class SocialLoginResponse {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
-        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class NaverUser {
             private String id;
             private String email;
             private String name;
             private String nickname;
-            @JsonProperty("profile_image")
-            private String profileImage;
-            private String mobile;
-            private String birthyear;
-            private String birthday;
-            private String gender;
         }
 
         // ----- KAKAO -----
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
-        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class KakaoMeResponse {
             private long id;
-            @JsonProperty("kakao_account")
             private KakaoAccount kakaoAccount;
         }
 
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
-        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class KakaoAccount {
             private String email;
             private KakaoProfile profile;
@@ -97,25 +84,18 @@ public class SocialLoginResponse {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
-        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class KakaoProfile {
             private String nickname;
-            @JsonProperty("profile_image_url")
-            private String profileImageUrl;
         }
 
         // ----- GOOGLE -----
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
-        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class GoogleUserInfo {
             private String sub;
             private String email;
-            @JsonProperty("email_verified")
-            private Boolean emailVerified;
             private String name;
-            private String picture;
         }
     }
 }

@@ -88,7 +88,7 @@ public class AuthService {
 
     // ---------- GOOGLE ----------
     @Transactional
-    public Object googleOauthLogin(String accessToken, String fcmToken) {
+    public SocialLoginResponse.LoginDTO googleOauthLogin(String accessToken, String fcmToken) {
         // 1) 구글 userinfo 호출
         String url = "https://openidconnect.googleapis.com/v1/userinfo";
         HttpHeaders headers = new HttpHeaders();
