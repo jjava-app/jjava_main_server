@@ -32,9 +32,8 @@ public class Workspace {
         this.createdAt = createdAt;
     }
 
-    public void update(String title, String serializedJson, String blockExtensionJson) {
+    public void update(String title, String serializedJson) {
         this.title = title == null ? this.title : title;
         this.serializedJson = serializedJson == null ? this.serializedJson : serializedJson;
-        this.blockExtensionJson = blockExtensionJson == null ? this.blockExtensionJson : blockExtensionJson;
     }
 }

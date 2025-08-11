@@ -7,6 +7,6 @@ public class WorkspaceRequest {
     public static class UpdateDTO {
         public String title;
         public String serializedJson;
-        public String blockExtensionJson;
+        public String libraryJson;
     }
 }

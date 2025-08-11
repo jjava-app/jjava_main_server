@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.jjava_main._core.error.ex.Exception403;
 import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main._core.util.AuthUtil;
+import org.example.jjava_main.domain.block.BlockLibrary;
 import org.example.jjava_main.dto.WorkspaceRequest;
 import org.example.jjava_main.dto.WorkspaceResponse;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class WorkspaceService {
     public WorkspaceResponse.CreateDTO workspaceCreate(Integer userId) {
         Workspace workspace = new Workspace().builder().title("새 워크스페이스").userId(userId).build();
         Workspace workspacePS = workspaceRepository.create(workspace);
+        BlockLibrary blockLibrary = new BlockLibrary().builder().userId(userId).build();
+        BlockLibrary blockLibraryPS = workspaceRepository.createBlockLibrary(blockLibrary);
+
         return new WorkspaceResponse.CreateDTO(workspacePS);
     }
 
@@ -51,7 +55,12 @@ public class WorkspaceService {
                 .orElseThrow(() -> new Exception404("해당 워크스페이스가 존재하지 않습니다."));
         // 워크스페이스 소유자 id랑 로그인한 유저 id 비일치 시 403 에러 발생 코드 추가 필요
         if(!workspacePS.getUserId().equals(userId)) throw new Exception403("해당 워크스페이스의 소유자가 아닙니다.");
-        workspacePS.update(reqDTO.getTitle(), reqDTO.getSerializedJson(), reqDTO.getBlockExtensionJson());
-        return new WorkspaceResponse.DTO(workspacePS);
+        workspacePS.update(reqDTO.getTitle(), reqDTO.getSerializedJson());
+
+        BlockLibrary blockLibraryPS = workspaceRepository.findBlockLibraryByUserId(userId)
+                .orElseThrow(() -> new Exception404("해당 유저의 라이브러리가 없습니다."));
+        if(!blockLibraryPS.getUserId().equals(userId)) throw new Exception403("해당 유저의 라이브러리가 아닙니다.");
+
+        return new WorkspaceResponse.DTO(workspacePS, blockLibraryPS);
     }
 }
