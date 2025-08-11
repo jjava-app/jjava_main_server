@@ -18,21 +18,21 @@ public class AuthController {
     // 네이버 oauth 로그인
     @PostMapping("/login/naver")
     public ResponseEntity<?> naverOauthLogin(@RequestBody SocialLoginRequest.LoginDTO reqDTO) {
-        var respDTO = authService.naverOauthLogin(reqDTO.getAccessToken(), reqDTO.getFcmToken());
+        var respDTO = authService.naverOauthLogin(reqDTO.getAccessToken());
         return Resp.ok(respDTO);
     }
 
     // 카카오 oauth 로그인
     @PostMapping("/login/kakao")
     public ResponseEntity<?> kakaoOauthLogin(@RequestBody SocialLoginRequest.LoginDTO reqDTO) {
-        var respDTO = authService.kakaoOauthLogin(reqDTO.getAccessToken(), reqDTO.getFcmToken());
+        var respDTO = authService.kakaoOauthLogin(reqDTO.getAccessToken());
         return Resp.ok(respDTO);
     }
 
     // 구글 oauth 로그인
     @PostMapping("/login/google")
     public ResponseEntity<?> googleOauthLogin(@RequestBody SocialLoginRequest.LoginDTO reqDTO) {
-        var respDTO = authService.googleOauthLogin(reqDTO.getAccessToken(), reqDTO.getFcmToken());
+        var respDTO = authService.googleOauthLogin(reqDTO.getAccessToken());
         return Resp.ok(respDTO);
     }
 }

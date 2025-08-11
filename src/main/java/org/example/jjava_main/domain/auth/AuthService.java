@@ -32,7 +32,7 @@ public class AuthService {
 
     // ---------- NAVER ----------
     @Transactional
-    public SocialLoginResponse.LoginDTO naverOauthLogin(String accessToken, String fcmToken) {
+    public SocialLoginResponse.LoginDTO naverOauthLogin(String accessToken) {
         String url = "https://openapi.naver.com/v1/nid/me";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
@@ -52,15 +52,12 @@ public class AuthService {
                 ? u.getName() : (u.getNickname() != null ? u.getNickname() : "네이버사용자");
 
         User user = findOrCreateUser("NAVER_" + providerId, email, displayName);
-
-        // TODO: fcmToken 저장/업데이트 필요하면 여기서 처리
-
         return toLoginResponse(user);
     }
 
     // ---------- KAKAO ----------
     @Transactional
-    public SocialLoginResponse.LoginDTO kakaoOauthLogin(String accessToken, String fcmToken) {
+    public SocialLoginResponse.LoginDTO kakaoOauthLogin(String accessToken) {
         // 1) 카카오 유저 조회
         String url = "https://kapi.kakao.com/v2/user/me";
         HttpHeaders headers = new HttpHeaders();
@@ -80,15 +77,12 @@ public class AuthService {
                 : "카카오사용자";
 
         User user = findOrCreateUser("KAKAO_" + providerId, email, nickname);
-
-        // TODO: fcmToken 저장/업데이트 필요하면 여기서 처리
-
         return toLoginResponse(user);
     }
 
     // ---------- GOOGLE ----------
     @Transactional
-    public SocialLoginResponse.LoginDTO googleOauthLogin(String accessToken, String fcmToken) {
+    public SocialLoginResponse.LoginDTO googleOauthLogin(String accessToken) {
         // 1) 구글 userinfo 호출
         String url = "https://openidconnect.googleapis.com/v1/userinfo";
         HttpHeaders headers = new HttpHeaders();
@@ -105,9 +99,6 @@ public class AuthService {
         String name = (u.getName() != null && !u.getName().isBlank()) ? u.getName() : "Google사용자";
 
         User user = findOrCreateUser("GOOGLE_" + providerId, email, name);
-
-        // TODO: fcmToken 저장/갱신 필요하면 여기서 처리
-
         return toLoginResponse(user);
     }
 
