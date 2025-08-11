@@ -18,6 +18,13 @@ VALUES (1, '짜바 연습', null, null, now()),
        (4, '짜바 연습', null, null, now()),
        (5, '짜바 연습', null, null, now());
 
+INSERT INTO block_library_tb (user_id, library_json)
+VALUES (1, null),
+    (2, null),
+    (3, null),
+    (4, null),
+    (5, null);
+
 
 INSERT INTO question_tb (type, title, content, test_variable, test_answer)
 VALUES ('OPERATOR',
