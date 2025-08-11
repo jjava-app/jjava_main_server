@@ -72,7 +72,7 @@ public class SocialLoginResponse {
         public static class KakaoMeResponse {
             private long id;
 
-            @JsonProperty("kakao_account")
+            @JsonProperty("kakao_account") //JSON kakao_account 매핑용
             private KakaoAccount kakaoAccount;
         }
 

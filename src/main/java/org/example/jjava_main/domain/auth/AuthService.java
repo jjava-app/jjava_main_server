@@ -46,7 +46,6 @@ public class AuthService {
                 .map(NaverMeResponse::getResponse)
                 .orElseThrow(() -> new RuntimeException("Naver response empty"));
 
-        String providerId = nu.getId(); // 문자열
         String email = nu.getEmail();
         String nickName = (nu.getName() != null && !nu.getName().isBlank())
                 ? nu.getNickname() : (nu.getNickname() != null ? nu.getNickname() : "네이버사용자");
@@ -71,7 +70,6 @@ public class AuthService {
         KakaoMeResponse me = Optional.ofNullable(resp.getBody())
                 .orElseThrow(() -> new RuntimeException("Kakao response empty"));
 
-        String providerId = String.valueOf(me.getId());
         String email = (me.getKakaoAccount() != null) ? me.getKakaoAccount().getEmail() : null;
         String nickname = (me.getKakaoAccount() != null && me.getKakaoAccount().getProfile() != null)
                 ? me.getKakaoAccount().getProfile().getNickname()
@@ -95,7 +93,6 @@ public class AuthService {
         GoogleUserInfo u = Optional.ofNullable(resp.getBody())
                 .orElseThrow(() -> new RuntimeException("Google userinfo empty"));
 
-        String providerId = u.getSub(); // 고유 ID
         String email = u.getEmail();    // null 가능
         String nickName = (u.getName() != null && !u.getName().isBlank()) ? u.getName() : "Google사용자";
         User user = findOrCreateUser(nickName, email);
@@ -123,7 +120,7 @@ public class AuthService {
 
     private User buildNewUser(String username, String email) {
         return User.builder()
-                .username(username) // 고유/재현 가능한 값 (예: NAVER_123..., KAKAO_..., GOOGLE_...)
+                .username(username)
                 .password(BCrypt.hashpw(UUID.randomUUID().toString(), BCrypt.gensalt()))
                 .email(email)        // null 허용
                 .role(UserRole.USER)
