@@ -6,6 +6,10 @@ import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.domain.user.UserRepository;
 import org.example.jjava_main.domain.user.UserRole;
 import org.example.jjava_main.dto.SocialLoginResponse;
+import org.example.jjava_main.dto.SocialLoginResponse.OAuth.GoogleUserInfo;
+import org.example.jjava_main.dto.SocialLoginResponse.OAuth.KakaoMeResponse;
+import org.example.jjava_main.dto.SocialLoginResponse.OAuth.NaverMeResponse;
+import org.example.jjava_main.dto.SocialLoginResponse.OAuth.NaverUser;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,7 +32,7 @@ public class AuthService {
 
     // ---------- NAVER ----------
     @Transactional
-    public Object naverOauthLogin(String accessToken, String fcmToken) {
+    public SocialLoginResponse.LoginDTO naverOauthLogin(String accessToken, String fcmToken) {
         String url = "https://openapi.naver.com/v1/nid/me";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
@@ -38,40 +42,23 @@ public class AuthService {
                 url, HttpMethod.GET, request, NaverMeResponse.class
         );
 
-        var u = Optional.ofNullable(resp.getBody())
-                .map(NaverMeResponse::response)
+        NaverUser u = Optional.ofNullable(resp.getBody())
+                .map(NaverMeResponse::getResponse)
                 .orElseThrow(() -> new RuntimeException("Naver response empty"));
 
-        String providerId = u.id(); // 문자열
-        String email = u.email();
-        String displayName = (u.name() != null && !u.name().isBlank())
-                ? u.name() : (u.nickname() != null ? u.nickname() : "네이버사용자");
+        String providerId = u.getId(); // 문자열
+        String email = u.getEmail();
+        String displayName = (u.getName() != null && !u.getName().isBlank())
+                ? u.getName() : (u.getNickname() != null ? u.getNickname() : "네이버사용자");
 
         User user = findOrCreateUser("NAVER_" + providerId, email, displayName);
 
         return toLoginResponse(user);
-
-    }
-
-    public static record NaverMeResponse(String resultcode, String message, NaverUser response) {
-    }
-
-    public static record NaverUser(
-            String id,
-            String email,
-            String name,
-            String nickname,
-            String profile_image,
-            String mobile,
-            String birthyear,
-            String birthday,
-            String gender
-    ) {
     }
 
     // ---------- KAKAO ----------
     @Transactional
-    public Object kakaoOauthLogin(String accessToken, String fcmToken) {
+    public SocialLoginResponse.LoginDTO kakaoOauthLogin(String accessToken, String fcmToken) {
         // 1) 카카오 유저 조회
         String url = "https://kapi.kakao.com/v2/user/me";
         HttpHeaders headers = new HttpHeaders();
@@ -84,10 +71,10 @@ public class AuthService {
         KakaoMeResponse me = Optional.ofNullable(resp.getBody())
                 .orElseThrow(() -> new RuntimeException("Kakao response empty"));
 
-        String providerId = String.valueOf(me.id());
-        String email = (me.kakao_account() != null) ? me.kakao_account().email() : null;
-        String nickname = (me.kakao_account() != null && me.kakao_account().profile() != null)
-                ? me.kakao_account().profile().nickname()
+        String providerId = String.valueOf(me.getId());
+        String email = (me.getKakaoAccount() != null) ? me.getKakaoAccount().getEmail() : null;
+        String nickname = (me.getKakaoAccount() != null && me.getKakaoAccount().getProfile() != null)
+                ? me.getKakaoAccount().getProfile().getNickname()
                 : "카카오사용자";
 
         // 2) 빠른 upsert (username을 고정 패턴으로 -> 재로그인 매칭 안정)
@@ -97,15 +84,6 @@ public class AuthService {
 
         // 3) 내 JWT 발급
         return toLoginResponse(user);
-    }
-
-    public static record KakaoMeResponse(long id, KakaoAccount kakao_account) {
-    }
-
-    public static record KakaoAccount(String email, KakaoProfile profile) {
-    }
-
-    public static record KakaoProfile(String nickname, String profile_image_url) {
     }
 
     // ---------- GOOGLE ----------
@@ -123,9 +101,9 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("Google userinfo empty"));
 
         // 2) 식별/표시 정보
-        String providerId = u.sub(); // 고유 ID
-        String email = u.email();    // null 가능
-        String name = (u.name() != null && !u.name().isBlank()) ? u.name() : "Google사용자";
+        String providerId = u.getSub(); // 고유 ID
+        String email = u.getEmail();    // null 가능
+        String name = (u.getName() != null && !u.getName().isBlank()) ? u.getName() : "Google사용자";
 
         // 3) upsert (username을 고정 패턴으로)
         User user = findOrCreateUser("GOOGLE_" + providerId, email, name);
@@ -134,16 +112,6 @@ public class AuthService {
 
         // 4) 내 JWT 발급
         return toLoginResponse(user);
-    }
-
-    // 구글 userinfo DTO
-    public static record GoogleUserInfo(
-            String sub,
-            String email,
-            Boolean email_verified,
-            String name,
-            String picture
-    ) {
     }
 
     //공통모듈
