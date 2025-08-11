@@ -21,4 +21,18 @@ public class AuthController {
         var respDTO = authService.naverOauthLogin(reqDTO.getAccessToken(), reqDTO.getFcmToken());
         return Resp.ok(respDTO);
     }
+
+    // 카카오 oauth 로그인
+    @PostMapping("/login/kakao")
+    public ResponseEntity<?> kakaoOauthLogin(@RequestBody SocialLoginRequest.LoginDTO reqDTO) {
+        var respDTO = authService.kakaoOauthLogin(reqDTO.getAccessToken(), reqDTO.getFcmToken());
+        return Resp.ok(respDTO);
+    }
+
+    // 구글 oauth 로그인
+    @PostMapping("/login/google")
+    public ResponseEntity<?> googleOauthLogin(@RequestBody SocialLoginRequest.LoginDTO reqDTO) {
+        var respDTO = authService.googleOauthLogin(reqDTO.getAccessToken(), reqDTO.getFcmToken());
+        return Resp.ok(respDTO);
+    }
 }

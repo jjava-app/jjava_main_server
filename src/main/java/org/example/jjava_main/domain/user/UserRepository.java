@@ -24,4 +24,34 @@ public class UserRepository {
         }
     }
 
+    // ✅ username으로 탐색 (KAKAO_..., NAVER_..., GOOGLE_... 매칭용)
+    public Optional<User> findByUsername(String username) {
+        var list = em.createQuery(
+                        "select u from User u where u.username = :un", User.class)
+                .setParameter("un", username)
+                .setMaxResults(1)
+                .getResultList();
+        return list.stream().findFirst();
+    }
+
+    // ✅ email로 탐색 (동의한 경우 기존 계정 연동)
+    public Optional<User> findByEmail(String email) {
+        if (email == null || email.isBlank()) return Optional.empty();
+        var list = em.createQuery(
+                        "select u from User u where lower(u.email) = :em", User.class)
+                .setParameter("em", email.toLowerCase())
+                .setMaxResults(1)
+                .getResultList();
+        return list.stream().findFirst();
+    }
+
+    // (선택) 존재 여부 체크가 필요할 때
+    public boolean existsByUsername(String username) {
+        Long cnt = em.createQuery(
+                        "select count(u) from User u where u.username = :un", Long.class)
+                .setParameter("un", username)
+                .getSingleResult();
+        return cnt > 0;
+    }
+
 }
