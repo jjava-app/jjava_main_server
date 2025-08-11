@@ -42,7 +42,7 @@ public class WorkspaceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> workspaceUpdate(@PathVariable("id") Integer id, WorkspaceRequest.UpdateDTO reqDTO) {
+    public ResponseEntity<?> workspaceUpdate(@PathVariable("id") Integer id, @RequestBody WorkspaceRequest.UpdateDTO reqDTO) {
         // TODO : given data -> AuthUtil에서 로그인한 유저 객체를 꺼내오게 해야 함 => JPA 연관 관계 설정 이슈
         Integer userId = 1;
         WorkspaceResponse.DTO respDTO = workspaceService.workspaceUpdate(id, reqDTO, userId);
