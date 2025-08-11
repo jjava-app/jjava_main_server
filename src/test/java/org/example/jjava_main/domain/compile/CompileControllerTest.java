@@ -27,8 +27,8 @@ public class CompileControllerTest extends MyRestDoc {
     @Autowired
     private ObjectMapper om;
 
-    @MockBean
-    private HttpUtil httpUtil; // 실제 통신 대신 Mock
+    @MockBean  // 스프링이 관리하는 빈을 Mockito Mock 객체로 교체해주는 어노테이션
+    private HttpUtil httpUtil;
 
 
     @Test
@@ -87,7 +87,7 @@ public class CompileControllerTest extends MyRestDoc {
         CompileResponse.DTO mockResp = new CompileResponse.DTO(userId, null, "정의되지 않은 변수를 사용하고 있습니다.");
         Mockito.when(httpUtil.compileServerSend(Mockito.any(), Mockito.any()))
                 .thenReturn(mockResp);
-s
+
         String requestBody = om.writeValueAsString(reqDTO);
 
 
