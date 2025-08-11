@@ -42,16 +42,17 @@ public class AuthService {
                 url, HttpMethod.GET, request, NaverMeResponse.class
         );
 
-        NaverUser u = Optional.ofNullable(resp.getBody())
+        NaverUser nu = Optional.ofNullable(resp.getBody())
                 .map(NaverMeResponse::getResponse)
                 .orElseThrow(() -> new RuntimeException("Naver response empty"));
 
-        String providerId = u.getId(); // 문자열
-        String email = u.getEmail();
-        String displayName = (u.getName() != null && !u.getName().isBlank())
-                ? u.getName() : (u.getNickname() != null ? u.getNickname() : "네이버사용자");
+        String providerId = nu.getId(); // 문자열
+        String email = nu.getEmail();
+        String nickName = (nu.getName() != null && !nu.getName().isBlank())
+                ? nu.getNickname() : (nu.getNickname() != null ? nu.getNickname() : "네이버사용자");
 
-        User user = findOrCreateUser("NAVER_" + providerId, email, displayName);
+        User user = findOrCreateUser(nickName, email);
+
         return toLoginResponse(user);
     }
 
@@ -76,7 +77,7 @@ public class AuthService {
                 ? me.getKakaoAccount().getProfile().getNickname()
                 : "카카오사용자";
 
-        User user = findOrCreateUser("KAKAO_" + providerId, email, nickname);
+        User user = findOrCreateUser(nickname, email);
         return toLoginResponse(user);
     }
 
@@ -96,17 +97,16 @@ public class AuthService {
 
         String providerId = u.getSub(); // 고유 ID
         String email = u.getEmail();    // null 가능
-        String name = (u.getName() != null && !u.getName().isBlank()) ? u.getName() : "Google사용자";
-
-        User user = findOrCreateUser("GOOGLE_" + providerId, email, name);
+        String nickName = (u.getName() != null && !u.getName().isBlank()) ? u.getName() : "Google사용자";
+        User user = findOrCreateUser(nickName, email);
         return toLoginResponse(user);
     }
 
     //공통모듈
 
-    private User findOrCreateUser(String fixedUsername, String email, String displayName) {
+    private User findOrCreateUser(String username, String email) {
         // 1) 같은 소셜로 재로그인: 고정 username으로 먼저 탐색
-        var u = userRepository.findByUsername(fixedUsername).orElse(null);
+        var u = userRepository.findByUsername(username).orElse(null);
         if (u != null) return u;
 
         // 2) 이메일 동의한 경우 기존 계정과 연결
@@ -116,12 +116,12 @@ public class AuthService {
         }
 
         // 3) 신규 생성 (빌더 공통 사용)
-        u = buildNewUser(fixedUsername, email, displayName);
+        u = buildNewUser(username, email);
         userRepository.save(u);
         return u;
     }
 
-    private User buildNewUser(String username, String email, String displayName) {
+    private User buildNewUser(String username, String email) {
         return User.builder()
                 .username(username) // 고유/재현 가능한 값 (예: NAVER_123..., KAKAO_..., GOOGLE_...)
                 .password(BCrypt.hashpw(UUID.randomUUID().toString(), BCrypt.gensalt()))
