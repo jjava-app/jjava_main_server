@@ -22,8 +22,8 @@ public class AuthController {
      */
     @GetMapping("/auth/email/check/{email}")
     public ResponseEntity<?> verificationEmail(@PathVariable("email") @Email String email) {
-        authService.verificationEmail(email);
-        return Resp.ok("verify");
+        UserResponse.CheckEmailDTO respDTO = authService.verificationEmail(email);
+        return Resp.ok(respDTO);
     }
 
     /**
