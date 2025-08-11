@@ -43,7 +43,7 @@ class AdminControllerTest {
 
     @Test
     void user_list_test() throws Exception {
-        var dto = new UserResponse.ListDTO(java.util.List.of(mockUser), 0, 1, 0);
+        var dto = new UserResponse.ListDTO(java.util.List.of(UserResponse.UserDTO.from(mockUser)), 0, "", 1, 0);
         when(adminService.userList(0, "id", 0)).thenReturn(dto);
 
         mockMvc.perform(get("/admin/users").accept(APPLICATION_JSON))
@@ -64,7 +64,7 @@ class AdminControllerTest {
     @Test
     void user_list_with_params_test() throws Exception {
         when(adminService.userList(10, "email", 1))
-                .thenReturn(new UserResponse.ListDTO(java.util.List.of(), 10, 0, 1));
+                .thenReturn(new UserResponse.ListDTO(java.util.List.of(), 10, "email", 0, 1));
 
         mockMvc.perform(get("/admin/users")
                         .param("page", "10")

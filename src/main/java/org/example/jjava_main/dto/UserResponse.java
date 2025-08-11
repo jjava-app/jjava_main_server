@@ -1,8 +1,8 @@
 package org.example.jjava_main.dto;
 
 
-import lombok.Data;
-import org.example.jjava_main.domain.user.User;
+import lombok.*;
+import org.example.jjava_main.domain.user.*;
 
 import java.util.List;
 
@@ -24,13 +24,13 @@ public class UserResponse {
 
     @Data
     public static class ListDTO {
-        private List<User> userList;
+        private List<UserDTO> userList;
         private int page;
         private String order;
         private int totalCount;
         private int sort;
 
-        public ListDTO(List<User> userList, int page, String order, int totalCount, int sort) {
+        public ListDTO(List<UserDTO> userList, int page, String order, int totalCount, int sort) {
             this.userList = userList;
             this.page = page;
             this.order = order;
@@ -38,4 +38,28 @@ public class UserResponse {
             this.sort = sort;
         }
     }
+
+    // 응답 전용 DTO (필요한 필드만)
+    @Getter
+    @AllArgsConstructor
+    public static class UserDTO {
+        private Integer id;
+        private String email;
+        private String username;
+        private UserLevel level;
+        private UserRole role;
+        private Integer score;
+
+        public static UserDTO from(User u) {
+            return new UserDTO(
+                    u.getId(),
+                    u.getEmail(),
+                    u.getUsername(),
+                    u.getLevel(),
+                    u.getRole(),
+                    u.getScore()
+            );
+        }
+    }
+
 }

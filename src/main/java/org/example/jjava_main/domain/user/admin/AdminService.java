@@ -27,7 +27,11 @@ public class AdminService {
 
         Long totalCount = userRepository.getTotalCount();
 
-        return new UserResponse.ListDTO(userList, page, order, totalCount.intValue(), sort);
+        List<UserResponse.UserDTO> dtoList = userList.stream()
+                .map(UserResponse.UserDTO::from)
+                .toList();
+
+        return new UserResponse.ListDTO(dtoList, page, order, totalCount.intValue(), sort);
 
     }
 }
