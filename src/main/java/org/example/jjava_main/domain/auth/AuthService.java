@@ -53,6 +53,8 @@ public class AuthService {
 
         User user = findOrCreateUser("NAVER_" + providerId, email, displayName);
 
+        // TODO: fcmToken 저장/업데이트 필요하면 여기서 처리
+
         return toLoginResponse(user);
     }
 
@@ -77,12 +79,10 @@ public class AuthService {
                 ? me.getKakaoAccount().getProfile().getNickname()
                 : "카카오사용자";
 
-        // 2) 빠른 upsert (username을 고정 패턴으로 -> 재로그인 매칭 안정)
         User user = findOrCreateUser("KAKAO_" + providerId, email, nickname);
 
         // TODO: fcmToken 저장/업데이트 필요하면 여기서 처리
 
-        // 3) 내 JWT 발급
         return toLoginResponse(user);
     }
 
@@ -100,17 +100,14 @@ public class AuthService {
         GoogleUserInfo u = Optional.ofNullable(resp.getBody())
                 .orElseThrow(() -> new RuntimeException("Google userinfo empty"));
 
-        // 2) 식별/표시 정보
         String providerId = u.getSub(); // 고유 ID
         String email = u.getEmail();    // null 가능
         String name = (u.getName() != null && !u.getName().isBlank()) ? u.getName() : "Google사용자";
 
-        // 3) upsert (username을 고정 패턴으로)
         User user = findOrCreateUser("GOOGLE_" + providerId, email, name);
 
         // TODO: fcmToken 저장/갱신 필요하면 여기서 처리
 
-        // 4) 내 JWT 발급
         return toLoginResponse(user);
     }
 
@@ -139,7 +136,6 @@ public class AuthService {
                 .password(BCrypt.hashpw(UUID.randomUUID().toString(), BCrypt.gensalt()))
                 .email(email)        // null 허용
                 .role(UserRole.USER)
-                // .displayName(displayName) // 엔티티에 필드 있으면 여기서 세팅
                 .build();
     }
 
