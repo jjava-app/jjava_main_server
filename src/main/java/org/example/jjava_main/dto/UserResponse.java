@@ -1,8 +1,12 @@
 package org.example.jjava_main.dto;
 
 
-import lombok.*;
-import org.example.jjava_main.domain.user.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import org.example.jjava_main.domain.user.User;
+import org.example.jjava_main.domain.user.UserLevel;
+import org.example.jjava_main.domain.user.UserRole;
 
 import java.util.List;
 
@@ -13,13 +17,15 @@ public class UserResponse {
     private String username;
     private String level;
     private Integer score;
+    private Integer rank;
 
-    public UserResponse(User user) {
+    public UserResponse(User user, int rank) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.level = user.getLevel().toString();
         this.score = user.getScore();
+        this.rank = rank;
     }
 
     @Data

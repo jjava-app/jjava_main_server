@@ -66,7 +66,7 @@ class UserControllerTest {
         // ✅ mock 유저 생성
         mockUser = User.builder()
                 .id(1)
-                .email("ssar@naver.com")
+                .email("ssar1234@nate.com")
                 .username("ssar")
                 .level(UserLevel.EXPERT)
                 .role(UserRole.USER)
@@ -113,7 +113,7 @@ class UserControllerTest {
 
         User updatedUser = User.builder()
                 .id(1)
-                .email("ssar@nate.com")
+                .email("ssar1234@nate.com")
                 .username("ssar")
                 .level(UserLevel.BEGINNER)
                 .role(UserRole.USER)

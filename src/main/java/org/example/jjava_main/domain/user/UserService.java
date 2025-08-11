@@ -12,7 +12,10 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserResponse userGet(User user) {
-        return new UserResponse(user);
+
+        int rank = userRepository.findRankByScoreAndId(user.getScore(), user.getId());
+
+        return new UserResponse(user, rank);
     }
 
 
@@ -23,7 +26,9 @@ public class UserService {
 
         userPS.userUpdate(reqDTO.getLevel(), reqDTO.getUsername());
 
+        int rank = 1;
+
         // user 객체 그대로 응답에 사용
-        return new UserResponse(userPS);
+        return new UserResponse(userPS, rank);
     }
 }
