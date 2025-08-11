@@ -26,17 +26,17 @@ include::{snippets}/{compile}/compile_proxy_fail_test/http-request.adoc[]
 include::{snippets}/{compile}/compile_proxy_fail_test/http-response.adoc[]
 
 
-== 문제 검산
-=== 1. 검산 성공
+== 문제 검산 & 컴파일 & AI 리팩토링
+=== 1. 컴파일 & 검산 성공 & AI 리팩토링
 ===== Request Example
-include::{snippets}/{post}/save_테스트/http-request.adoc[]
+include::{snippets}/{check}/check_proxy_and_code_refactor_success_test/http-request.adoc[]
 
 ===== Response Example
-include::{snippets}/{post}/save_테스트/http-response.adoc[]
+include::{snippets}/{check}/check_proxy_and_code_refactor_success_test/http-response.adoc[]
 
-=== 2. 검산 실패
+=== 2. 컴파일 & 검산 실패
 ===== Request Example
-include::{snippets}/{post}/find_한건_테스트/http-request.adoc[]
+include::{snippets}/{check}/check_proxy_and_code_refactor_fail_test/http-request.adoc[]
 
 ===== Response Example
-include::{snippets}/{post}/find_한건_테스트/http-response.adoc[]
+include::{snippets}/{check}/check_proxy_and_code_refactor_fail_test/http-response.adoc[]

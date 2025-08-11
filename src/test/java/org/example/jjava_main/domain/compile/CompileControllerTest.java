@@ -27,8 +27,8 @@ public class CompileControllerTest extends MyRestDoc {
     @Autowired
     private ObjectMapper om;
 
-    @MockBean
-    private HttpUtil httpUtil; // 실제 통신 대신 Mock
+    @MockBean  // 스프링이 관리하는 빈을 Mockito Mock 객체로 교체해주는 어노테이션
+    private HttpUtil httpUtil;
 
 
     @Test

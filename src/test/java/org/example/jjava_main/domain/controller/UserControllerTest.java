@@ -1,6 +1,10 @@
-package org.example.jjava_main.domain.user;
+package org.example.jjava_main.domain.controller;
 
 import org.example.jjava_main.controller.UserController;
+import org.example.jjava_main.domain.user.User;
+import org.example.jjava_main.domain.user.UserLevel;
+import org.example.jjava_main.domain.user.UserRole;
+import org.example.jjava_main.domain.user.UserService;
 import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
