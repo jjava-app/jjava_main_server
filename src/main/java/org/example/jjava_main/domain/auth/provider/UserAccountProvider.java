@@ -2,6 +2,7 @@ package org.example.jjava_main.domain.auth.provider;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.jjava_main.domain.user.User;
 
 @Data
 @NoArgsConstructor
@@ -11,13 +12,17 @@ public class UserAccountProvider {
     @GeneratedValue
     @Id
     private Integer id;
-    private Integer userId;
-    private Integer providerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Provider provider;
 
     @Builder
-    public UserAccountProvider(Integer id, Integer userId, Integer providerId) {
+    public UserAccountProvider(Integer id, User user, Provider provider) {
         this.id = id;
-        this.userId = userId;
-        this.providerId = providerId;
+        this.user = user;
+        this.provider = provider;
     }
 }

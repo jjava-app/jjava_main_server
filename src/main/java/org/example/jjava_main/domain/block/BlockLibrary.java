@@ -3,6 +3,7 @@ package org.example.jjava_main.domain.block;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.jjava_main.domain.user.User;
 
 @Data
 @NoArgsConstructor
@@ -12,13 +13,15 @@ public class BlockLibrary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
     private String libraryJson;
 
     @Builder
-    public BlockLibrary(Integer id, Integer userId, String libraryJson) {
+    public BlockLibrary(Integer id, User user, String libraryJson) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.libraryJson = libraryJson;
     }
 
