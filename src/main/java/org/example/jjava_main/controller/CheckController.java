@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.jjava_main._core.util.HttpUtil;
 import org.example.jjava_main._core.util.Resp;
 import org.example.jjava_main.domain.compile.CheckService;
+import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.dto.CheckRequest;
 import org.example.jjava_main.dto.CheckResponse;
 import org.example.jjava_main.dto.QuestionResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -20,9 +22,9 @@ public class CheckController {
     private final CheckService checkService;
 
     @PostMapping("/check")
-    public ResponseEntity<?> checkProxyAndCodeRefactor(@RequestParam Integer questionId, @RequestBody CheckRequest.DTO reqDTO) {
-        // given
-        Integer userId = 2;
+    public ResponseEntity<?> checkProxyAndCodeRefactor(@AuthenticationPrincipal User user, @RequestParam Integer questionId, @RequestBody CheckRequest.DTO reqDTO) {
+        // userId를 Authentication에서 찾아옴
+        Integer userId = user.getId();
 
         // 성공이면 PassDTO, 실패면 List<FailDTO>가 돌아옴
         Object respDTO = httpUtil.checkServerSend(reqDTO, userId, questionId);

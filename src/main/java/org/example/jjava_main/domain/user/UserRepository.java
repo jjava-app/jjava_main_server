@@ -101,7 +101,7 @@ public class UserRepository {
         }
     }
 
-    public int findRankByScoreAndId(Integer score, Integer id) {
+    public int findRankByScoreAndId(Integer score) {
         String sql = """
                   SELECT COUNT(*) + 1
                   FROM user_tb
