@@ -89,4 +89,18 @@ public class UserRepository {
         return list.stream().findFirst();
     }
 
+    public int findRankByScoreAndId(Integer score, Integer id) {
+        String sql = """
+                  SELECT COUNT(*) + 1
+                  FROM user_tb
+                  WHERE score > :score
+                     OR (score = :score AND id < :id)
+                """;
+        Number n = (Number) em.createNativeQuery(sql)
+                .setParameter("score", score)
+                .setParameter("id", id)
+                .getSingleResult();
+        return n.intValue();
+
+    }
 }

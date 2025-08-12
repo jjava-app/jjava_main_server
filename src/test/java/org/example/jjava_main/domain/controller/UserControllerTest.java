@@ -7,6 +7,7 @@ import org.example.jjava_main.domain.user.UserRole;
 import org.example.jjava_main.domain.user.UserService;
 import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
+import org.example.jjava_main.dto.UserResponse.LevelUpdateResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -62,18 +63,18 @@ class UserControllerTest {
     }
 
     @BeforeEach
-    void setUpSecurityContext() {
+    void set_up_security_context() {
         // ✅ mock 유저 생성
         mockUser = User.builder()
                 .id(1)
-                .email("ssar@naver.com")
+                .email("ssar1234@nate.com")
                 .username("ssar")
                 .level(UserLevel.EXPERT)
                 .role(UserRole.USER)
                 .score(2530)
                 .build();
 
-        // ✅ 인증 객체 수동 등록
+        // 인증 객체 수동 등록
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities());
 
@@ -81,9 +82,9 @@ class UserControllerTest {
     }
 
     @Test
-    void getMyPageProfile_success() throws Exception {
+    void get_my_page_profile_success() throws Exception {
         // given
-        UserResponse response = new UserResponse(mockUser);
+        UserResponse response = new UserResponse(mockUser, 155);
         when(userService.userGet(any(User.class))).thenReturn(response);
 
         // when
@@ -94,6 +95,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.body.username").value("ssar"))
                 .andExpect(jsonPath("$.body.level").value("EXPERT"))
                 .andExpect(jsonPath("$.body.score").value(2530))
+                .andExpect(jsonPath("$.body.rank").value(155))
                 .andReturn();
 
         // then
@@ -102,7 +104,7 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUserLevel_success() throws Exception {
+    void update_user_level_success() throws Exception {
         // given
         String reqJson = """
                 {
@@ -113,14 +115,14 @@ class UserControllerTest {
 
         User updatedUser = User.builder()
                 .id(1)
-                .email("ssar@nate.com")
+                .email("ssar1234@nate.com")
                 .username("ssar")
                 .level(UserLevel.BEGINNER)
                 .role(UserRole.USER)
                 .score(2530)
                 .build();
 
-        UserResponse respDTO = new UserResponse(updatedUser);
+        LevelUpdateResponse respDTO = new LevelUpdateResponse(updatedUser);
         when(userService.levelUpdate(any(UserRequest.LevelUpdateDTO.class), any(User.class)))
                 .thenReturn(respDTO);
 
