@@ -1,16 +1,12 @@
-package org.example.jjava_main.domain.controller;
+package org.example.jjava_main.domain.user;
 
+import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main.controller.UserController;
-import org.example.jjava_main.domain.user.User;
-import org.example.jjava_main.domain.user.UserLevel;
-import org.example.jjava_main.domain.user.UserRole;
-import org.example.jjava_main.domain.user.UserService;
 import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.example.jjava_main.dto.UserResponse.LevelUpdateResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.MediaType;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,11 +18,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -34,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 @Import({UserControllerTest.TestConfig.class, UserControllerTest.TestSecurityConfig.class})
-class UserControllerTest {
+class UserControllerTest extends MyRestDoc {
 
     @Autowired
     private MockMvc mockMvc;
@@ -90,7 +85,7 @@ class UserControllerTest {
         when(userService.userGet(any(User.class))).thenReturn(response);
 
         // when
-        MvcResult result = mockMvc.perform(get("/users/mypage"))
+        mockMvc.perform(get("/users/mypage"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andExpect(jsonPath("$.body.email").value("ssar1234@nate.com"))
@@ -98,11 +93,8 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.body.level").value("EXPERT"))
                 .andExpect(jsonPath("$.body.score").value(2530))
                 .andExpect(jsonPath("$.body.rank").value(155))
-                .andReturn();
-
-        // then
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("🔍 MyPage response JSON: " + responseBody);
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
     @Test
@@ -129,18 +121,14 @@ class UserControllerTest {
                 .thenReturn(respDTO);
 
         // when & then
-        MvcResult result = mockMvc.perform(put("/users/mypage/level")
+        mockMvc.perform(put("/users/mypage/level")
                         .contentType("application/json")
                         .content(reqJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.level").value("BEGINNER"))
                 .andExpect(jsonPath("$.body.username").value("ssar"))
                 .andExpect(jsonPath("$.body.id").value(1))
-                .andReturn();
-
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("🔁 Update level response JSON: " + responseBody);
-
-
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 }

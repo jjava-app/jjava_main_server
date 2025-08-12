@@ -1,19 +1,19 @@
 package org.example.jjava_main.domain.user;
 
 import org.example.jjava_main.MyRestDoc;
+import org.example.jjava_main.domain.auth.AuthService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -27,9 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Sql(scripts = "/db/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {"/db/clear.sql", "/db/data.sql"},
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class UserControllerIT extends MyRestDoc {
 
+    @MockBean
+    AuthService authService;
 
     @Autowired
     MockMvc mockMvc;
@@ -49,9 +52,8 @@ class UserControllerIT extends MyRestDoc {
     }
 
     @Test
-    @DisplayName("GET /users/mypage → rank 포함 & 응답 출력")
     void get_my_page_profile_success() throws Exception {
-        ResultActions ra = mockMvc.perform(get("/users/mypage").with(authentication(auth)))
+        mockMvc.perform(get("/users/mypage").with(authentication(auth)))
                 .andDo(print()) // 요청/응답 전체 출력
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.id").value(seedUser.getId()))
@@ -62,25 +64,19 @@ class UserControllerIT extends MyRestDoc {
                 .andExpect(jsonPath("$.body.rank").value(4))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document);
-
-        String json = ra.andReturn().getResponse().getContentAsString();
-        System.out.println("🔍 MyPage JSON => " + json); // ✅ 추가 출력
     }
 
     @Test
-    @DisplayName("PUT /users/mypage/level → rank 제외 & 응답 출력")
     void update_user_level_success() throws Exception {
         String req = """
                     {"level":"EXPERT","username":"haha-up"}
                 """;
 
-        ResultActions ra = mockMvc.perform(
-                        put("/users/mypage/level")
-                                .with(authentication(auth))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(req)
+        mockMvc.perform(put("/users/mypage/level")
+                        .with(authentication(auth))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(req)
                 )
-                .andDo(print()) // ✅ 요청/응답 출력
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.username").value("haha-up"))
                 .andExpect(jsonPath("$.body.level").value("EXPERT"))
