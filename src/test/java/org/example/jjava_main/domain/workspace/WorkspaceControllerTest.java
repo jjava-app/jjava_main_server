@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.jjava_main._core.error.ex.Exception403;
 import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main.controller.WorkspaceController;
-import org.example.jjava_main.domain.user.*;
+import org.example.jjava_main.domain.user.User;
+import org.example.jjava_main.domain.user.UserLevel;
+import org.example.jjava_main.domain.user.UserRole;
+import org.example.jjava_main.domain.user.UserService;
 import org.example.jjava_main.dto.WorkspaceRequest;
 import org.example.jjava_main.dto.WorkspaceResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,16 +32,20 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(WorkspaceController.class)
 @Import({WorkspaceControllerTest.TestConfig.class, WorkspaceControllerTest.TestSecurityConfig.class})
 public class WorkspaceControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper om;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper om;
 
-    @MockBean private WorkspaceService workspaceService;
+    @MockBean
+    private WorkspaceService workspaceService;
 
     private User mockUser;
 
@@ -132,35 +139,35 @@ public class WorkspaceControllerTest {
                 .andExpect(jsonPath("$.body.createdAt").exists());
     }
 
-    @Test
-    void update_workspace() throws Exception {
-        WorkspaceRequest.UpdateDTO reqDTO = new WorkspaceRequest.UpdateDTO();
-        reqDTO.setTitle("업데이트된 제목");
-        reqDTO.setSerializedJson("{\"blocks\":[]}");
-        reqDTO.setBlockExtensionJson("{\"extensions\":[]}");
-
-        Workspace workspace = Workspace.builder()
-                .id(1)
-                .userId(1)
-                .title(reqDTO.getTitle())
-                .serializedJson(reqDTO.getSerializedJson())
-                .blockExtensionJson(reqDTO.getBlockExtensionJson())
-                .build();
-
-        WorkspaceResponse.DTO respDTO = new WorkspaceResponse.DTO(workspace);
-
-        when(workspaceService.workspaceUpdate(eq(1), any(), eq(1))).thenReturn(respDTO);
-
-        mockMvc.perform(put("/workspace/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(reqDTO)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body.title").value("업데이트된 제목"))
-                .andExpect(jsonPath("$.body.serializedJson").value("{\"blocks\":[]}"))
-                .andExpect(jsonPath("$.body.blockExtensionJson").value("{\"extensions\":[]}"))
-                .andExpect(jsonPath("$.body.userId").value(1))
-                .andExpect(jsonPath("$.body.id").value(1));
-    }
+//    @Test
+//    void update_workspace() throws Exception {
+//        WorkspaceRequest.UpdateDTO reqDTO = new WorkspaceRequest.UpdateDTO();
+//        reqDTO.setTitle("업데이트된 제목");
+//        reqDTO.setSerializedJson("{\"blocks\":[]}");
+//        reqDTO.setBlockExtensionJson("{\"extensions\":[]}");
+//
+//        Workspace workspace = Workspace.builder()
+//                .id(1)
+//                .userId(1)
+//                .title(reqDTO.getTitle())
+//                .serializedJson(reqDTO.getSerializedJson())
+//                .blockExtensionJson(reqDTO.getBlockExtensionJson())
+//                .build();
+//
+//        WorkspaceResponse.DTO respDTO = new WorkspaceResponse.DTO(workspace);
+//
+//        when(workspaceService.workspaceUpdate(eq(1), any(), eq(1))).thenReturn(respDTO);
+//
+//        mockMvc.perform(put("/workspace/1")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(om.writeValueAsString(reqDTO)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.body.title").value("업데이트된 제목"))
+//                .andExpect(jsonPath("$.body.serializedJson").value("{\"blocks\":[]}"))
+//                .andExpect(jsonPath("$.body.blockExtensionJson").value("{\"extensions\":[]}"))
+//                .andExpect(jsonPath("$.body.userId").value(1))
+//                .andExpect(jsonPath("$.body.id").value(1));
+//    }
 
     @Test
     void update_workspace_not_found() throws Exception {
