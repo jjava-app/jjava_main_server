@@ -1,32 +1,38 @@
 package org.example.jjava_main.domain.user.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main.controller.AdminController;
-import org.example.jjava_main.domain.user.*;
+import org.example.jjava_main.domain.user.User;
+import org.example.jjava_main.domain.user.UserLevel;
+import org.example.jjava_main.domain.user.UserRole;
 import org.example.jjava_main.dto.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AdminController.class)
 @AutoConfigureMockMvc(addFilters = false) // 보안 필터 적용 안 함
-class AdminControllerTest {
+class AdminControllerTest extends MyRestDoc {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper om;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper om;
 
-    @MockBean private AdminService adminService; // 컨트롤러가 주입받는 서비스만 Mock
+    @MockBean
+    private AdminService adminService; // 컨트롤러가 주입받는 서비스만 Mock
 
     private User mockUser;
 
@@ -56,7 +62,9 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.body.userList[0].email").value("ssar@naver.com"))
                 .andExpect(jsonPath("$.body.userList[0].username").value("ssar"))
                 .andExpect(jsonPath("$.body.userList[0].level").value("EXPERT"))
-                .andExpect(jsonPath("$.body.userList[0].role").value("ADMIN"));
+                .andExpect(jsonPath("$.body.userList[0].role").value("ADMIN"))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
 
         verify(adminService, times(1)).userList(0, "id", 0);
     }
@@ -75,7 +83,9 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.body.page").value(10))
                 .andExpect(jsonPath("$.body.totalCount").value(0))
                 .andExpect(jsonPath("$.body.sort").value(1))
-                .andExpect(jsonPath("$.body.userList.length()").value(0));
+                .andExpect(jsonPath("$.body.userList.length()").value(0))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
 
         verify(adminService, times(1)).userList(10, "email", 1);
     }
