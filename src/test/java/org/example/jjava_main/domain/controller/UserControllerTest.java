@@ -49,7 +49,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("GET /users/mypage → rank 포함 & 응답 출력")
-    void mypage_rank_included_and_print() throws Exception {
+    void get_my_page_profile_success() throws Exception {
         ResultActions ra = mockMvc.perform(get("/users/mypage").with(authentication(auth)))
                 .andDo(print()) // 요청/응답 전체 출력
                 .andExpect(status().isOk())
@@ -66,7 +66,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("PUT /users/mypage/level → rank 제외 & 응답 출력")
-    void 레벨수정_rank_없음_DB반영() throws Exception {
+    void update_user_level_success() throws Exception {
         String req = """
                     {"level":"EXPERT","username":"cos-up"}
                 """;
