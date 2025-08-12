@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
-import org.example.jjava_main._core.util.JwtUtil;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -98,5 +97,20 @@ public class UserRepository {
         } catch (NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    public int findRankByScoreAndId(Integer score, Integer id) {
+        String sql = """
+                  SELECT COUNT(*) + 1
+                  FROM user_tb
+                  WHERE score > :score
+                     OR (score = :score AND id < :id)
+                """;
+        Number n = (Number) em.createNativeQuery(sql)
+                .setParameter("score", score)
+                .setParameter("id", id)
+                .getSingleResult();
+        return n.intValue();
+
     }
 }

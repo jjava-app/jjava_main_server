@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AuthController {
     private final AuthService authService;
+    private final HttpSession session;
 
 
     // 네이버 oauth 로그인
@@ -64,9 +65,8 @@ public class AuthController {
 
     // 이메일 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO reqDTO, HttpServletRequest request) {
+    public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO reqDTO) {
         UserResponse.LoginDTO respDTO = authService.emailLogin(reqDTO);
-        HttpSession session = request.getSession(true); // ← 세션 생성
         session.setAttribute("USER_ID", respDTO.getId());
         return Resp.ok(respDTO);
     }
