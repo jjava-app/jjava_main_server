@@ -1,14 +1,17 @@
 package org.example.jjava_main.domain.user.admin;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.domain.user.UserRepository;
+import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -33,5 +36,17 @@ public class AdminService {
 
         return new UserResponse.ListDTO(dtoList, page, order, totalCount.intValue(), sort);
 
+    }
+
+    //회원 수정 - min
+
+    // Service
+    @Transactional
+    public UserResponse.UserUpdateDTO userUpdate(Integer id, UserRequest.UserUpdateDTO reqDTO) {
+        User userPS = userRepository.findById(id)
+                .orElseThrow(() -> new Exception404("유저가 존재하지 않습니다."));
+        // email, username, role, score
+        userPS.adminUpdate(reqDTO.getEmail(), reqDTO.getUsername(), reqDTO.getRole(), reqDTO.getScore());
+        return new UserResponse.UserUpdateDTO(userPS);
     }
 }
