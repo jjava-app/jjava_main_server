@@ -1,7 +1,5 @@
-package org.example.jjava_main.domain.controller;
+package org.example.jjava_main.domain.user;
 
-import org.example.jjava_main.domain.user.User;
-import org.example.jjava_main.domain.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
