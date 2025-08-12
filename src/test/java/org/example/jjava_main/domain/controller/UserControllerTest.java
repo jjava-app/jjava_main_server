@@ -63,7 +63,7 @@ class UserControllerTest {
     }
 
     @BeforeEach
-    void setUpSecurityContext() {
+    void set_up_security_context() {
         // ✅ mock 유저 생성
         mockUser = User.builder()
                 .id(1)
@@ -82,7 +82,7 @@ class UserControllerTest {
     }
 
     @Test
-    void getMyPageProfile_success() throws Exception {
+    void get_my_page_profile_success() throws Exception {
         // given
         UserResponse response = new UserResponse(mockUser, 155);
         when(userService.userGet(any(User.class))).thenReturn(response);
@@ -104,7 +104,7 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUserLevel_success() throws Exception {
+    void update_user_level_success() throws Exception {
         // given
         String reqJson = """
                 {
