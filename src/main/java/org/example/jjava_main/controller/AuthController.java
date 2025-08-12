@@ -1,10 +1,14 @@
 package org.example.jjava_main.controller;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.example.jjava_main._core.util.Resp;
 import org.example.jjava_main.domain.auth.AuthService;
 import org.example.jjava_main.domain.user.UserService;
+import org.example.jjava_main.dto.SocialLoginRequest;
 import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
@@ -60,8 +64,10 @@ public class AuthController {
 
     // 이메일 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO reqDTO) {
-        UserResponse.LoginDTO respDTO = authService.login(reqDTO);
+    public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO reqDTO, HttpServletRequest request) {
+        UserResponse.LoginDTO respDTO = authService.emailLogin(reqDTO);
+        HttpSession session = request.getSession(true); // ← 세션 생성
+        session.setAttribute("USER_ID", respDTO.getId());
         return Resp.ok(respDTO);
     }
 }

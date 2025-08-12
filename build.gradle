@@ -47,8 +47,6 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.springframework.security:spring-security-test'
 
-
-    // 테스트 환경에서 Lombok 사용을 위한 설정
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     // 자바 객체 ↔ JSON 변환 ObjectMapper 라이브러리

@@ -100,6 +100,7 @@ public class UserResponse {
     @Data
     public static class LoginDTO {
         private String accessToken;
+        private Integer id;
         private String email;
         private String nickname;
         private UserLevel level;
@@ -108,6 +109,7 @@ public class UserResponse {
 
         public LoginDTO(User user, String accessToken) {
             this.accessToken = accessToken;
+            this.id = user.getId();
             this.email = user.getEmail();
             this.nickname = user.getUsername();
             this.level = user.getLevel();

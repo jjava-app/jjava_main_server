@@ -14,5 +14,4 @@ public class JjavaMainApplication {
         );
         SpringApplication.run(JjavaMainApplication.class, args);
     }
-
 }

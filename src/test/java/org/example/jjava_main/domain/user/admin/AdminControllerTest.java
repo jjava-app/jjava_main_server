@@ -6,14 +6,12 @@ import org.example.jjava_main.domain.user.*;
 import org.example.jjava_main.dto.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -23,10 +21,13 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc(addFilters = false) // 보안 필터 적용 안 함
 class AdminControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper om;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper om;
 
-    @MockBean private AdminService adminService; // 컨트롤러가 주입받는 서비스만 Mock
+    @MockBean
+    private AdminService adminService; // 컨트롤러가 주입받는 서비스만 Mock
 
     private User mockUser;
 

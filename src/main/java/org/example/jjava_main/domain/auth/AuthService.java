@@ -8,12 +8,6 @@ import org.example.jjava_main._core.util.EmailCode;
 import org.example.jjava_main._core.util.JwtUtil;
 import org.example.jjava_main._core.util.PrincipalDetails;
 import org.example.jjava_main.domain.user.User;
-import org.example.jjava_main._core.error.ex.Exception400;
-import org.example.jjava_main._core.error.ex.Exception404;
-import org.example.jjava_main._core.util.EmailCode;
-import org.example.jjava_main._core.util.JwtUtil;
-import org.example.jjava_main._core.util.PrincipalDetails;
-import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.domain.user.UserRepository;
 import org.example.jjava_main.domain.user.UserRole;
 import org.example.jjava_main.dto.SocialLoginResponse;
@@ -32,19 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
-import org.example.jjava_main.dto.UserRequest;
-import org.example.jjava_main.dto.UserResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -268,7 +251,7 @@ public class AuthService implements UserDetailsService {
         return new PrincipalDetails(user);
     }
 
-    public UserResponse.LoginDTO login(UserRequest.LoginDTO reqDTO) {
+    public UserResponse.LoginDTO emailLogin(UserRequest.LoginDTO reqDTO) {
         // 1. 사용자 존재 여부 확인
         User userOP = userRepository.findByEmail(reqDTO.getEmail())
                 .orElseThrow(() -> new Exception404("사용자를 찾을 수 없습니다."));
