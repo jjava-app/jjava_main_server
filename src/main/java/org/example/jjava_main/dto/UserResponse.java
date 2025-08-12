@@ -19,13 +19,32 @@ public class UserResponse {
     private Integer score;
     private Integer rank;
 
-    public UserResponse(User user, int rank) {
+    public UserResponse(User user) {   // 기존 테스트 호환
+        this(user, null);
+    }
+
+    public UserResponse(User user, Integer rank) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.level = user.getLevel().toString();
         this.score = user.getScore();
         this.rank = rank;
+    }
+
+    @Data
+    public static class LevelUpdateResponse {
+        private Integer id;
+        private String email;
+        private String username;
+        private String level;
+
+        public LevelUpdateResponse(User u) {
+            this.id = u.getId();
+            this.email = u.getEmail();
+            this.username = u.getUsername();
+            this.level = u.getLevel().toString();
+        }
     }
 
     @Data
