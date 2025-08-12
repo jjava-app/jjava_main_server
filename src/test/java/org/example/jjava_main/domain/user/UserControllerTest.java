@@ -40,7 +40,7 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         // 더미에 맞는 이메일로 조회 (id 하드코딩 회피)
-        seedUser = userRepository.findByEmail("cos1234@nate.com")
+        seedUser = userRepository.findByEmail("haha1234@nate.com")
                 .orElseThrow(() -> new IllegalStateException("seed user not found in data.sql"));
         auth = new UsernamePasswordAuthenticationToken(seedUser, null, seedUser.getAuthorities());
     }
@@ -52,8 +52,8 @@ class UserControllerTest {
                 .andDo(print()) // 요청/응답 전체 출력
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.id").value(seedUser.getId()))
-                .andExpect(jsonPath("$.body.email").value("cos1234@nate.com"))
-                .andExpect(jsonPath("$.body.username").value("cos"))
+                .andExpect(jsonPath("$.body.email").value("haha1234@nate.com"))
+                .andExpect(jsonPath("$.body.username").value("haha"))
                 .andExpect(jsonPath("$.body.level").value("BEGINNER"))
                 .andExpect(jsonPath("$.body.score").value(95))
                 .andExpect(jsonPath("$.body.rank").value(2));
@@ -66,7 +66,7 @@ class UserControllerTest {
     @DisplayName("PUT /users/mypage/level → rank 제외 & 응답 출력")
     void update_user_level_success() throws Exception {
         String req = """
-                    {"level":"EXPERT","username":"cos-up"}
+                    {"level":"EXPERT","username":"haha-up"}
                 """;
 
         ResultActions ra = mockMvc.perform(
@@ -77,7 +77,7 @@ class UserControllerTest {
                 )
                 .andDo(print()) // 요청/응답 출력
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body.username").value("cos-up"))
+                .andExpect(jsonPath("$.body.username").value("haha-up"))
                 .andExpect(jsonPath("$.body.level").value("EXPERT"));
 
         String json = ra.andReturn().getResponse().getContentAsString();
