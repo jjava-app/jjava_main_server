@@ -3,9 +3,8 @@ package org.example.jjava_main.domain.user.admin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main.controller.AdminController;
-import org.example.jjava_main.domain.user.User;
-import org.example.jjava_main.domain.user.UserLevel;
-import org.example.jjava_main.domain.user.UserRole;
+import org.example.jjava_main.domain.user.*;
+import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.mockito.Mockito.*;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,8 +33,9 @@ class AdminControllerTest extends MyRestDoc {
     @Autowired
     private ObjectMapper om;
 
-    @MockBean
-    private AdminService adminService; // 컨트롤러가 주입받는 서비스만 Mock
+    @MockBean private UserRepository userRepository;
+
+    @MockBean private AdminService adminService; // 컨트롤러가 주입받는 서비스만 Mock
 
     private User mockUser;
 
@@ -90,4 +93,25 @@ class AdminControllerTest extends MyRestDoc {
         verify(adminService, times(1)).userList(10, "email", 1);
     }
 
+    @Test
+    void updateUser_test() {
+        // given
+        User user = User.builder()
+                .id(1) // 테스트용 세터/빌더로 세팅 가능해야 함
+                .username("ssar")
+                .email("ssar@nate.com")
+                .role(UserRole.USER)
+                .score(100)
+                .build();
+
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+
+        var req = new UserRequest.UserUpdateDTO("ssar", "ssar@nate.com", UserRole.USER, 100);
+
+        // when
+        var resp = adminService.userUpdate(1, req);
+
+        // then
+        System.out.println("응답 : " + resp);
+    }
 }
