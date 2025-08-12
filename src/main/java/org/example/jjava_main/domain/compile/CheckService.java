@@ -8,6 +8,7 @@ import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.domain.user.UserRepository;
 import org.example.jjava_main.dto.CheckRequest;
 import org.example.jjava_main.dto.CheckResponse;
+import org.example.jjava_main.dto.QuestionResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -101,5 +102,45 @@ public class CheckService {
 
         // 결과 리턴 (refactoredCode, refactorNote 모두 포함됨)
         return passDTO;
+    }
+
+
+    public QuestionResponse.ListDTO questionListGet(Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        if (user == null) throw new Exception404("존재하지 않는 회원입니다.");
+
+        // 1) 전체 문제 조회
+        List<Question> questions = questionRepository.findAll();
+
+        // 2) 유저가 푼 문제 조회
+        List<SolvedQuestion> solvedList = questionRepository.findSolvedQuestionByUserId(userId);
+
+        // 3) 응답 아이템 구성
+        List<QuestionResponse.ListDTO.QuestionDTO> items = questions.stream()
+                .map(q -> new QuestionResponse.ListDTO.QuestionDTO(
+                        q.getId(),
+                        q.getType().getName(),
+                        q.getTitle()
+                ))
+                .toList();
+
+        // solved questionId 리스트화
+        List<Integer> solvedQuestionIds = solvedList.stream()
+                .map(SolvedQuestion::getQuestionId) // 엔티티 getter 맞게 수정
+                .toList();
+
+        // 5) 총계 및 solvedCount
+        int totalCount = questions.size();
+        int solvedCount = solvedList.size();
+
+        return new QuestionResponse.ListDTO(userId, totalCount, solvedCount, items, solvedQuestionIds);
+    }
+
+    public QuestionResponse.DetailDTO questionDetailGet(Integer questionId) {
+        // 문제 조회
+        Question question = questionRepository.findById(questionId);
+        if (question == null) throw new Exception404("문제를 찾을 수 없습니다.");
+
+        return new QuestionResponse.DetailDTO(questionId, question.getTitle(), question.getContent());
     }
 }
