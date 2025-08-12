@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
+import org.example.jjava_main.dto.UserRequest;
+import org.example.jjava_main.dto.UserResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -112,4 +114,22 @@ public class UserRepository {
         return n.intValue();
 
     }
+    public UserResponse.UserUpdateDTO updateUser(Integer id,String username, String email){
+        Query query = em.createQuery("update User u set u.email = :email,u.username = :username where u.id = :id");
+        query.setParameter("email", email);
+        query.setParameter("username", username);
+        query.setParameter("id",id);
+        int updateCount = query.executeUpdate();
+
+        if(updateCount == 0) {
+            throw new RuntimeException("업데이트 실패: 해당 유저 없음");
+        }
+
+        // 업데이트 후 변경된 유저 엔티티 다시 조회
+        User updatedUser = em.createQuery("select u from User u where u.id = :id", User.class)
+                .setParameter("id", id).getSingleResult();
+
+        return new UserResponse.UserUpdateDTO(updatedUser);
+    }
+
 }

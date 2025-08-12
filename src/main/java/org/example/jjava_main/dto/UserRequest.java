@@ -67,4 +67,20 @@ public class UserRequest {
         @NotBlank(message = "비밀번호는 필수 입력값입니다.")
         private String password;
     }
+
+    //유저수정 - Min
+    @Data
+    public static class UserUpdateDTO{
+        private String username;
+        private String email;
+        private UserRole role;
+        private Integer score;
+
+        public UserUpdateDTO(String username, String email, UserRole role, Integer score) {
+            this.username = username;
+            this.email = email;
+            this.role = role;
+            this.score = score;
+        }
+    }
 }
