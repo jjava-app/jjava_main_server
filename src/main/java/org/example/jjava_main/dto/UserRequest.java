@@ -1,5 +1,12 @@
 package org.example.jjava_main.dto;
 
+
+import jakarta.validation.constraints.*;
+import lombok.Data;
+import org.example.jjava_main.domain.user.User;
+import org.example.jjava_main.domain.user.UserLevel;
+import org.example.jjava_main.domain.user.UserRole;
+
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.example.jjava_main.domain.user.User;
@@ -7,6 +14,17 @@ import org.example.jjava_main.domain.user.UserLevel;
 import org.example.jjava_main.domain.user.UserRole;
 
 public class UserRequest {
+
+    @Data
+    public static class LevelUpdateDTO {
+        private UserLevel level;
+        private String username;
+
+        public LevelUpdateDTO(UserLevel level, String username) {
+            this.level = level;
+            this.username = username;
+        }
+    }
 
     @Data
     public static class JoinDTO {

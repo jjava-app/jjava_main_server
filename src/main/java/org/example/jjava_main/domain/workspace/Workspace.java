@@ -16,19 +16,24 @@ public class Workspace {
     private Integer id;
     private Integer userId;
     private String title;
-    private String seralizedJson;
+    private String serializedJson;
     private String blockExtensionJson;
 
     @CreationTimestamp
     private Timestamp createdAt;
 
     @Builder
-    public Workspace(Integer id, Integer userId, String title, String seralizedJson, String blockExtensionJson, Timestamp createdAt) {
+    public Workspace(Integer id, Integer userId, String title, String serializedJson, String blockExtensionJson, Timestamp createdAt) {
         this.id = id;
         this.userId = userId;
         this.title = title;
-        this.seralizedJson = seralizedJson;
+        this.serializedJson = serializedJson;
         this.blockExtensionJson = blockExtensionJson;
         this.createdAt = createdAt;
+    }
+
+    public void update(String title, String serializedJson) {
+        this.title = title == null ? this.title : title;
+        this.serializedJson = serializedJson == null ? this.serializedJson : serializedJson;
     }
 }

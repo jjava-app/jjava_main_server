@@ -9,7 +9,7 @@ import lombok.*;
 @Table(name = "provider_tb")
 public class Provider {
 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
     private String name;
