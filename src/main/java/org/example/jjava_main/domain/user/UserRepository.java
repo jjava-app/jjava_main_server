@@ -109,7 +109,6 @@ public class UserRepository {
                 """;
         Number n = (Number) em.createNativeQuery(sql)
                 .setParameter("score", score)
-                .setParameter("id", id)
                 .getSingleResult();
         return n.intValue();
 
