@@ -1,9 +1,11 @@
 package org.example.jjava_main.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.jjava_main._core.util.Resp;
 import org.example.jjava_main.domain.user.admin.AdminService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.example.jjava_main.dto.UserResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/admin")
 @RequiredArgsConstructor
@@ -11,4 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
     private final AdminService adminService;
 
+    // 페이징, 분류 (id, 이름, 점수, 이메일), sort (0 = 오름차순, 1 = 내림차순)
+    @GetMapping("/users")
+    public ResponseEntity<?> userList(@RequestParam(required = false, defaultValue = "0") int page,
+                                      @RequestParam(required = false, defaultValue = "id") String order,
+                                      @RequestParam(required = false, defaultValue = "0") int sort) {
+        UserResponse.ListDTO respDTO = adminService.userList(page, order, sort);
+        return Resp.ok(respDTO);
+    }
 }

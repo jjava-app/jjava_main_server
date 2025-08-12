@@ -78,4 +78,9 @@ public class User implements UserDetails, Serializable {
         this.username = username;
     }
 
+
+    // score update 함수
+    public void scoreUpdate(Integer newScore) {
+        this.score = newScore;
+    }
 }

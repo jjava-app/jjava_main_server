@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.jjava_main._core.error.ex.Exception403;
 import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main.controller.WorkspaceController;
+import org.example.jjava_main.domain.block.BlockLibrary;
 import org.example.jjava_main.domain.user.*;
 import org.example.jjava_main.dto.WorkspaceRequest;
 import org.example.jjava_main.dto.WorkspaceResponse;
@@ -137,17 +138,22 @@ public class WorkspaceControllerTest {
         WorkspaceRequest.UpdateDTO reqDTO = new WorkspaceRequest.UpdateDTO();
         reqDTO.setTitle("업데이트된 제목");
         reqDTO.setSerializedJson("{\"blocks\":[]}");
-        reqDTO.setBlockExtensionJson("{\"extensions\":[]}");
+        reqDTO.setLibraryJson("{\"extensions\":[]}");
 
         Workspace workspace = Workspace.builder()
                 .id(1)
                 .userId(1)
                 .title(reqDTO.getTitle())
                 .serializedJson(reqDTO.getSerializedJson())
-                .blockExtensionJson(reqDTO.getBlockExtensionJson())
                 .build();
 
-        WorkspaceResponse.DTO respDTO = new WorkspaceResponse.DTO(workspace);
+        BlockLibrary blockLibrary = BlockLibrary.builder()
+                .id(1)
+                .userId(1)
+                .libraryJson(reqDTO.getLibraryJson())
+                .build();
+
+        WorkspaceResponse.DTO respDTO = new WorkspaceResponse.DTO(workspace, blockLibrary);
 
         when(workspaceService.workspaceUpdate(eq(1), any(), eq(1))).thenReturn(respDTO);
 
@@ -157,7 +163,7 @@ public class WorkspaceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.title").value("업데이트된 제목"))
                 .andExpect(jsonPath("$.body.serializedJson").value("{\"blocks\":[]}"))
-                .andExpect(jsonPath("$.body.blockExtensionJson").value("{\"extensions\":[]}"))
+                .andExpect(jsonPath("$.body.libraryJson").value("{\"extensions\":[]}"))
                 .andExpect(jsonPath("$.body.userId").value(1))
                 .andExpect(jsonPath("$.body.id").value(1));
     }
