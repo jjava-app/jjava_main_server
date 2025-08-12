@@ -14,7 +14,7 @@ public class UserService {
 
     public UserResponse userGet(User user) {
 
-        int rank = userRepository.findRankByScoreAndId(user.getScore(), user.getId());
+        int rank = userRepository.findRankByScoreAndId(user.getScore());
 
         return new UserResponse(user, rank);
     }
