@@ -91,7 +91,7 @@ public class UserRepository {
 
     public int findRankByScoreAndId(Integer score, Integer id) {
         String sql = """
-                  SELECT COUNT(*) + 1 
+                  SELECT COUNT(*) + 1
                   FROM user_tb
                   WHERE score > :score
                 """;
