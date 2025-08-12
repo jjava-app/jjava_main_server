@@ -8,6 +8,7 @@ import org.example.jjava_main.domain.question.QuestionRepository;
 import org.example.jjava_main.domain.question.QuestionType;
 import org.example.jjava_main.dto.CheckRequest;
 import org.example.jjava_main.dto.CheckResponse;
+import org.example.jjava_main.dto.QuestionResponse;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +46,13 @@ public class CheckControllerTest extends MyRestDoc {
     @Test
     public void check_proxy_and_code_refactor_success_test() throws Exception {
         // given
-        Question q = new Question();
-        q.setType(QuestionType.TEXT); // @Enumerated(EnumType.STRING) 권장
-        q.setTitle("dummy");
-        q.setContent("dummy");
-        q.setTestVariable("[{\"a\":\"Hello\",\"b\":\"World\"}]");
-        q.setTestAnswer("[\"HelloWorld\"]");
+        Question q = Question.builder()
+                .type(QuestionType.TEXT)
+                .title("dummy")
+                .content("dummy")
+                .testVariable("[{\"a\":\"Hello\",\"b\":\"World\"}]")
+                .testAnswer("[\"HelloWorld\"]")
+                .build();
         questionRepository.save(q);
         Integer questionId = q.getId();
 
@@ -121,12 +123,13 @@ public class CheckControllerTest extends MyRestDoc {
     @Test
     public void check_proxy_and_code_refactor_fail_test() throws Exception {
         // given
-        Question q = new Question();
-        q.setType(QuestionType.TEXT); // @Enumerated(EnumType.STRING) 권장
-        q.setTitle("dummy");
-        q.setContent("dummy");
-        q.setTestVariable("[{\"a\":\"Hello\",\"b\":\"World\"}]");
-        q.setTestAnswer("[\"HelloWorld\"]");
+        Question q = Question.builder()
+                .type(QuestionType.TEXT)
+                .title("dummy")
+                .content("dummy")
+                .testVariable("[{\"a\":\"Hello\",\"b\":\"World\"}]")
+                .testAnswer("[\"HelloWorld\"]")
+                .build();
         questionRepository.save(q);
         Integer questionId = q.getId();
 
@@ -186,6 +189,117 @@ public class CheckControllerTest extends MyRestDoc {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.expected").value("stringstringstringstringstring"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.result").value("stringstringstring"))
                 .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
+    }
+
+    @Test
+    public void question_list_get_test() throws Exception {
+        // given
+        Integer userId = 2;
+
+        // given
+        Question q = Question.builder()
+                .type(QuestionType.TEXT)
+                .title("dummy")
+                .content("dummy")
+                .testVariable("[{\"a\":\"Hello\",\"b\":\"World\"}]")
+                .testAnswer("[\"HelloWorld\"]")
+                .build();
+        questionRepository.save(q);
+
+
+        SolvedQuestion sq = SolvedQuestion.builder()
+                .questionId(1)
+                .userId(userId)
+                .AiComment("리팩토링 코멘트")
+                .serializedJson("json")
+                .blockExtensionJson("json")
+                .build();
+        questionRepository.saveSolvedQuestion(sq);
+
+        QuestionResponse.ListDTO respDTO = new QuestionResponse.ListDTO(
+                userId,
+                5, // totalCount
+                3, // solvedCount
+                List.of(
+                        new QuestionResponse.ListDTO.QuestionDTO(1, "텍스트", "dummy"),
+                        new QuestionResponse.ListDTO.QuestionDTO(2, "텍스트", "dummy")
+                ),
+                List.of(1, 2, 3)
+        );
+
+        //  Stub 설정
+        Mockito.when(checkService.questionListGet(userId))
+                .thenReturn(respDTO);
+
+        // when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/questions")
+                        .param("userId", userId.toString())
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        // eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        // then
+        actions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.userId").value(userId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.totalCount").value(5))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedCount").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.questions").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestionIds").isArray())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
+
+    }
+
+
+    @Test
+    public void question_detail_get_test() throws Exception {
+        // given
+        Question q = Question.builder()
+                .type(QuestionType.TEXT)
+                .title("dummy")
+                .content("dummy")
+                .testVariable("[{\"a\":\"Hello\",\"b\":\"World\"}]")
+                .testAnswer("[\"HelloWorld\"]")
+                .build();
+        questionRepository.save(q);
+
+
+        QuestionResponse.DetailDTO respDTO = new QuestionResponse.DetailDTO(
+                q.getId(),
+                q.getTitle(),
+                q.getContent()
+        );
+
+        //  Stub 설정
+        Mockito.when(checkService.questionDetailGet(q.getId()))
+                .thenReturn(respDTO);
+
+        // when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/questions/" + q.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        // eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        // then
+        actions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.questionId").value(q.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.title").value("dummy"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.content").value("dummy"))
                 .andDo(document);
     }
 }
