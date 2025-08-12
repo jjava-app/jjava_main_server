@@ -83,4 +83,12 @@ public class User implements UserDetails, Serializable {
     public void scoreUpdate(Integer newScore) {
         this.score = newScore;
     }
+
+    //회원 수정 - min
+    public void adminUpdate(String username, String email, UserRole role,  Integer score) {
+        this.username = username;
+        this.email = email;
+        this.role = role;
+        this.score = score;
+    }
 }

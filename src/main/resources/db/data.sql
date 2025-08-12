@@ -1,9 +1,10 @@
 INSERT INTO user_tb (email, password, username, level, role, score)
 VALUES ('admin1234@nate.com', '1234', '관리자', 'EXPERT', 'ADMIN', 95),
        ('ssar1234@nate.com', '1234', 'ssar', 'BEGINNER', 'USER', 120),
-       ('cos1234@nate.com', '1234', 'cos', 'BEGINNER', 'USER', 65),
+       ('cos1234@nate.com', '1234', 'cos', 'BEGINNER', 'USER', 95),
        ('love1234@nate.com', '1234', 'love', 'INTERMEDIATE', 'USER', 28),
-       ('haha1234@nate.com', '1234', 'haha', 'INTERMEDIATE', 'USER', 45);
+       ('haha1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJqfjIJy6/iOZ6', 'haha', 'INTERMEDIATE',
+        'USER', 45);
 
 
 INSERT INTO provider_tb (name)
@@ -18,7 +19,15 @@ VALUES (1, '짜바 연습', null, null, now()),
        (4, '짜바 연습', null, null, now()),
        (5, '짜바 연습', null, null, now());
 
+INSERT INTO block_library_tb (user_id, library_json)
+VALUES (1, null),
+       (2, null),
+       (3, null),
+       (4, null),
+       (5, null);
 
+
+-- question_tb
 INSERT INTO question_tb (type, title, content, test_variable, test_answer)
 VALUES ('OPERATOR',
         '두 수의 합 구하기',
@@ -173,4 +182,27 @@ VALUES ('ARRAY',
         '문제 설명: 정수 리스트 arr가 주어질 때, 가장 큰 수를 찾아 반환하세요.\\n\\n입력 형식:\\n- list arr\\n\\n출력 형식:\\n- int: 가장 큰 수',
         '[{"arr":[3,6,2]},{"arr":[10,5,8,1]},{"arr":[7]}]',
         '[6,10,7]');
+
+
+-- solved_question_tb
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (2, 5, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (2, 6, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (2, 7, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (3, 8, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (3, 1, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (3, 2, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (3, 3, '리팩토링', 'json', 'json');
 

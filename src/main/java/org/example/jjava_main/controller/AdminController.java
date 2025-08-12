@@ -3,6 +3,7 @@ package org.example.jjava_main.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.jjava_main._core.util.Resp;
 import org.example.jjava_main.domain.user.admin.AdminService;
+import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,4 +22,16 @@ public class AdminController {
         UserResponse.ListDTO respDTO = adminService.userList(page, order, sort);
         return Resp.ok(respDTO);
     }
+
+    // 회원 수정 - Min
+    @PostMapping("/update/{id}")
+    public ResponseEntity<?> userUpdate(@PathVariable("id") Integer id, @RequestBody UserRequest.UserUpdateDTO reqDTO){
+        UserResponse.UserUpdateDTO respDTO = adminService.userUpdate(id, reqDTO);
+        return Resp.ok(respDTO);
+    }
+
+    // 회원 삭제
+
+
+    // 회원 추가 (필요 시)
 }

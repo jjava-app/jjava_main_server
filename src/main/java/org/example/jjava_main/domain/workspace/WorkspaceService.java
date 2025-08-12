@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.jjava_main._core.error.ex.Exception403;
 import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main._core.util.AuthUtil;
+import org.example.jjava_main.domain.block.BlockLibrary;
+import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.dto.WorkspaceRequest;
 import org.example.jjava_main.dto.WorkspaceResponse;
 import org.springframework.stereotype.Service;
@@ -18,40 +20,50 @@ public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
 
     @Transactional
-    public WorkspaceResponse.CreateDTO workspaceCreate(Integer userId) {
-        Workspace workspace = new Workspace().builder().title("새 워크스페이스").userId(userId).build();
+    public WorkspaceResponse.CreateDTO workspaceCreate(User user) {
+
+
+        Workspace workspace = new Workspace().builder().title("새 워크스페이스").user(user).build();
         Workspace workspacePS = workspaceRepository.create(workspace);
+        BlockLibrary blockLibrary = new BlockLibrary().builder().user(user).build();
+        BlockLibrary blockLibraryPS = workspaceRepository.createBlockLibrary(blockLibrary);
+
         return new WorkspaceResponse.CreateDTO(workspacePS);
     }
 
-    public List<Workspace> workspaceList(Integer userId) {
-        List<Workspace> workspaceList = workspaceRepository.findAllbyUserId(userId);
+    public List<Workspace> workspaceList(User user) {
+        List<Workspace> workspaceList = workspaceRepository.findAllbyUserId(user.getId());
         return workspaceList;
     }
 
-    public Workspace workspaceDetail(Integer workspaceId, Integer userId) {
+    public Workspace workspaceDetail(Integer workspaceId, User user) {
         Workspace workspacePS = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new Exception404("해당 워크스페이스가 존재하지 않습니다."));
-        if(!workspacePS.getUserId().equals(userId)) throw new Exception403("해당 워크스페이스의 소유자가 아닙니다.");
+        if(!workspacePS.getUser().getId().equals(user.getId())) throw new Exception403("해당 워크스페이스의 소유자가 아닙니다.");
         return workspacePS;
     }
 
     @Transactional
-    public void workspaceDelete(Integer workspaceId, Integer userId) {
+    public void workspaceDelete(Integer workspaceId, User user) {
         Workspace workspacePS = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new Exception404("해당 워크스페이스가 존재하지 않습니다."));
         // 워크스페이스 소유자 id랑 로그인한 유저 id 비일치 시 403 에러 발생 코드 추가 필요
-        if(!workspacePS.getUserId().equals(userId)) throw new Exception403("해당 워크스페이스의 소유자가 아닙니다.");
+        if(!workspacePS.getUser().getId().equals(user.getId())) throw new Exception403("해당 워크스페이스의 소유자가 아닙니다.");
         workspaceRepository.deleteById(workspaceId);
     }
 
     @Transactional
-    public WorkspaceResponse.DTO workspaceUpdate(Integer workspaceId, WorkspaceRequest.UpdateDTO reqDTO, Integer userId) {
+    public WorkspaceResponse.DTO workspaceUpdate(Integer workspaceId, WorkspaceRequest.UpdateDTO reqDTO, User user) {
         Workspace workspacePS = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new Exception404("해당 워크스페이스가 존재하지 않습니다."));
         // 워크스페이스 소유자 id랑 로그인한 유저 id 비일치 시 403 에러 발생 코드 추가 필요
-        if(!workspacePS.getUserId().equals(userId)) throw new Exception403("해당 워크스페이스의 소유자가 아닙니다.");
-        workspacePS.update(reqDTO.getTitle(), reqDTO.getSerializedJson(), reqDTO.getBlockExtensionJson());
-        return new WorkspaceResponse.DTO(workspacePS);
+        if(!workspacePS.getUser().getId().equals(user.getId())) throw new Exception403("해당 워크스페이스의 소유자가 아닙니다.");
+        workspacePS.update(reqDTO.getTitle(), reqDTO.getSerializedJson());
+
+        BlockLibrary blockLibraryPS = workspaceRepository.findBlockLibraryByUserId(user.getId())
+                .orElseThrow(() -> new Exception404("해당 유저의 라이브러리가 없습니다."));
+        if(!blockLibraryPS.getUser().getId().equals(user.getId())) throw new Exception403("해당 유저의 라이브러리가 아닙니다.");
+
+        return new WorkspaceResponse.DTO(workspacePS, blockLibraryPS);
     }
 }

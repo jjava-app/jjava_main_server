@@ -1,8 +1,12 @@
 package org.example.jjava_main.dto;
 
 
-import lombok.*;
-import org.example.jjava_main.domain.user.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import org.example.jjava_main.domain.user.User;
+import org.example.jjava_main.domain.user.UserLevel;
+import org.example.jjava_main.domain.user.UserRole;
 
 import java.util.List;
 
@@ -13,13 +17,30 @@ public class UserResponse {
     private String username;
     private String level;
     private Integer score;
+    private Integer rank;
 
-    public UserResponse(User user) {
+    public UserResponse(User user, Integer rank) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.level = user.getLevel().toString();
         this.score = user.getScore();
+        this.rank = rank;
+    }
+
+    @Data
+    public static class LevelUpdateResponse {
+        private Integer id;
+        private String email;
+        private String username;
+        private String level;
+
+        public LevelUpdateResponse(User u) {
+            this.id = u.getId();
+            this.email = u.getEmail();
+            this.username = u.getUsername();
+            this.level = u.getLevel().toString();
+        }
     }
 
     @Data
@@ -62,4 +83,73 @@ public class UserResponse {
         }
     }
 
+    @Data
+    public static class CheckNicknameDTO {
+        private Boolean available;
+
+        public CheckNicknameDTO(Boolean available) {
+            this.available = available;
+        }
+    }
+
+    @Data
+    public static class CheckEmailDTO {
+        private Boolean verified;
+
+        public CheckEmailDTO(Boolean verified) {
+            this.verified = verified;
+        }
+    }
+
+    @Data
+    public static class JoinDTO {
+        private String accessToken;
+        private String email;
+        private String nickname;
+        private UserLevel level;
+        private UserRole role;
+
+        public JoinDTO(User user, String accessToken) {
+            this.accessToken = accessToken;
+            this.email = user.getEmail();
+            this.nickname = user.getUsername();
+            this.level = user.getLevel();
+            this.role = user.getRole();
+        }
+    }
+
+    @Data
+    public static class LoginDTO {
+        private String accessToken;
+        private Integer id;
+        private String email;
+        private String nickname;
+        private UserLevel level;
+        private UserRole role;
+        private Integer score;
+
+        public LoginDTO(User user, String accessToken) {
+            this.accessToken = accessToken;
+            this.id = user.getId();
+            this.email = user.getEmail();
+            this.nickname = user.getUsername();
+            this.level = user.getLevel();
+            this.role = user.getRole();
+            this.score = user.getScore();
+        }
+    }
+    @Data
+    public static class UserUpdateDTO {
+        private String username;
+        private String email;
+        private UserRole role;
+        private Integer score;
+
+        public UserUpdateDTO(User user) {
+            this.username = user.getUsername();
+            this.email = user.getEmail();
+            this.role = user.getRole();
+            this.score = user.getScore();
+        }
+    }
 }

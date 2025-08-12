@@ -1,12 +1,10 @@
-package org.example.jjava_main.domain.controller;
+package org.example.jjava_main.domain.user;
 
+import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main.controller.UserController;
-import org.example.jjava_main.domain.user.User;
-import org.example.jjava_main.domain.user.UserLevel;
-import org.example.jjava_main.domain.user.UserRole;
-import org.example.jjava_main.domain.user.UserService;
 import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
+import org.example.jjava_main.dto.UserResponse.LevelUpdateResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -20,7 +18,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -31,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 @Import({UserControllerTest.TestConfig.class, UserControllerTest.TestSecurityConfig.class})
-class UserControllerTest {
+class UserControllerTest extends MyRestDoc {
 
     @Autowired
     private MockMvc mockMvc;
@@ -62,18 +60,18 @@ class UserControllerTest {
     }
 
     @BeforeEach
-    void setUpSecurityContext() {
+    void set_up_security_context() {
         // ✅ mock 유저 생성
         mockUser = User.builder()
                 .id(1)
-                .email("ssar@naver.com")
+                .email("ssar1234@nate.com")
                 .username("ssar")
                 .level(UserLevel.EXPERT)
                 .role(UserRole.USER)
                 .score(2530)
                 .build();
 
-        // ✅ 인증 객체 수동 등록
+        // 인증 객체 수동 등록
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities());
 
@@ -81,28 +79,26 @@ class UserControllerTest {
     }
 
     @Test
-    void getMyPageProfile_success() throws Exception {
+    void get_my_page_profile_success() throws Exception {
         // given
-        UserResponse response = new UserResponse(mockUser);
+        UserResponse response = new UserResponse(mockUser, 155);
         when(userService.userGet(any(User.class))).thenReturn(response);
 
         // when
-        MvcResult result = mockMvc.perform(get("/users/mypage"))
+        mockMvc.perform(get("/users/mypage"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andExpect(jsonPath("$.body.email").value("ssar1234@nate.com"))
                 .andExpect(jsonPath("$.body.username").value("ssar"))
                 .andExpect(jsonPath("$.body.level").value("EXPERT"))
                 .andExpect(jsonPath("$.body.score").value(2530))
-                .andReturn();
-
-        // then
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("🔍 MyPage response JSON: " + responseBody);
+                .andExpect(jsonPath("$.body.rank").value(155))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
     @Test
-    void updateUserLevel_success() throws Exception {
+    void update_user_level_success() throws Exception {
         // given
         String reqJson = """
                 {
@@ -113,30 +109,26 @@ class UserControllerTest {
 
         User updatedUser = User.builder()
                 .id(1)
-                .email("ssar@nate.com")
+                .email("ssar1234@nate.com")
                 .username("ssar")
                 .level(UserLevel.BEGINNER)
                 .role(UserRole.USER)
                 .score(2530)
                 .build();
 
-        UserResponse respDTO = new UserResponse(updatedUser);
+        LevelUpdateResponse respDTO = new LevelUpdateResponse(updatedUser);
         when(userService.levelUpdate(any(UserRequest.LevelUpdateDTO.class), any(User.class)))
                 .thenReturn(respDTO);
 
         // when & then
-        MvcResult result = mockMvc.perform(put("/users/mypage/level")
+        mockMvc.perform(put("/users/mypage/level")
                         .contentType("application/json")
                         .content(reqJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.level").value("BEGINNER"))
                 .andExpect(jsonPath("$.body.username").value("ssar"))
                 .andExpect(jsonPath("$.body.id").value(1))
-                .andReturn();
-
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("🔁 Update level response JSON: " + responseBody);
-
-
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 }
