@@ -19,10 +19,6 @@ public class UserResponse {
     private Integer score;
     private Integer rank;
 
-    public UserResponse(User user) {   // 기존 테스트 호환
-        this(user, null);
-    }
-
     public UserResponse(User user, Integer rank) {
         this.id = user.getId();
         this.email = user.getEmail();

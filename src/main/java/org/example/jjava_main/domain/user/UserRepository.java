@@ -104,7 +104,6 @@ public class UserRepository {
                   SELECT COUNT(*) + 1
                   FROM user_tb
                   WHERE score > :score
-                     OR (score = :score AND id < :id)
                 """;
         Number n = (Number) em.createNativeQuery(sql)
                 .setParameter("score", score)
