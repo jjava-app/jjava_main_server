@@ -1,7 +1,9 @@
 package org.example.jjava_main.domain.compile;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -14,16 +16,16 @@ public class SolvedQuestion {
     private Integer id;
     private Integer userId;
     private Integer questionId;
-    private String AIComment;
+    private String AiComment;
     private String serializedJson;
     private String blockExtensionJson;
 
     @Builder
-    public SolvedQuestion(Integer id, Integer userId, Integer questionId, String AIComment, String serializedJson, String blockExtensionJson) {
+    public SolvedQuestion(Integer id, Integer userId, Integer questionId, String AiComment, String serializedJson, String blockExtensionJson) {
         this.id = id;
         this.userId = userId;
         this.questionId = questionId;
-        this.AIComment = AIComment;
+        this.AiComment = AiComment;
         this.serializedJson = serializedJson;
         this.blockExtensionJson = blockExtensionJson;
     }
