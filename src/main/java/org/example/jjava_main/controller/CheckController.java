@@ -7,11 +7,9 @@ import org.example.jjava_main._core.util.Resp;
 import org.example.jjava_main.domain.compile.CheckService;
 import org.example.jjava_main.dto.CheckRequest;
 import org.example.jjava_main.dto.CheckResponse;
+import org.example.jjava_main.dto.QuestionResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -49,6 +47,21 @@ public class CheckController {
         }
 
         // 실패(List<FailDTO>)면 그대로
+        return Resp.ok(respDTO);
+    }
+
+
+    // 문제 리스트
+    @GetMapping("/questions")
+    public ResponseEntity<?> questionListGet(@RequestParam Integer userId) {
+        QuestionResponse.ListDTO respDTO = checkService.questionListGet(userId);
+        return Resp.ok(respDTO);
+    }
+
+    // 문제 상세보기
+    @GetMapping("/questions/{id}")
+    public ResponseEntity<?> questionDetailGet(@PathVariable("id") Integer questionId) {
+        QuestionResponse.DetailDTO respDTO = checkService.questionDetailGet(questionId);
         return Resp.ok(respDTO);
     }
 

@@ -26,6 +26,7 @@ VALUES (1, null),
     (5, null);
 
 
+-- question_tb
 INSERT INTO question_tb (type, title, content, test_variable, test_answer)
 VALUES ('OPERATOR',
         '두 수의 합 구하기',
@@ -180,4 +181,27 @@ VALUES ('ARRAY',
         '문제 설명: 정수 리스트 arr가 주어질 때, 가장 큰 수를 찾아 반환하세요.\\n\\n입력 형식:\\n- list arr\\n\\n출력 형식:\\n- int: 가장 큰 수',
         '[{"arr":[3,6,2]},{"arr":[10,5,8,1]},{"arr":[7]}]',
         '[6,10,7]');
+
+
+-- solved_question_tb
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (2, 5, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (2, 6, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (2, 7, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (3, 8, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (3, 1, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (3, 2, '리팩토링', 'json', 'json');
+
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
+VALUES (3, 3, '리팩토링', 'json', 'json');
 
