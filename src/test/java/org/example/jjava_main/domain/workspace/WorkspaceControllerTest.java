@@ -1,10 +1,15 @@
 package org.example.jjava_main.domain.workspace;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main._core.error.ex.Exception403;
 import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main.controller.WorkspaceController;
-import org.example.jjava_main.domain.user.*;
+import org.example.jjava_main.domain.block.BlockLibrary;
+import org.example.jjava_main.domain.user.User;
+import org.example.jjava_main.domain.user.UserLevel;
+import org.example.jjava_main.domain.user.UserRole;
+import org.example.jjava_main.domain.user.UserService;
 import org.example.jjava_main.dto.WorkspaceRequest;
 import org.example.jjava_main.dto.WorkspaceResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +27,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -29,16 +35,20 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(WorkspaceController.class)
 @Import({WorkspaceControllerTest.TestConfig.class, WorkspaceControllerTest.TestSecurityConfig.class})
-public class WorkspaceControllerTest {
+public class WorkspaceControllerTest extends MyRestDoc {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper om;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper om;
 
-    @MockBean private WorkspaceService workspaceService;
+    @MockBean
+    private WorkspaceService workspaceService;
 
     private User mockUser;
 
@@ -82,7 +92,9 @@ public class WorkspaceControllerTest {
 
         mockMvc.perform(get("/workspace"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body[0].title").value("워크스페이스1"));
+                .andExpect(jsonPath("$.body[0].title").value("워크스페이스1"))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
     @Test
@@ -92,7 +104,9 @@ public class WorkspaceControllerTest {
 
         mockMvc.perform(get("/workspace/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body.title").value("워크스페이스1"));
+                .andExpect(jsonPath("$.body.title").value("워크스페이스1"))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
     @Test
@@ -101,7 +115,9 @@ public class WorkspaceControllerTest {
                 .thenThrow(new Exception404("해당 워크스페이스가 존재하지 않습니다."));
 
         mockMvc.perform(get("/workspace/999"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
     @Test
@@ -110,7 +126,9 @@ public class WorkspaceControllerTest {
                 .thenThrow(new Exception403("해당 워크스페이스의 소유자가 아닙니다."));
 
         mockMvc.perform(get("/workspace/1"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
     @Test
@@ -129,38 +147,47 @@ public class WorkspaceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.title").value("새 워크스페이스"))
                 .andExpect(jsonPath("$.body.userId").value(1))
-                .andExpect(jsonPath("$.body.createdAt").exists());
+                .andExpect(jsonPath("$.body.createdAt").exists())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
-//    @Test
-//    void update_workspace() throws Exception {
-//        WorkspaceRequest.UpdateDTO reqDTO = new WorkspaceRequest.UpdateDTO();
-//        reqDTO.setTitle("업데이트된 제목");
-//        reqDTO.setSerializedJson("{\"blocks\":[]}");
-//        reqDTO.setBlockExtensionJson("{\"extensions\":[]}");
-//
-//        Workspace workspace = Workspace.builder()
-//                .id(1)
-//                .userId(1)
-//                .title(reqDTO.getTitle())
-//                .serializedJson(reqDTO.getSerializedJson())
-//                .blockExtensionJson(reqDTO.getBlockExtensionJson())
-//                .build();
-//
-//        WorkspaceResponse.DTO respDTO = new WorkspaceResponse.DTO(workspace);
-//
-//        when(workspaceService.workspaceUpdate(eq(1), any(), eq(1))).thenReturn(respDTO);
-//
-//        mockMvc.perform(put("/workspace/1")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(om.writeValueAsString(reqDTO)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.body.title").value("업데이트된 제목"))
-//                .andExpect(jsonPath("$.body.serializedJson").value("{\"blocks\":[]}"))
-//                .andExpect(jsonPath("$.body.blockExtensionJson").value("{\"extensions\":[]}"))
-//                .andExpect(jsonPath("$.body.userId").value(1))
-//                .andExpect(jsonPath("$.body.id").value(1));
-//    }
+    @Test
+    void update_workspace() throws Exception {
+        WorkspaceRequest.UpdateDTO reqDTO = new WorkspaceRequest.UpdateDTO();
+        reqDTO.setTitle("업데이트된 제목");
+        reqDTO.setSerializedJson("{\"blocks\":[]}");
+        reqDTO.setLibraryJson("{\"extensions\":[]}");
+
+        Workspace workspace = Workspace.builder()
+                .id(1)
+                .userId(1)
+                .title(reqDTO.getTitle())
+                .serializedJson(reqDTO.getSerializedJson())
+                .build();
+
+        BlockLibrary blockLibrary = BlockLibrary.builder()
+                .id(1)
+                .userId(1)
+                .libraryJson(reqDTO.getLibraryJson())
+                .build();
+
+        WorkspaceResponse.DTO respDTO = new WorkspaceResponse.DTO(workspace, blockLibrary);
+
+        when(workspaceService.workspaceUpdate(eq(1), any(), eq(1))).thenReturn(respDTO);
+
+        mockMvc.perform(put("/workspace/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(reqDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body.title").value("업데이트된 제목"))
+                .andExpect(jsonPath("$.body.serializedJson").value("{\"blocks\":[]}"))
+                .andExpect(jsonPath("$.body.libraryJson").value("{\"extensions\":[]}"))
+                .andExpect(jsonPath("$.body.userId").value(1))
+                .andExpect(jsonPath("$.body.id").value(1))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
+    }
 
     @Test
     void update_workspace_not_found() throws Exception {
@@ -174,7 +201,9 @@ public class WorkspaceControllerTest {
         mockMvc.perform(put("/workspace/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(reqDTO)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
     @Test
@@ -189,7 +218,9 @@ public class WorkspaceControllerTest {
         mockMvc.perform(put("/workspace/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(reqDTO)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
     @Test
@@ -198,7 +229,9 @@ public class WorkspaceControllerTest {
 
         mockMvc.perform(delete("/workspace/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body").doesNotExist());
+                .andExpect(jsonPath("$.body").doesNotExist())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
     @Test
@@ -207,7 +240,9 @@ public class WorkspaceControllerTest {
                 .when(workspaceService).workspaceDelete(1, 1);
 
         mockMvc.perform(delete("/workspace/1"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 
     @Test
@@ -216,6 +251,8 @@ public class WorkspaceControllerTest {
                 .when(workspaceService).workspaceDelete(1, 1);
 
         mockMvc.perform(delete("/workspace/1"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 }
