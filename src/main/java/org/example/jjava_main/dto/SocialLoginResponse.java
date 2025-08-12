@@ -1,6 +1,7 @@
 package org.example.jjava_main.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -70,6 +71,8 @@ public class SocialLoginResponse {
         @AllArgsConstructor
         public static class KakaoMeResponse {
             private long id;
+
+            @JsonProperty("kakao_account") //JSON kakao_account 매핑용
             private KakaoAccount kakaoAccount;
         }
 
