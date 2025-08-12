@@ -1,6 +1,7 @@
 package org.example.jjava_main.domain.user;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -70,23 +71,32 @@ public class UserRepository {
         }
     }
 
-    public Optional<User> findByUsername(String username) {
-        var list = em.createQuery(
-                        "select u from User u where u.username = :un", User.class)
-                .setParameter("un", username)
-                .setMaxResults(1)
-                .getResultList();
-        return list.stream().findFirst();
+    public Optional<User> findByEmail(String email) {
+        try {
+            User user = em.createQuery(
+                            "select u from User u where u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+            return Optional.of(user);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
-    public Optional<User> findByEmail(String email) {
-        if (email == null || email.isBlank()) return Optional.empty();
-        var list = em.createQuery(
-                        "select u from User u where lower(u.email) = :em", User.class)
-                .setParameter("em", email.toLowerCase())
-                .setMaxResults(1)
-                .getResultList();
-        return list.stream().findFirst();
+    /**
+     * 닉네임이 존재하면 false
+     * 닉네임이 존재하지 않으면 true
+     */
+    public Optional<User> findByUsername(String nickname) {
+        try {
+            User user = em.createQuery(
+                            "select u from User u where u.username = :nickname", User.class)
+                    .setParameter("nickname", nickname)
+                    .getSingleResult();
+            return Optional.of(user);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     public int findRankByScoreAndId(Integer score, Integer id) {

@@ -45,7 +45,7 @@ dependencies {
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly 'org.projectlombok:lombok'
-    //developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
@@ -53,6 +53,14 @@ dependencies {
 //    testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // 자바 객체 ↔ JSON 변환 ObjectMapper 라이브러리
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+
+    // 요청 데이터 유효성 검사 라이브러리
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 // 1. gradlew build (test code 실행 -> 결과를 build/generated-snippets 에 copy한다 *.adoc) / 변수 설정
