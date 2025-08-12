@@ -178,7 +178,7 @@ public class AuthService implements UserDetailsService {
 
         // 요청 바디 데이터
         Map<String, Object> payload = new HashMap<>();
-        payload.put("from", "짜바 <noreply@jjava.com>");
+        payload.put("from", "짜바 <onboarding@resend.dev>");
         payload.put("to", email);
         payload.put("subject", "이메일 인증번호 안내");
         payload.put("html", "<p>당신의 인증번호는 <strong>" + authCode + "</strong> 입니다.</p>");
