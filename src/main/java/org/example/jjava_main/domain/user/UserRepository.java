@@ -101,7 +101,7 @@ public class UserRepository {
         }
     }
 
-    public int findRankByScoreAndId(Integer score, Integer id) {
+    public int findRankByScoreAndId(Integer score) {
         String sql = """
                   SELECT COUNT(*) + 1
                   FROM user_tb
@@ -109,7 +109,6 @@ public class UserRepository {
                 """;
         Number n = (Number) em.createNativeQuery(sql)
                 .setParameter("score", score)
-                .setParameter("id", id)
                 .getSingleResult();
         return n.intValue();
 

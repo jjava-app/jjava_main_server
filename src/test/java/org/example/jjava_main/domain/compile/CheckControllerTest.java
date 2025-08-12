@@ -93,8 +93,8 @@ public class CheckControllerTest extends MyRestDoc {
                 .build();
 
         mockSolvedQuestion = SolvedQuestion.builder()
-                .questionId(mockQuestion.getId())
-                .userId(mockUser.getId())
+                .question(mockQuestion)
+                .user(mockUser)
                 .AiComment("comment")
                 .serializedJson("serializedJson")
                 .blockExtensionJson("blockExtensionJson")
@@ -240,7 +240,11 @@ public class CheckControllerTest extends MyRestDoc {
                         new QuestionResponse.ListDTO.QuestionDTO(1, "텍스트", "dummy"),
                         new QuestionResponse.ListDTO.QuestionDTO(2, "텍스트", "dummy")
                 ),
-                List.of(1, 2, 3)
+                List.of(
+                        Question.builder().id(1).type(QuestionType.TEXT).title("테스트1").build(),
+                        Question.builder().id(2).type(QuestionType.TEXT).title("테스트2").build(),
+                        Question.builder().id(3).type(QuestionType.TEXT).title("테스트3").build()
+                )
         );
 
         //  Stub 설정

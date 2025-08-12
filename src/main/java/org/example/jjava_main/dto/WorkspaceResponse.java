@@ -16,7 +16,7 @@ public class WorkspaceResponse {
 
         public DTO(Workspace workspace, BlockLibrary blockLibrary) {
             this.id = workspace.getId();
-            this.userId = workspace.getUserId();
+            this.userId = workspace.getUser().getId();
             this.title = workspace.getTitle();
             this.serializedJson = workspace.getSerializedJson();
             this.libraryJson = blockLibrary.getLibraryJson();
@@ -32,7 +32,7 @@ public class WorkspaceResponse {
 
         public CreateDTO(Workspace workspace) {
             this.id = workspace.getId();
-            this.userId = workspace.getUserId();
+            this.userId = workspace.getUser().getId();
             this.title = workspace.getTitle();
             this.createdAt = workspace.getCreatedAt().toString();
         }
