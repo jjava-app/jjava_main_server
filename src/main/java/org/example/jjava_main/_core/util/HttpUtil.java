@@ -87,8 +87,8 @@ public class HttpUtil {
             ObjectMapper om = new ObjectMapper();
 
             // 문제 조회해서 test_variable / test_answer 읽기
-            Question q = questionRepository.findById(questionId)
-                    .orElseThrow(() -> new Exception404("문제를 찾을 수 없습니다."));
+            Question q = questionRepository.findById(questionId).orElse(null);
+            if (q == null) throw new RuntimeException("문제를 찾을 수 없습니다.");
 
             // DB JSON을 tests 배열로 변환
             List<CheckRequest.DTO.TestSpecDTO> tests = buildTestsFromQuestion(q, om);

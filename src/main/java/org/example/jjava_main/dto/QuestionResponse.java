@@ -1,6 +1,7 @@
 package org.example.jjava_main.dto;
 
 import lombok.Data;
+import org.example.jjava_main.domain.question.ProgressStatus;
 import org.example.jjava_main.domain.question.Question;
 
 import java.util.List;
@@ -47,6 +48,42 @@ public class QuestionResponse {
             this.questionId = questionId;
             this.title = title;
             this.content = content;
+        }
+    }
+
+    @Data
+    public static class SovledQuestionDetailDTO {
+        private Integer userId;
+        private Integer questionId;
+        private String AiComment;
+        private String serializedJson;
+        private String blockExtensionJson;
+
+        public SovledQuestionDetailDTO(Integer userId, Integer questionId, String aiComment, String serializedJson, String blockExtensionJson) {
+            this.userId = userId;
+            this.questionId = questionId;
+            AiComment = aiComment;
+            this.serializedJson = serializedJson;
+            this.blockExtensionJson = blockExtensionJson;
+        }
+    }
+
+    @Data
+    public static class SolvedQuestionCreateDTO {
+        private Integer solvedQuestionId;
+        private Integer userId;
+        private Integer questionId;
+        private String serializedJson;
+        private String blockExtensionJson;
+        private ProgressStatus status;
+
+        public SolvedQuestionCreateDTO(Integer solvedQuestionId, Integer userId, Integer questionId, String serializedJson, String blockExtensionJson, ProgressStatus status) {
+            this.solvedQuestionId = solvedQuestionId;
+            this.userId = userId;
+            this.questionId = questionId;
+            this.serializedJson = serializedJson;
+            this.blockExtensionJson = blockExtensionJson;
+            this.status = status;
         }
     }
 
