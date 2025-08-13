@@ -113,12 +113,38 @@ public class AuthService implements UserDetailsService {
         KakaoMeResponse me = Optional.ofNullable(resp.getBody())
                 .orElseThrow(() -> new RuntimeException("Kakao response empty"));
 
+        String kakaoId = String.valueOf(me.getId());
         String email = (me.getKakaoAccount() != null) ? me.getKakaoAccount().getEmail() : null;
-        String nickname = (me.getKakaoAccount() != null && me.getKakaoAccount().getProfile() != null)
+        String nickName = (me.getKakaoAccount() != null && me.getKakaoAccount().getProfile() != null)
                 ? me.getKakaoAccount().getProfile().getNickname()
                 : "카카오사용자";
 
-        User user = findOrCreateUser(nickname, email);
+        Provider kakao = providerRepository.findByType(ProviderType.KAKAO)
+                .orElseThrow(() -> new IllegalStateException("Provider Kakao not seeded"));
+
+        // (A) (provider, providerId) 매핑 존재 여부 확인
+        var linkOpt = uapRepository.findLink(ProviderType.KAKAO, kakaoId);
+
+        User user;
+
+        if (linkOpt.isPresent()) {
+            // 이미 연결된 유저면 그 유저로 로그인
+            user = linkOpt.get().getUser();
+            log.info("[카카오] 기존 연동을 확인했습니다 -> userId={}, providerUserId={}", user.getId(), me.getId());
+        } else {
+            // (B) 없으면 기존 로직으로 유저 생성
+            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+
+            // (C) 매핑 저장
+            var link = UserAccountProvider.builder()
+                    .user(user)
+                    .provider(kakao)
+                    .providerUserId(kakaoId)
+                    .build();
+            uapRepository.save(link);
+            log.info("[카카오] 새 연동 생성 -> userId={}, providerUserId={}", user.getId(), me.getId());
+        }
+
         return toLoginResponse(user);
     }
 
@@ -133,12 +159,40 @@ public class AuthService implements UserDetailsService {
 
         ResponseEntity<GoogleUserInfo> resp =
                 restTemplate.exchange(url, HttpMethod.GET, req, GoogleUserInfo.class);
-        GoogleUserInfo u = Optional.ofNullable(resp.getBody())
+        GoogleUserInfo g = Optional.ofNullable(resp.getBody())
                 .orElseThrow(() -> new RuntimeException("Google userinfo empty"));
 
-        String email = u.getEmail();    // null 가능
-        String nickName = (u.getName() != null && !u.getName().isBlank()) ? u.getName() : "Google사용자";
-        User user = findOrCreateUser(nickName, email);
+        String googleId = g.getSub();
+        String email = g.getEmail();    // null 가능
+        String nickName = (g.getName() != null && !g.getName().isBlank()) ? g.getName() : "Google사용자";
+
+        Provider google = providerRepository.findByType(ProviderType.GOOGLE)
+                .orElseThrow(() -> new IllegalStateException("Provider GOOGLE not seeded"));
+
+
+        // (A) (provider, providerId) 매핑 존재 여부 확인
+        var linkOpt = uapRepository.findLink(ProviderType.GOOGLE, googleId);
+
+        User user;
+
+        if (linkOpt.isPresent()) {
+            // 이미 연결된 유저면 그 유저로 로그인
+            user = linkOpt.get().getUser();
+            log.info("[구글] 기존 연동을 확인했습니다 -> userId={}, providerUserId={}", user.getId(), googleId);
+        } else {
+            // (B) 없으면 기존 로직으로 유저 생성
+            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+
+            // (C) 매핑 저장
+            var link = UserAccountProvider.builder()
+                    .user(user)
+                    .provider(google)
+                    .providerUserId(googleId)
+                    .build();
+            uapRepository.save(link);
+            log.info("[구글] 새 연동 생성 -> userId={}, providerUserId={}", user.getId(), googleId);
+        }
+
         return toLoginResponse(user);
     }
 
