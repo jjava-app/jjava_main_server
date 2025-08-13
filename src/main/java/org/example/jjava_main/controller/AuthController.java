@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.jjava_main._core.util.Resp;
 import org.example.jjava_main.domain.auth.AuthService;
 import org.example.jjava_main.domain.user.UserService;
@@ -13,7 +14,7 @@ import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class AuthController {
@@ -25,6 +26,7 @@ public class AuthController {
     @PostMapping("/login/naver")
     public ResponseEntity<?> naverOauthLogin(@RequestBody SocialLoginRequest.LoginDTO reqDTO) {
         var respDTO = authService.naverOauthLogin(reqDTO.getAccessToken());
+        log.info(respDTO.getUser().getUsername() + "님이 로그인하였습니다.");
         return Resp.ok(respDTO);
     }
 
@@ -32,6 +34,7 @@ public class AuthController {
     @PostMapping("/login/kakao")
     public ResponseEntity<?> kakaoOauthLogin(@RequestBody SocialLoginRequest.LoginDTO reqDTO) {
         var respDTO = authService.kakaoOauthLogin(reqDTO.getAccessToken());
+        log.info(respDTO.getUser().getUsername() + "님이 로그인하였습니다.");
         return Resp.ok(respDTO);
     }
 
@@ -39,6 +42,7 @@ public class AuthController {
     @PostMapping("/login/google")
     public ResponseEntity<?> googleOauthLogin(@RequestBody SocialLoginRequest.LoginDTO reqDTO) {
         var respDTO = authService.googleOauthLogin(reqDTO.getAccessToken());
+        log.info(respDTO.getUser().getUsername() + "님이 로그인하였습니다.");
         return Resp.ok(respDTO);
     }
 
@@ -68,6 +72,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO reqDTO) {
         UserResponse.LoginDTO respDTO = authService.emailLogin(reqDTO);
         session.setAttribute("USER_ID", respDTO.getId());
+        log.info(respDTO.getNickname() + "님이 로그인하였습니다.");
         return Resp.ok(respDTO);
     }
 }
