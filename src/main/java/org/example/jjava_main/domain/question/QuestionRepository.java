@@ -88,4 +88,9 @@ public class QuestionRepository {
     public void deleteById(Integer id) {
         em.remove(em.find(Question.class, id));
     }
+
+    public Question save(Question question) {
+        em.persist(question);
+        return question;
+    }
 }
