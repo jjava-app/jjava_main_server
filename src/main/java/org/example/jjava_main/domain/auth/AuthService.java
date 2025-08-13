@@ -7,6 +7,7 @@ import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main._core.util.EmailCode;
 import org.example.jjava_main._core.util.JwtUtil;
 import org.example.jjava_main._core.util.PrincipalDetails;
+import org.example.jjava_main.domain.auth.provider.*;
 import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.domain.user.UserRepository;
 import org.example.jjava_main.domain.user.UserRole;
@@ -20,23 +21,18 @@ import org.example.jjava_main.dto.UserResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -44,6 +40,8 @@ import java.util.Optional;
 public class AuthService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final UserAccountProviderRepository uapRepository;
+    private final ProviderRepository providerRepository;
     private final RestTemplate restTemplate = new RestTemplate();
     @Value("${resend.api-key}")
     private String apiKey;
@@ -62,15 +60,40 @@ public class AuthService implements UserDetailsService {
                 url, HttpMethod.GET, request, NaverMeResponse.class
         );
 
-        NaverUser nu = Optional.ofNullable(resp.getBody())
+        NaverUser n = Optional.ofNullable(resp.getBody())
                 .map(NaverMeResponse::getResponse)
                 .orElseThrow(() -> new RuntimeException("Naver response empty"));
 
-        String email = nu.getEmail();
-        String nickName = (nu.getName() != null && !nu.getName().isBlank())
-                ? nu.getNickname() : (nu.getNickname() != null ? nu.getNickname() : "네이버사용자");
+        String email = n.getEmail();
+        String nickName = (n.getName() != null && !n.getName().isBlank())
+                ? n.getName() : (n.getNickname() != null ? n.getNickname() : "네이버사용자");
 
-        User user = findOrCreateUser(nickName, email);
+        Provider naver = providerRepository.findByType(ProviderType.NAVER)
+                .orElseThrow(() -> new IllegalStateException("Provider NAVER not seeded"));
+
+
+        // (A) (provider, providerId) 매핑 존재 여부 확인
+        var linkOpt = uapRepository.findLink(ProviderType.NAVER, n.getId());
+
+        User user;
+
+        if (linkOpt.isPresent()) {
+            // 이미 연결된 유저면 그 유저로 로그인
+            user = linkOpt.get().getUser();
+            log.info("[네이버] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), n.getId());
+        } else {
+            // (B) 없으면 기존 로직으로 유저 생성
+            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+
+            // (C) 매핑 저장
+            var link = UserAccountProvider.builder()
+                    .user(user)
+                    .provider(naver)
+                    .providerUserId(n.getId())
+                    .build();
+            uapRepository.save(link);
+            log.info("[네이버] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), n.getId());
+        }
 
         return toLoginResponse(user);
     }
@@ -87,15 +110,41 @@ public class AuthService implements UserDetailsService {
         ResponseEntity<KakaoMeResponse> resp =
                 restTemplate.exchange(url, HttpMethod.GET, req, KakaoMeResponse.class);
 
-        KakaoMeResponse me = Optional.ofNullable(resp.getBody())
+        KakaoMeResponse k = Optional.ofNullable(resp.getBody())
                 .orElseThrow(() -> new RuntimeException("Kakao response empty"));
 
-        String email = (me.getKakaoAccount() != null) ? me.getKakaoAccount().getEmail() : null;
-        String nickname = (me.getKakaoAccount() != null && me.getKakaoAccount().getProfile() != null)
-                ? me.getKakaoAccount().getProfile().getNickname()
+        String kakaoId = String.valueOf(k.getId());
+        String email = (k.getKakaoAccount() != null) ? k.getKakaoAccount().getEmail() : null;
+        String nickName = (k.getKakaoAccount() != null && k.getKakaoAccount().getProfile() != null)
+                ? k.getKakaoAccount().getProfile().getNickname()
                 : "카카오사용자";
 
-        User user = findOrCreateUser(nickname, email);
+        Provider kakao = providerRepository.findByType(ProviderType.KAKAO)
+                .orElseThrow(() -> new IllegalStateException("Provider Kakao not seeded"));
+
+        // (A) (provider, providerId) 매핑 존재 여부 확인
+        var linkOpt = uapRepository.findLink(ProviderType.KAKAO, kakaoId);
+
+        User user;
+
+        if (linkOpt.isPresent()) {
+            // 이미 연결된 유저면 그 유저로 로그인
+            user = linkOpt.get().getUser();
+            log.info("[카카오] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), k.getId());
+        } else {
+            // (B) 없으면 기존 로직으로 유저 생성
+            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+
+            // (C) 매핑 저장
+            var link = UserAccountProvider.builder()
+                    .user(user)
+                    .provider(kakao)
+                    .providerUserId(kakaoId)
+                    .build();
+            uapRepository.save(link);
+            log.info("[카카오] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), k.getId());
+        }
+
         return toLoginResponse(user);
     }
 
@@ -110,12 +159,40 @@ public class AuthService implements UserDetailsService {
 
         ResponseEntity<GoogleUserInfo> resp =
                 restTemplate.exchange(url, HttpMethod.GET, req, GoogleUserInfo.class);
-        GoogleUserInfo u = Optional.ofNullable(resp.getBody())
+        GoogleUserInfo g = Optional.ofNullable(resp.getBody())
                 .orElseThrow(() -> new RuntimeException("Google userinfo empty"));
 
-        String email = u.getEmail();    // null 가능
-        String nickName = (u.getName() != null && !u.getName().isBlank()) ? u.getName() : "Google사용자";
-        User user = findOrCreateUser(nickName, email);
+        String googleId = g.getSub();
+        String email = g.getEmail();    // null 가능
+        String nickName = (g.getName() != null && !g.getName().isBlank()) ? g.getName() : "Google사용자";
+
+        Provider google = providerRepository.findByType(ProviderType.GOOGLE)
+                .orElseThrow(() -> new IllegalStateException("Provider GOOGLE not seeded"));
+
+
+        // (A) (provider, providerId) 매핑 존재 여부 확인
+        var linkOpt = uapRepository.findLink(ProviderType.GOOGLE, googleId);
+
+        User user;
+
+        if (linkOpt.isPresent()) {
+            // 이미 연결된 유저면 그 유저로 로그인
+            user = linkOpt.get().getUser();
+            log.info("[구글] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), googleId);
+        } else {
+            // (B) 없으면 기존 로직으로 유저 생성
+            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+
+            // (C) 매핑 저장
+            var link = UserAccountProvider.builder()
+                    .user(user)
+                    .provider(google)
+                    .providerUserId(googleId)
+                    .build();
+            uapRepository.save(link);
+            log.info("[구글] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), googleId);
+        }
+
         return toLoginResponse(user);
     }
 
