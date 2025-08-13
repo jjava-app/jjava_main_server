@@ -1,6 +1,7 @@
 package org.example.jjava_main.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.jjava_main._core.util.Resp;
 import org.example.jjava_main.domain.user.admin.AdminService;
 import org.example.jjava_main.dto.UserRequest;
@@ -8,6 +9,7 @@ import org.example.jjava_main.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 @RestController
@@ -24,14 +26,18 @@ public class AdminController {
     }
 
     // 회원 수정 - Min
-    @PostMapping("/update/{id}")
+    @PutMapping("/users/{id}")
     public ResponseEntity<?> userUpdate(@PathVariable("id") Integer id, @RequestBody UserRequest.UserUpdateDTO reqDTO){
         UserResponse.UserUpdateDTO respDTO = adminService.userUpdate(id, reqDTO);
+        log.info("Admin : " + respDTO.getUsername() + "님의 정보를 수정하였습니다 : " + reqDTO);
         return Resp.ok(respDTO);
     }
 
     // 회원 삭제
-
-
-    // 회원 추가 (필요 시)
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> userDelete(@PathVariable("id") Integer id) {
+        adminService.userDelete(id);
+        log.info("Admin : 회원을 삭제했습니다 : User_ID = " + id);
+        return Resp.ok(null);
+    }
 }

@@ -49,4 +49,9 @@ public class AdminService {
         userPS.adminUpdate(reqDTO.getEmail(), reqDTO.getUsername(), reqDTO.getRole(), reqDTO.getScore());
         return new UserResponse.UserUpdateDTO(userPS);
     }
+
+    @Transactional
+    public void userDelete(Integer id) {
+        userRepository.deleteById(id);
+    }
 }

@@ -140,12 +140,14 @@ public class UserResponse {
     }
     @Data
     public static class UserUpdateDTO {
+        private Integer id;
         private String username;
         private String email;
         private UserRole role;
         private Integer score;
 
         public UserUpdateDTO(User user) {
+            this.id = user.getId();
             this.username = user.getUsername();
             this.email = user.getEmail();
             this.role = user.getRole();
