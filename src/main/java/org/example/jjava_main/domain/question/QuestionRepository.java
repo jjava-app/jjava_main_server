@@ -7,6 +7,7 @@ import org.example.jjava_main.domain.compile.SolvedQuestion;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
@@ -15,17 +16,12 @@ public class QuestionRepository {
 
 
     // 문제 단건 조회
-    public Question findById(Integer id) {
-        return em.find(Question.class, id);
+    public Optional<Question> findById(Integer id) {
+        return Optional.ofNullable(em.find(Question.class, id));
     }
 
-    // 문제 저장
-    public Question save(Question question) {
-        em.persist(question);
-        return question;
-    }
-
-    public SolvedQuestion saveSolvedQuestion(SolvedQuestion solvedQuestion) {
+    // 푼 문제 저장
+    public SolvedQuestion createSolvedQuestion(SolvedQuestion solvedQuestion) {
         em.persist(solvedQuestion);
         return solvedQuestion;
     }
@@ -43,5 +39,19 @@ public class QuestionRepository {
         return query.getResultList();
     }
 
+    // 푼 문제 id 단건 조회
+    public Optional<SolvedQuestion> findSolvedQuestionByUserIdQuestionId(Integer userId, Integer questionId) {
+        try {
+            SolvedQuestion sqPS = em.createQuery(
+                            "select s from SolvedQuestion s where s.user.id = :userId and s.question.id = :questionId",
+                            SolvedQuestion.class)
+                    .setParameter("userId", userId)
+                    .setParameter("questionId", questionId)
+                    .getSingleResult();
+            return Optional.of(sqPS);
+        } catch (Exception e) {
+            return Optional.ofNullable(null);
+        }
+    }
 
 }
