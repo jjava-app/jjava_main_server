@@ -15,27 +15,25 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AdminController.class)
-@AutoConfigureMockMvc(addFilters = false) // 보안 필터 적용 안 함
+@AutoConfigureMockMvc(addFilters = false)
 class AdminControllerTest extends MyRestDoc {
 
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper om;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private ObjectMapper om;
 
-    @MockBean private UserRepository userRepository;
-
-    @MockBean private AdminService adminService; // 컨트롤러가 주입받는 서비스만 Mock
+    @MockBean private AdminService adminService;
 
     private User mockUser;
 
@@ -52,7 +50,13 @@ class AdminControllerTest extends MyRestDoc {
 
     @Test
     void user_list_test() throws Exception {
-        var dto = new UserResponse.ListDTO(java.util.List.of(UserResponse.UserDTO.from(mockUser)), 0, "", 1, 0);
+        var dto = new UserResponse.ListDTO(
+                java.util.List.of(UserResponse.UserDTO.from(mockUser)),
+                0,
+                "",
+                1,
+                0
+        );
         when(adminService.userList(0, "id", 0)).thenReturn(dto);
 
         mockMvc.perform(get("/admin/users").accept(APPLICATION_JSON))
@@ -94,24 +98,64 @@ class AdminControllerTest extends MyRestDoc {
     }
 
     @Test
-    void updateUser_test() {
+    void update_user_test() throws Exception {
         // given
-        User user = User.builder()
-                .id(1) // 테스트용 세터/빌더로 세팅 가능해야 함
-                .username("ssar")
-                .email("ssar@nate.com")
+        User userPS = User.builder()
+                .id(1)
+                .username("김쌀쌀")
+                .email("ssarssar@nate.com")
                 .role(UserRole.USER)
                 .score(100)
                 .build();
 
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        var req = new UserRequest.UserUpdateDTO(
+                "김쌀쌀",
+                "ssarssar@nate.com",
+                UserRole.USER,
+                100
+        );
 
-        var req = new UserRequest.UserUpdateDTO("ssar", "ssar@nate.com", UserRole.USER, 100);
+        when(adminService.userUpdate(eq(1), any(UserRequest.UserUpdateDTO.class)))
+                .thenReturn(new UserResponse.UserUpdateDTO(userPS));
 
-        // when
-        var resp = adminService.userUpdate(1, req);
+        // when & then
+        mockMvc.perform(
+                        put("/admin/users/{id}", 1)
+                                .contentType(APPLICATION_JSON)               // ✅ Content-Type 지정
+                                .accept(APPLICATION_JSON)
+                                .content(om.writeValueAsString(req))          // ✅ JSON 바디 전달
+                )
+                .andExpect(status().isOk())
+                // 컨트롤러 응답이 공통 래핑 구조라면 $.body.* 로 검증
+                .andExpect(jsonPath("$.body.id").value(1))
+                .andExpect(jsonPath("$.body.username").value("김쌀쌀"))
+                .andExpect(jsonPath("$.body.email").value("ssarssar@nate.com"))
+                .andExpect(jsonPath("$.body.role").value("USER"))
+                .andExpect(jsonPath("$.body.score").value(100))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
 
-        // then
-        System.out.println("응답 : " + resp);
+        // verify
+        verify(adminService, times(1)).userUpdate(eq(1), any(UserRequest.UserUpdateDTO.class));
+    }
+
+    @Test
+    void delete_user_test() throws Exception {
+        // given
+        doNothing().when(adminService).userDelete(1);
+
+        // when & then
+        mockMvc.perform(
+                        delete("/admin/users/{id}", 1)
+                                .accept(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                // Resp.ok(null) 구조가 {"body": null} 라면 아래 검증이 맞습니다.
+                .andExpect(jsonPath("$.body", nullValue()))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
+
+        // verify
+        verify(adminService, times(1)).userDelete(1);
     }
 }

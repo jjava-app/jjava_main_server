@@ -7,7 +7,7 @@ VALUES ('admin1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJq
         'USER', 45);
 
 
-INSERT INTO provider_tb (name)
+INSERT INTO provider_tb (type)
 VALUES ('GOOGLE'),
        ('NAVER'),
        ('KAKAO');
