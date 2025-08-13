@@ -19,7 +19,7 @@ public class WorkspaceRepository {
     }
 
     public List<Workspace> findAllbyUserId(Integer userId) {
-        return em.createQuery("select w from Workspace w where w.userId =: userId", Workspace.class).setParameter("userId", userId).getResultList();
+        return em.createQuery("select w from Workspace w where w.user.id =: userId", Workspace.class).setParameter("userId", userId).getResultList();
     }
 
     public Optional<Workspace> findWorkspaceById(Integer workspaceId) {

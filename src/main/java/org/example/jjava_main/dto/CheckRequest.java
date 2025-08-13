@@ -9,10 +9,13 @@ import java.util.Map;
 public class CheckRequest {
 
     @Data
+    @NoArgsConstructor // 기본 생성자 추가 (Jackson 역직렬화용)
     public static class DTO {
         private String type;
         private String payload;
         private List<TestSpecDTO> tests;
+        private String serializedJson;
+        private String blockExtensionJson;
 
         @Data
         public static class TestSpecDTO {

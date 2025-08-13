@@ -75,7 +75,7 @@ include::{snippets}/{compile}/compile_proxy_fail_test/http-request.adoc[]
 include::{snippets}/{compile}/compile_proxy_fail_test/http-response.adoc[]
 
 
-== 3. 문제 풀기
+== 3. 문제
 === 1. 문제 목록 조회
 ===== Request Example
 include::{snippets}/{check}/question_list_get_test/http-request.adoc[]
@@ -103,6 +103,14 @@ include::{snippets}/{check}/check_proxy_and_code_refactor_fail_test/http-request
 
 ===== Response Example
 include::{snippets}/{check}/check_proxy_and_code_refactor_fail_test/http-response.adoc[]
+
+=== 4. 문제 저장
+===== Request Example
+include::{snippets}/{check}/solved_question_upsert_test/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{check}/solved_question_upsert_test/http-response.adoc[]
+
 
 
 
