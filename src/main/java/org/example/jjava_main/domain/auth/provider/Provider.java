@@ -12,11 +12,13 @@ public class Provider {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
-    private String name;
+
+    @Enumerated(EnumType.STRING)
+    private ProviderType type;
 
     @Builder
-    public Provider(Integer id, String name) {
+    public Provider(Integer id, ProviderType type) {
         this.id = id;
-        this.name = name;
+        this.type = type;
     }
 }
