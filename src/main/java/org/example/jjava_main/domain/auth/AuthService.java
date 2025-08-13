@@ -60,27 +60,27 @@ public class AuthService implements UserDetailsService {
                 url, HttpMethod.GET, request, NaverMeResponse.class
         );
 
-        NaverUser nu = Optional.ofNullable(resp.getBody())
+        NaverUser n = Optional.ofNullable(resp.getBody())
                 .map(NaverMeResponse::getResponse)
                 .orElseThrow(() -> new RuntimeException("Naver response empty"));
 
-        String email = nu.getEmail();
-        String nickName = (nu.getName() != null && !nu.getName().isBlank())
-                ? nu.getName() : (nu.getNickname() != null ? nu.getNickname() : "네이버사용자");
+        String email = n.getEmail();
+        String nickName = (n.getName() != null && !n.getName().isBlank())
+                ? n.getName() : (n.getNickname() != null ? n.getNickname() : "네이버사용자");
 
         Provider naver = providerRepository.findByType(ProviderType.NAVER)
                 .orElseThrow(() -> new IllegalStateException("Provider NAVER not seeded"));
 
 
         // (A) (provider, providerId) 매핑 존재 여부 확인
-        var linkOpt = uapRepository.findLink(ProviderType.NAVER, nu.getId());
+        var linkOpt = uapRepository.findLink(ProviderType.NAVER, n.getId());
 
         User user;
 
         if (linkOpt.isPresent()) {
             // 이미 연결된 유저면 그 유저로 로그인
             user = linkOpt.get().getUser();
-            log.info("[네이버] 기존 연동을 확인했습니다 -> userId={}, providerUserId={}", user.getId(), nu.getId());
+            log.info("[네이버] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), n.getId());
         } else {
             // (B) 없으면 기존 로직으로 유저 생성
             user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
@@ -89,10 +89,10 @@ public class AuthService implements UserDetailsService {
             var link = UserAccountProvider.builder()
                     .user(user)
                     .provider(naver)
-                    .providerUserId(nu.getId())
+                    .providerUserId(n.getId())
                     .build();
             uapRepository.save(link);
-            log.info("[네이버] 새 연동 생성 -> userId={}, providerUserId={}", user.getId(), nu.getId());
+            log.info("[네이버] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), n.getId());
         }
 
         return toLoginResponse(user);
@@ -110,13 +110,13 @@ public class AuthService implements UserDetailsService {
         ResponseEntity<KakaoMeResponse> resp =
                 restTemplate.exchange(url, HttpMethod.GET, req, KakaoMeResponse.class);
 
-        KakaoMeResponse me = Optional.ofNullable(resp.getBody())
+        KakaoMeResponse k = Optional.ofNullable(resp.getBody())
                 .orElseThrow(() -> new RuntimeException("Kakao response empty"));
 
-        String kakaoId = String.valueOf(me.getId());
-        String email = (me.getKakaoAccount() != null) ? me.getKakaoAccount().getEmail() : null;
-        String nickName = (me.getKakaoAccount() != null && me.getKakaoAccount().getProfile() != null)
-                ? me.getKakaoAccount().getProfile().getNickname()
+        String kakaoId = String.valueOf(k.getId());
+        String email = (k.getKakaoAccount() != null) ? k.getKakaoAccount().getEmail() : null;
+        String nickName = (k.getKakaoAccount() != null && k.getKakaoAccount().getProfile() != null)
+                ? k.getKakaoAccount().getProfile().getNickname()
                 : "카카오사용자";
 
         Provider kakao = providerRepository.findByType(ProviderType.KAKAO)
@@ -130,7 +130,7 @@ public class AuthService implements UserDetailsService {
         if (linkOpt.isPresent()) {
             // 이미 연결된 유저면 그 유저로 로그인
             user = linkOpt.get().getUser();
-            log.info("[카카오] 기존 연동을 확인했습니다 -> userId={}, providerUserId={}", user.getId(), me.getId());
+            log.info("[카카오] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), k.getId());
         } else {
             // (B) 없으면 기존 로직으로 유저 생성
             user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
@@ -142,7 +142,7 @@ public class AuthService implements UserDetailsService {
                     .providerUserId(kakaoId)
                     .build();
             uapRepository.save(link);
-            log.info("[카카오] 새 연동 생성 -> userId={}, providerUserId={}", user.getId(), me.getId());
+            log.info("[카카오] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), k.getId());
         }
 
         return toLoginResponse(user);
@@ -178,7 +178,7 @@ public class AuthService implements UserDetailsService {
         if (linkOpt.isPresent()) {
             // 이미 연결된 유저면 그 유저로 로그인
             user = linkOpt.get().getUser();
-            log.info("[구글] 기존 연동을 확인했습니다 -> userId={}, providerUserId={}", user.getId(), googleId);
+            log.info("[구글] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), googleId);
         } else {
             // (B) 없으면 기존 로직으로 유저 생성
             user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
@@ -190,7 +190,7 @@ public class AuthService implements UserDetailsService {
                     .providerUserId(googleId)
                     .build();
             uapRepository.save(link);
-            log.info("[구글] 새 연동 생성 -> userId={}, providerUserId={}", user.getId(), googleId);
+            log.info("[구글] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), googleId);
         }
 
         return toLoginResponse(user);
