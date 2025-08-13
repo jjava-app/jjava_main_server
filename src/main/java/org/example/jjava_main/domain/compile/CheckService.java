@@ -32,8 +32,8 @@ public class CheckService {
     @Transactional
     public CheckResponse.PassDTO checkAndCodeRefactor(String userCode, Integer questionId, Integer userId) {
         // 문제 조회
-        Question question = questionRepository.findById(questionId);
-        if (question == null) throw new Exception404("문제를 찾을 수 없습니다.");
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new Exception404("문제를 찾을 수 없습니다."));
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -138,8 +138,8 @@ public class CheckService {
 
     public QuestionResponse.DetailDTO questionDetailGet(Integer questionId) {
         // 문제 조회
-        Question question = questionRepository.findById(questionId);
-        if (question == null) throw new Exception404("문제를 찾을 수 없습니다.");
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new Exception404("문제를 찾을 수 없습니다."));
 
         return new QuestionResponse.DetailDTO(questionId, question.getTitle(), question.getContent());
     }

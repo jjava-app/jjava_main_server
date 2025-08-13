@@ -3,6 +3,7 @@ package org.example.jjava_main._core.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main.domain.question.Question;
 import org.example.jjava_main.domain.question.QuestionRepository;
 import org.example.jjava_main.dto.CheckRequest;
@@ -86,8 +87,8 @@ public class HttpUtil {
             ObjectMapper om = new ObjectMapper();
 
             // 문제 조회해서 test_variable / test_answer 읽기
-            Question q = questionRepository.findById(questionId);
-            if (q == null) throw new RuntimeException("문제를 찾을 수 없습니다.");
+            Question q = questionRepository.findById(questionId)
+                    .orElseThrow(() -> new Exception404("문제를 찾을 수 없습니다."));
 
             // DB JSON을 tests 배열로 변환
             List<CheckRequest.DTO.TestSpecDTO> tests = buildTestsFromQuestion(q, om);
