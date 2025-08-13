@@ -125,15 +125,15 @@ public class CheckService {
                 .toList();
 
         // solved questionId 리스트화
-        List<Integer> solvedQuestionIds = solvedList.stream()
-                .map(SolvedQuestion::getQuestionId) // 엔티티 getter 맞게 수정
+        List<Question> solvedQuestions = solvedList.stream()
+                .map(SolvedQuestion::getQuestion) // 엔티티 getter 맞게 수정
                 .toList();
 
         // 5) 총계 및 solvedCount
         int totalCount = questions.size();
         int solvedCount = solvedList.size();
 
-        return new QuestionResponse.ListDTO(userId, totalCount, solvedCount, items, solvedQuestionIds);
+        return new QuestionResponse.ListDTO(userId, totalCount, solvedCount, items, solvedQuestions);
     }
 
     public QuestionResponse.DetailDTO questionDetailGet(Integer questionId) {

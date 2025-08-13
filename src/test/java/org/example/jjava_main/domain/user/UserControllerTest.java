@@ -97,7 +97,6 @@ class UserControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.rank").value(155))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document);
-
     }
 
     @Test
@@ -133,7 +132,5 @@ class UserControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document);
-
-
     }
 }

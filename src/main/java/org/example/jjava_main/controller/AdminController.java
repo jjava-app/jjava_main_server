@@ -26,7 +26,7 @@ public class AdminController {
     // 회원 수정 - Min
     @PostMapping("/update/{id}")
     public ResponseEntity<?> userUpdate(@PathVariable("id") Integer id, @RequestBody UserRequest.UserUpdateDTO reqDTO){
-        UserResponse.UserUpdateDTO respDTO = adminService.userUpdate(id,reqDTO);
+        UserResponse.UserUpdateDTO respDTO = adminService.userUpdate(id, reqDTO);
         return Resp.ok(respDTO);
     }
 

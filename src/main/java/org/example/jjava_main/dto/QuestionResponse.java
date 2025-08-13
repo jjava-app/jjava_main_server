@@ -1,6 +1,7 @@
 package org.example.jjava_main.dto;
 
 import lombok.Data;
+import org.example.jjava_main.domain.question.Question;
 
 import java.util.List;
 
@@ -27,12 +28,12 @@ public class QuestionResponse {
             }
         }
 
-        public ListDTO(Integer userId, Integer totalCount, Integer solvedCount, List<QuestionDTO> questions, List<Integer> solvedQuestionIds) {
+        public ListDTO(Integer userId, Integer totalCount, Integer solvedCount, List<QuestionDTO> questions, List<Question> solvedQuestions) {
             this.userId = userId;
             this.totalCount = totalCount;
             this.solvedCount = solvedCount;
             this.questions = questions;
-            this.solvedQuestionIds = solvedQuestionIds;
+            this.solvedQuestionIds = solvedQuestions.stream().map(Question::getId).toList();
         }
     }
 
