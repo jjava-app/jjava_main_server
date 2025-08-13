@@ -86,5 +86,37 @@ public class QuestionResponse {
             this.status = status;
         }
     }
+
+    @Data
+    public static class AdminListDTO {
+        private List<Question> questions;
+        private Integer page;
+        private String order;
+        private Integer sort;
+        private Integer totalCount;
+
+        public AdminListDTO(List<Question> questions, Integer page, String order, Integer sort, Integer totalCount) {
+            this.questions = questions;
+            this.page = page;
+            this.order = order;
+            this.sort = sort;
+            this.totalCount = totalCount;
+        }
+    }
+
+    @Data
+    public static class DTO {
+        private Integer questionId;
+        private String questionType;
+        private String title;
+        private String content;
+
+        public DTO(Question question) {
+            this.questionId = question.getId();
+            this.questionType = question.getType().toString();
+            this.title = question.getTitle();
+            this.content = question.getContent();
+        }
+    }
 }
 

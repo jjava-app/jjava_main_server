@@ -3,9 +3,10 @@ package org.example.jjava_main.domain.user.admin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main.controller.AdminController;
+import org.example.jjava_main.domain.question.Question;
+import org.example.jjava_main.domain.question.QuestionType;
 import org.example.jjava_main.domain.user.*;
-import org.example.jjava_main.dto.UserRequest;
-import org.example.jjava_main.dto.UserResponse;
+import org.example.jjava_main.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -157,5 +161,182 @@ class AdminControllerTest extends MyRestDoc {
 
         // verify
         verify(adminService, times(1)).userDelete(1);
+    }
+
+    // =========================
+    // 1) LIST
+    // =========================
+    @Test
+    void question_list_default_test() throws Exception {
+        // given: Question 엔티티 3건
+        Question q1 = Question.builder()
+                .id(1).type(QuestionType.OPERATOR)
+                .title("두 수의 합 구하기")
+                .content("문제 설명: ...")
+                .testVariable("[{\"a\":2,\"b\":3}]")
+                .testAnswer("[5]")
+                .build();
+
+        Question q2 = Question.builder()
+                .id(2).type(QuestionType.OPERATOR)
+                .title("두 수의 차 구하기")
+                .content("문제 설명: ...")
+                .testVariable("[{\"a\":5,\"b\":3}]")
+                .testAnswer("[2]")
+                .build();
+
+        Question q3 = Question.builder()
+                .id(3).type(QuestionType.OPERATOR)
+                .title("두 수의 곱 구하기")
+                .content("문제 설명: ...")
+                .testVariable("[{\"a\":2,\"b\":3}]")
+                .testAnswer("[6]")
+                .build();
+
+        var listDTO = new QuestionResponse.AdminListDTO(
+                List.of(q1, q2, q3), // questions
+                0,                   // page
+                "id",                // order
+                0,                   // sort
+                3                    // totalCount
+        );
+        when(adminService.questionList(0, "id", 0)).thenReturn(listDTO);
+
+        // when & then
+        mockMvc.perform(get("/admin/questions").accept(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body.page").value(0))
+                .andExpect(jsonPath("$.body.order").value("id"))
+                .andExpect(jsonPath("$.body.sort").value(0))
+                .andExpect(jsonPath("$.body.totalCount").value(3))
+                .andExpect(jsonPath("$.body.questions.length()").value(3))
+                .andExpect(jsonPath("$.body.questions[0].id").value(1))
+                .andExpect(jsonPath("$.body.questions[0].type").value("OPERATOR"))
+                .andExpect(jsonPath("$.body.questions[0].title").value("두 수의 합 구하기"))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
+
+        verify(adminService, times(1)).questionList(0, "id", 0);
+    }
+
+    @Test
+    void question_list_with_params_test() throws Exception {
+        var listDTO = new QuestionResponse.AdminListDTO(
+                List.of(), 2, "title", 1, 0
+        );
+        when(adminService.questionList(2, "title", 1)).thenReturn(listDTO);
+
+        mockMvc.perform(get("/admin/questions")
+                        .param("page", "2")
+                        .param("order", "title")
+                        .param("sort", "1")
+                        .accept(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body.page").value(2))
+                .andExpect(jsonPath("$.body.order").value("title"))
+                .andExpect(jsonPath("$.body.sort").value(1))
+                .andExpect(jsonPath("$.body.totalCount").value(0))
+                .andExpect(jsonPath("$.body.questions.length()").value(0))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
+
+        verify(adminService, times(1)).questionList(2, "title", 1);
+    }
+
+    // =========================
+    // 2) CREATE
+    // =========================
+    @Test
+    void question_create_test() throws Exception {
+        // 요청 DTO (더미 데이터 기반)
+        var req = new QuestionRequest.DTO();
+        req.setType("OPERATOR");
+        req.setTitle("두 수의 합 구하기");
+        req.setContent("문제 설명: 정수 a, b가 주어질 때, 두 수의 합을 반환...");
+        req.setTestVariable("[{\"a\":2,\"b\":3},{\"a\":10,\"b\":15},{\"a\":-1,\"b\":5}]");
+        req.setTestAnswer("[5,25,4]");
+
+        // 서비스 응답 DTO
+        Question created = Question.builder()
+                .id(10)
+                .type(QuestionType.OPERATOR)
+                .title(req.getTitle())
+                .content(req.getContent())
+                .testVariable(req.getTestVariable())
+                .testAnswer(req.getTestAnswer())
+                .build();
+        var resp = new QuestionResponse.DTO(created);
+
+        when(adminService.questionCreate(any(QuestionRequest.DTO.class))).thenReturn(resp);
+
+        mockMvc.perform(post("/admin/questions")
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON)
+                        .content(om.writeValueAsString(req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body.questionId").value(10))
+                .andExpect(jsonPath("$.body.questionType").value("OPERATOR"))
+                .andExpect(jsonPath("$.body.title").value("두 수의 합 구하기"))
+                .andExpect(jsonPath("$.body.content").value(req.getContent()))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
+
+        verify(adminService, times(1)).questionCreate(any(QuestionRequest.DTO.class));
+    }
+
+    // =========================
+    // 3) UPDATE
+    // =========================
+    @Test
+    void question_update_test() throws Exception {
+        int id = 2;
+
+        var req = new QuestionRequest.DTO();
+        req.setType("OPERATOR");
+        req.setTitle("두 수의 차 구하기(수정)");
+        req.setContent("문제 설명: 수정된 내용...");
+        req.setTestVariable("[{\"a\":5,\"b\":3},{\"a\":10,\"b\":20},{\"a\":20,\"b\":5}]");
+        req.setTestAnswer("[2,-10,15]");
+
+        Question updated = Question.builder()
+                .id(id)
+                .type(QuestionType.OPERATOR)
+                .title(req.getTitle())
+                .content(req.getContent())
+                .testVariable(req.getTestVariable())
+                .testAnswer(req.getTestAnswer())
+                .build();
+        var resp = new QuestionResponse.DTO(updated);
+
+        when(adminService.questionUpdate(any(QuestionRequest.DTO.class), eq(id))).thenReturn(resp);
+
+        mockMvc.perform(put("/admin/questions/{id}", id)
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON)
+                        .content(om.writeValueAsString(req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body.questionId").value(id))
+                .andExpect(jsonPath("$.body.questionType").value("OPERATOR"))
+                .andExpect(jsonPath("$.body.title").value("두 수의 차 구하기(수정)"))
+                .andExpect(jsonPath("$.body.content").value(req.getContent()))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document);
+
+        verify(adminService, times(1)).questionUpdate(any(QuestionRequest.DTO.class), eq(id));
+    }
+
+    // =========================
+    // 4) DELETE
+    // =========================
+    @Test
+    void question_delete_test() throws Exception {
+        int id = 3;
+        doNothing().when(adminService).questionDelete(id);
+
+        mockMvc.perform(delete("/admin/questions/{id}", id).accept(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body", nullValue()));
+
+        verify(adminService, times(1)).questionDelete(id);
     }
 }
