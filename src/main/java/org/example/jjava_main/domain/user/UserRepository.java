@@ -131,4 +131,7 @@ public class UserRepository {
         return new UserResponse.UserUpdateDTO(updatedUser);
     }
 
+    public void deleteById(Integer id) {
+        em.remove(em.find(User.class, id));
+    }
 }
