@@ -7,6 +7,7 @@ import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main._core.util.EmailCode;
 import org.example.jjava_main._core.util.JwtUtil;
 import org.example.jjava_main._core.util.PrincipalDetails;
+import org.example.jjava_main.domain.auth.provider.*;
 import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.domain.user.UserRepository;
 import org.example.jjava_main.domain.user.UserRole;
@@ -39,6 +40,8 @@ import java.util.UUID;
 public class AuthService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final UserAccountProviderRepository uapRepository;
+    private final ProviderRepository providerRepository;
     private final RestTemplate restTemplate = new RestTemplate();
     @Value("${resend.api-key}")
     private String apiKey;
@@ -63,9 +66,34 @@ public class AuthService implements UserDetailsService {
 
         String email = nu.getEmail();
         String nickName = (nu.getName() != null && !nu.getName().isBlank())
-                ? nu.getNickname() : (nu.getNickname() != null ? nu.getNickname() : "네이버사용자");
+                ? nu.getName() : (nu.getNickname() != null ? nu.getNickname() : "네이버사용자");
 
-        User user = findOrCreateUser(nickName, email);
+        Provider naver = providerRepository.findByType(ProviderType.NAVER)
+                .orElseThrow(() -> new IllegalStateException("Provider NAVER not seeded"));
+
+
+        // (A) (provider, providerId) 매핑 존재 여부 확인
+        var linkOpt = uapRepository.findLink(ProviderType.NAVER, nu.getId());
+
+        User user;
+
+        if (linkOpt.isPresent()) {
+            // 이미 연결된 유저면 그 유저로 로그인
+            user = linkOpt.get().getUser();
+            log.info("[네이버] 기존 연동을 확인했습니다 -> userId={}, providerUserId={}", user.getId(), nu.getId());
+        } else {
+            // (B) 없으면 기존 로직으로 유저 생성
+            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+
+            // (C) 매핑 저장
+            var link = UserAccountProvider.builder()
+                    .user(user)
+                    .provider(naver)
+                    .providerUserId(nu.getId())
+                    .build();
+            uapRepository.save(link);
+            log.info("[네이버] 새 연동 생성 -> userId={}, providerUserId={}", user.getId(), nu.getId());
+        }
 
         return toLoginResponse(user);
     }
