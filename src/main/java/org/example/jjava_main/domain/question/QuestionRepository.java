@@ -93,4 +93,13 @@ public class QuestionRepository {
         em.persist(question);
         return question;
     }
+
+    public Optional<SolvedQuestion> findSolvedQuestionByQuestionId(Integer questionId) {
+        // TODO 1 : 쿼리 내부 완성하기
+        return Optional.ofNullable(
+                em.createQuery("select s from SolvedQuestion s where s.question.id = :questionId", SolvedQuestion.class)
+                        .setParameter("questionId", questionId)
+                        .getSingleResult()
+        );
+    }
 }
