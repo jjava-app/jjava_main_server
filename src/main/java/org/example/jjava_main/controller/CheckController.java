@@ -79,4 +79,11 @@ public class CheckController {
         return Resp.ok(respDTO);
     }
 
+    @GetMapping("/solved-questions/{id}")
+    public ResponseEntity<?> solvedQuestionDetailGet(@PathVariable("id") Integer questionId) {
+        QuestionResponse.SolvedQuestionDetailDTO respDTO = checkService.solvedQuestionDetailGet(questionId);
+        // TODO 3 : body에 DTO 담기
+        return Resp.ok(respDTO);
+    }
+
 }
