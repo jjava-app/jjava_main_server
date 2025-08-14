@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -32,10 +31,6 @@ public class AuthControllerTest extends MyRestDoc {
 
     private String accessToken;
 
-    @MockBean
-    private AuthService authService;
-
-
     @BeforeEach
     void setUp() {
         User ssar = User.builder()
@@ -53,6 +48,7 @@ public class AuthControllerTest extends MyRestDoc {
     void check_nickname_fail_test() throws Exception {
         // given
         String nickname = "ssar";
+
 
         String requestBody = om.writeValueAsString(nickname);
         System.out.println(requestBody);
@@ -145,5 +141,21 @@ public class AuthControllerTest extends MyRestDoc {
         actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
+    @Test
+    @DisplayName("네이버 소셜 로그인 - 성공")
+    void naver_oauth_login_ok() throws Exception {
+        // given
 
+
+        // when
+
+
+        // eye
+
+
+        // then
+
+
+    }
 }
+
