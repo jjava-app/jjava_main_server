@@ -34,7 +34,7 @@ public class QuestionRepository {
 
     // 푼 문제 id 조회
     public List<SolvedQuestion> findSolvedQuestionByUserId(Integer userId) {
-        Query query = em.createQuery("select s from SolvedQuestion s where s.userId = :userId");
+        Query query = em.createQuery("select s from SolvedQuestion s where s.user.id = :userId");
         query.setParameter("userId", userId);
         return query.getResultList();
     }
@@ -54,4 +54,43 @@ public class QuestionRepository {
         }
     }
 
+    public List<Question> findAllOrderById(int page, int sort) {
+        Query query;
+        if(sort == 0) query = em.createQuery("select q from Question q order by q.id", Question.class);
+        else query = em.createQuery("select q from Question q order by q.id desc", Question.class);
+        query.setFirstResult(page * 10);
+        query.setMaxResults(10);
+        return query.getResultList();
+    }
+
+    public List<Question> findAllOrderByTitle(int page, int sort) {
+        Query query;
+        if(sort == 0) query = em.createQuery("select q from Question q order by q.title", Question.class);
+        else query = em.createQuery("select q from Question q order by q.title desc", Question.class);
+        query.setFirstResult(page * 10);
+        query.setMaxResults(10);
+        return query.getResultList();
+    }
+
+    public List<Question> findAllOrderByType(int page, int sort) {
+        Query query;
+        if(sort == 0) query = em.createQuery("select q from Question q order by q.type", Question.class);
+        else query = em.createQuery("select q from Question q order by q.type desc", Question.class);
+        query.setFirstResult(page * 10);
+        query.setMaxResults(10);
+        return query.getResultList();
+    }
+
+    public Long getTotalCount() {
+        return em.createQuery("select count(q) from Question q", Long.class).getSingleResult();
+    }
+
+    public void deleteById(Integer id) {
+        em.remove(em.find(Question.class, id));
+    }
+
+    public Question save(Question question) {
+        em.persist(question);
+        return question;
+    }
 }

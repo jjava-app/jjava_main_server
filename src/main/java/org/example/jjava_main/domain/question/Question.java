@@ -30,4 +30,12 @@ public class Question {
         this.testVariable = testVariable;
         this.testAnswer = testAnswer;
     }
+
+    public void update(QuestionType type, String title, String content, String testVariable, String testAnswer) {
+        this.type = type;
+        this.title = title;
+        this.content = content;
+        this.testVariable = testVariable;
+        this.testAnswer = testAnswer;
+    }
 }

@@ -3,6 +3,7 @@ package org.example.jjava_main._core.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main.domain.question.Question;
 import org.example.jjava_main.domain.question.QuestionRepository;
 import org.example.jjava_main.dto.CheckRequest;
