@@ -187,22 +187,5 @@ public class AuthControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.msg").value("비밀번호가 일치하지 않습니다."))
                 .andDo(document);
     }
-
-    @Test
-    @DisplayName("네이버 소셜 로그인 - 성공")
-    void naver_oauth_login_ok() throws Exception {
-        // given
-
-
-        // when
-
-
-        // eye
-
-
-        // then
-
-
-    }
 }
 
