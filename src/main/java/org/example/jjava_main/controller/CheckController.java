@@ -8,6 +8,7 @@ import org.example.jjava_main.domain.compile.CheckService;
 import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.dto.CheckRequest;
 import org.example.jjava_main.dto.CheckResponse;
+import org.example.jjava_main.dto.QuestionRequest;
 import org.example.jjava_main.dto.QuestionResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +35,7 @@ public class CheckController {
             if (pass.isPassed()) {
                 try {
                     // AI 리팩토링 요청
-                    CheckResponse.PassDTO aiResult = checkService.checkAndCodeRefactor(pass.getCode(), questionId, userId);
+                    CheckResponse.PassDTO aiResult = checkService.checkAndCodeRefactor(pass.getCode(), questionId, userId, reqDTO.getSerializedJson(), reqDTO.getBlockExtensionJson());
 
                     // AI 응답에서 값 세팅
                     pass.setRefactoredCode(aiResult.getRefactoredCode());
@@ -64,6 +65,17 @@ public class CheckController {
     @GetMapping("/questions/{id}")
     public ResponseEntity<?> questionDetailGet(@PathVariable("id") Integer questionId) {
         QuestionResponse.DetailDTO respDTO = checkService.questionDetailGet(questionId);
+        return Resp.ok(respDTO);
+    }
+
+    // 문제 저장 (문제 파일 전 중간 저장)
+    @PutMapping("/solved-questions/{questionId}/{userId}")
+    public ResponseEntity<?> solvedQuestionUpsert(@AuthenticationPrincipal User user, @PathVariable("questionId") Integer questionId, @PathVariable("userId") Integer userId, @RequestBody QuestionRequest.SolvedQuestionCreateDTO reqDTO) {
+        // userId를 Authentication에서 찾아옴
+        userId = user.getId();
+
+        QuestionResponse.SolvedQuestionCreateDTO respDTO = checkService.solvedQuestionUpsert(userId, questionId, reqDTO.getSerializedJson(), reqDTO.getBlockExtensionJson());
+
         return Resp.ok(respDTO);
     }
 

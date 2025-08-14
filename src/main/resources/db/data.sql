@@ -1,30 +1,14 @@
 INSERT INTO user_tb (email, password, username, level, role, score)
-VALUES ('admin1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJqfjIJy6/iOZ6', '관리자', 'EXPERT', 'ADMIN', 95),
-       ('ssar1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJqfjIJy6/iOZ6', 'ssar', 'BEGINNER', 'USER', 120),
-       ('cos1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJqfjIJy6/iOZ6', 'cos', 'BEGINNER', 'USER', 65),
-       ('love1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJqfjIJy6/iOZ6', 'love', 'INTERMEDIATE', 'USER', 28),
+VALUES ('admin1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJqfjIJy6/iOZ6', '관리자', 'EXPERT', 'ADMIN',
+        95),
+       ('ssar1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJqfjIJy6/iOZ6', 'ssar', 'BEGINNER', 'USER',
+        120),
+       ('cos1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJqfjIJy6/iOZ6', 'cos', 'BEGINNER', 'USER',
+        65),
+       ('love1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJqfjIJy6/iOZ6', 'love', 'INTERMEDIATE',
+        'USER', 28),
        ('haha1234@nate.com', '$2a$10$AIzYzbpY0rscDg2IWk/3A.Tzh74h5zGyq0cHtlnLJqfjIJy6/iOZ6', 'haha', 'INTERMEDIATE',
         'USER', 45);
-
-INSERT INTO provider_tb (provider_type)
-VALUES ('GOOGLE'),
-       ('NAVER'),
-       ('KAKAO');
-
-INSERT INTO workspace_tb (user_id, title, serialized_json, block_extension_json, created_at)
-VALUES (1, '짜바 연습', null, null, now()),
-       (2, '짜바 연습', null, null, now()),
-       (3, '짜바 연습', null, null, now()),
-       (4, '짜바 연습', null, null, now()),
-       (5, '짜바 연습', null, null, now());
-
-INSERT INTO block_library_tb (user_id, library_json)
-VALUES (1, null),
-       (2, null),
-       (3, null),
-       (4, null),
-       (5, null);
-
 
 -- question_tb
 INSERT INTO question_tb (type, title, content, test_variable, test_answer)
@@ -184,24 +168,52 @@ VALUES ('ARRAY',
 
 
 -- solved_question_tb
-INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
-VALUES (2, 5, '리팩토링', 'json', 'json');
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
+                                progress_status)
+VALUES (2, 5, '리팩토링', 'json', 'json', 'IN_PROGRESS');
 
-INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
-VALUES (2, 6, '리팩토링', 'json', 'json');
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
+                                progress_status)
+VALUES (2, 6, '리팩토링', 'json', 'json', 'IN_PROGRESS');
 
-INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
-VALUES (2, 7, '리팩토링', 'json', 'json');
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
+                                progress_status)
+VALUES (2, 7, '리팩토링', 'json', 'json', 'IN_PROGRESS');
 
-INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
-VALUES (3, 8, '리팩토링', 'json', 'json');
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
+                                progress_status)
+VALUES (3, 8, '리팩토링', 'json', 'json', 'IN_PROGRESS');
 
-INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
-VALUES (3, 1, '리팩토링', 'json', 'json');
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
+                                progress_status)
+VALUES (3, 1, '리팩토링', 'json', 'json', 'REVIEWED');
 
-INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
-VALUES (3, 2, '리팩토링', 'json', 'json');
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
+                                progress_status)
+VALUES (3, 2, '리팩토링', 'json', 'json', 'REVIEWED');
 
-INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json)
-VALUES (3, 3, '리팩토링', 'json', 'json');
+INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
+                                progress_status)
+VALUES (3, 3, '리팩토링', 'json', 'json', 'REVIEWED');
+
+
+INSERT INTO workspace_tb (user_id, title, serialized_json, block_extension_json, created_at)
+VALUES (1, '짜바 연습', null, null, now()),
+       (2, '짜바 연습', null, null, now()),
+       (3, '짜바 연습', null, null, now()),
+       (4, '짜바 연습', null, null, now()),
+       (5, '짜바 연습', null, null, now());
+
+INSERT INTO block_library_tb (user_id, library_json)
+VALUES (1, null),
+       (2, null),
+       (3, null),
+       (4, null),
+       (5, null);
+
+
+INSERT INTO provider_tb (provider_type)
+VALUES ('GOOGLE'),
+       ('NAVER'),
+       ('KAKAO');
 

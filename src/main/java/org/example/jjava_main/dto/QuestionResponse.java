@@ -1,6 +1,7 @@
 package org.example.jjava_main.dto;
 
 import lombok.Data;
+import org.example.jjava_main.domain.question.ProgressStatus;
 import org.example.jjava_main.domain.question.Question;
 
 import java.util.List;
@@ -47,6 +48,74 @@ public class QuestionResponse {
             this.questionId = questionId;
             this.title = title;
             this.content = content;
+        }
+    }
+
+    @Data
+    public static class SovledQuestionDetailDTO {
+        private Integer userId;
+        private Integer questionId;
+        private String AiComment;
+        private String serializedJson;
+        private String blockExtensionJson;
+
+        public SovledQuestionDetailDTO(Integer userId, Integer questionId, String aiComment, String serializedJson, String blockExtensionJson) {
+            this.userId = userId;
+            this.questionId = questionId;
+            AiComment = aiComment;
+            this.serializedJson = serializedJson;
+            this.blockExtensionJson = blockExtensionJson;
+        }
+    }
+
+    @Data
+    public static class SolvedQuestionCreateDTO {
+        private Integer solvedQuestionId;
+        private Integer userId;
+        private Integer questionId;
+        private String serializedJson;
+        private String blockExtensionJson;
+        private ProgressStatus status;
+
+        public SolvedQuestionCreateDTO(Integer solvedQuestionId, Integer userId, Integer questionId, String serializedJson, String blockExtensionJson, ProgressStatus status) {
+            this.solvedQuestionId = solvedQuestionId;
+            this.userId = userId;
+            this.questionId = questionId;
+            this.serializedJson = serializedJson;
+            this.blockExtensionJson = blockExtensionJson;
+            this.status = status;
+        }
+    }
+
+    @Data
+    public static class AdminListDTO {
+        private List<Question> questions;
+        private Integer page;
+        private String order;
+        private Integer sort;
+        private Integer totalCount;
+
+        public AdminListDTO(List<Question> questions, Integer page, String order, Integer sort, Integer totalCount) {
+            this.questions = questions;
+            this.page = page;
+            this.order = order;
+            this.sort = sort;
+            this.totalCount = totalCount;
+        }
+    }
+
+    @Data
+    public static class DTO {
+        private Integer questionId;
+        private String questionType;
+        private String title;
+        private String content;
+
+        public DTO(Question question) {
+            this.questionId = question.getId();
+            this.questionType = question.getType().toString();
+            this.title = question.getTitle();
+            this.content = question.getContent();
         }
     }
 }
