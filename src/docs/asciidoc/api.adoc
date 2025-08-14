@@ -26,15 +26,29 @@ include::{snippets}/{compile}/compile_proxy_fail_test/http-request.adoc[]
 include::{snippets}/{compile}/compile_proxy_fail_test/http-response.adoc[]
 
 
-== 문제 검산 & 컴파일 & AI 리팩토링
-=== 1. 컴파일 & 검산 성공 & AI 리팩토링
+== 2. 문제 풀기
+=== 1. 문제 리스트
+===== Request Example
+include::{snippets}/{check}/question_list_get_test/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{check}/question_list_get_test/http-response.adoc[]
+
+=== 2. 문제 상세보기
+===== Request Example
+include::{snippets}/{check}/question_detail_get_test/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{check}/question_detail_get_test/http-response.adoc[]
+
+=== 3. 컴파일 & 검산 성공 & AI 리팩토링
 ===== Request Example
 include::{snippets}/{check}/check_proxy_and_code_refactor_success_test/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{check}/check_proxy_and_code_refactor_success_test/http-response.adoc[]
 
-=== 2. 컴파일 & 검산 실패
+=== 4. 컴파일 & 검산 실패
 ===== Request Example
 include::{snippets}/{check}/check_proxy_and_code_refactor_fail_test/http-request.adoc[]
 
