@@ -1,6 +1,7 @@
 package org.example.jjava_main.dto;
 
 import lombok.Data;
+import org.example.jjava_main.domain.compile.SolvedQuestion;
 import org.example.jjava_main.domain.question.ProgressStatus;
 import org.example.jjava_main.domain.question.Question;
 
@@ -52,19 +53,21 @@ public class QuestionResponse {
     }
 
     @Data
-    public static class SovledQuestionDetailDTO {
-        private Integer userId;
+    public static class SolvedQuestionDetailDTO {
         private Integer questionId;
+        private String title;
+        private String content;
         private String AiComment;
         private String serializedJson;
         private String blockExtensionJson;
 
-        public SovledQuestionDetailDTO(Integer userId, Integer questionId, String aiComment, String serializedJson, String blockExtensionJson) {
-            this.userId = userId;
-            this.questionId = questionId;
-            AiComment = aiComment;
-            this.serializedJson = serializedJson;
-            this.blockExtensionJson = blockExtensionJson;
+        public SolvedQuestionDetailDTO(Question question, SolvedQuestion solvedQuestion) {
+            this.questionId = question.getId();
+            this.title = question.getTitle();
+            this.content = question.getContent();
+            this.AiComment = solvedQuestion.getAiComment();
+            this.serializedJson = solvedQuestion.getSerializedJson();
+            this.blockExtensionJson = solvedQuestion.getBlockExtensionJson();
         }
     }
 
