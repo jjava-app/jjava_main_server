@@ -166,7 +166,8 @@ public class AuthControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.email").value("ssar1234@nate.com"))
                 .andExpect(jsonPath("$.body.nickname").value("ssar"))
                 // 토큰은 실제 값이 무엇이든 비어있지 않으면 OK (JwtUtil.create(...) 결과)
-                .andExpect(jsonPath("$.body.accessToken").exists());
+                .andExpect(jsonPath("$.body.accessToken").exists())
+                .andDo(document);
     }
 
     @Test
@@ -188,6 +189,7 @@ public class AuthControllerTest extends MyRestDoc {
                .andExpect(status().isBadRequest())
                 // 에러 응답 바디 구조가 프로젝트마다 달라서, 메시지 텍스트로 판정 (필요 시 jsonPath로 조정)
                .andExpect(jsonPath("$.status").value(400))
-               .andExpect(jsonPath("$.msg").value("비밀번호가 일치하지 않습니다."));
+               .andExpect(jsonPath("$.msg").value("비밀번호가 일치하지 않습니다."))
+                .andDo(document);
     }
 }
