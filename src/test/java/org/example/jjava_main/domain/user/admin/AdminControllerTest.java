@@ -5,8 +5,13 @@ import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main.controller.AdminController;
 import org.example.jjava_main.domain.question.Question;
 import org.example.jjava_main.domain.question.QuestionType;
-import org.example.jjava_main.domain.user.*;
-import org.example.jjava_main.dto.*;
+import org.example.jjava_main.domain.user.User;
+import org.example.jjava_main.domain.user.UserLevel;
+import org.example.jjava_main.domain.user.UserRole;
+import org.example.jjava_main.dto.QuestionRequest;
+import org.example.jjava_main.dto.QuestionResponse;
+import org.example.jjava_main.dto.UserRequest;
+import org.example.jjava_main.dto.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,10 +36,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class AdminControllerTest extends MyRestDoc {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper om;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper om;
 
-    @MockBean private AdminService adminService;
+    @MockBean
+    private AdminService adminService;
 
     private User mockUser;
 
@@ -335,7 +340,8 @@ class AdminControllerTest extends MyRestDoc {
 
         mockMvc.perform(delete("/admin/questions/{id}", id).accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body", nullValue()));
+                .andExpect(jsonPath("$.body", nullValue()))
+                .andDo(document);
 
         verify(adminService, times(1)).questionDelete(id);
     }

@@ -2,6 +2,7 @@ package org.example.jjava_main._core.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main.domain.question.Question;
@@ -11,9 +12,9 @@ import org.example.jjava_main.dto.CheckResponse;
 import org.example.jjava_main.dto.CompileRequest;
 import org.example.jjava_main.dto.CompileResponse;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,22 +22,15 @@ import java.util.Map;
 
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class HttpUtil {
 
-    private final WebClient webClient;
+    private final RestTemplate restTemplate;
+
     private final QuestionRepository questionRepository;
 
-    public HttpUtil(QuestionRepository questionRepository) {
-        this.webClient = WebClient.builder()
-                .baseUrl(BASE_URL)
-                .build();
-        this.questionRepository = questionRepository;
-    }
-
-
-    // 컴파일 서버 주소
-    private static final String BASE_URL = "http://localhost:8081"; // 컴파일 서버 주소
+    private static final String BASE_URL = "http://jjava-compile:8081";
     private static final String COMPILE_ENDPOINT = "/compile";
     private static final String CHECK_ENDPOINT = "/check";
 
@@ -49,14 +43,20 @@ public class HttpUtil {
      */
     public CompileResponse.DTO compileServerSend(CompileRequest.DTO reqDTO, Integer userId) {
         try {
-            Resp<CompileResponse.DTO> resp = webClient.post()
-                    .uri(COMPILE_ENDPOINT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(reqDTO)
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Resp<CompileResponse.DTO>>() {
-                    }) // JSON 문자열로 받음 (Resp<CompileResponse.DTO>로 매핑)
-                    .block(); // 동기 방식으로 결과 반환
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<CompileRequest.DTO> requestEntity = new HttpEntity<>(reqDTO, headers);
+
+            ResponseEntity<Resp<CompileResponse.DTO>> responseEntity =
+                    restTemplate.exchange(
+                            BASE_URL + COMPILE_ENDPOINT,
+                            HttpMethod.POST,
+                            requestEntity,
+                            new ParameterizedTypeReference<>() {
+                            });
+
+            Resp<CompileResponse.DTO> resp = responseEntity.getBody();
 
             if (resp == null) {
                 throw new RuntimeException("컴파일 서버 응답이 없습니다.");
@@ -69,6 +69,9 @@ public class HttpUtil {
 
             // 컴파일 서버 응답에 userId를 추가
             CompileResponse.DTO respDTO = resp.getBody();
+            if (respDTO == null) {
+                throw new RuntimeException("컴파일 서버 응답 body가 비어 있습니다.");
+            }
             respDTO.setUserId(userId);  // 응답에 userId 세팅
 
             return respDTO;
@@ -86,28 +89,28 @@ public class HttpUtil {
         try {
             ObjectMapper om = new ObjectMapper();
 
-            // 문제 조회해서 test_variable / test_answer 읽기
+            // 문제 조회
             Question q = questionRepository.findById(questionId).orElse(null);
-            if (q == null) throw new RuntimeException("문제를 찾을 수 없습니다.");
+            if (q == null) throw new Exception404("문제를 찾을 수 없습니다.");
 
-            // DB JSON을 tests 배열로 변환
+            // 테스트 케이스 구성
             List<CheckRequest.DTO.TestSpecDTO> tests = buildTestsFromQuestion(q, om);
-
-            // 프론트에서 온 reqDTO를 그대로 보내지 말고,
-            // 메인서버가 tests를 채워 넣은 outbound로 교체해서 전송
             CheckRequest.DTO outbound = new CheckRequest.DTO(reqDTO.getType(), reqDTO.getPayload(), tests);
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-            // 1. WebClient로 컴파일 서버의 /check 엔드포인트 호출
-            // - resp: Resp<JsonNode> 형식의 응답 (성공/실패 모두 JSON으로 받음)
-            Resp<JsonNode> resp = webClient.post()
-                    .uri(CHECK_ENDPOINT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(outbound)
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Resp<JsonNode>>() {
-                    })
-                    .block(java.time.Duration.ofSeconds(10));  // 타임아웃 5초
+            HttpEntity<CheckRequest.DTO> requestEntity = new HttpEntity<>(outbound, headers);
+
+            ResponseEntity<Resp<JsonNode>> responseEntity =
+                    restTemplate.exchange(
+                            BASE_URL + CHECK_ENDPOINT,
+                            HttpMethod.POST,
+                            requestEntity,
+                            new ParameterizedTypeReference<>() {
+                            });
+
+            Resp<JsonNode> resp = responseEntity.getBody();
 
             // 2. 응답 본문이 없으면 예외 처리
             if (resp == null || resp.getBody() == null) {
@@ -161,7 +164,7 @@ public class HttpUtil {
                 f.setUserId(userId);
                 f.setQuestionId(questionId);
                 f.setPassed(false);
-                return java.util.List.of(f); // 단일 실패도 리스트로
+                return List.of(f);
             }
 
             // 3) 단일 성공
@@ -198,7 +201,7 @@ public class HttpUtil {
         JsonNode vars = om.readTree(q.getTestVariable());   // e.g. [{"a":2,"b":3}, ...]
         JsonNode answers = om.readTree(q.getTestAnswer());  // e.g. [5,25,4]
         if (!vars.isArray() || !answers.isArray()) {
-            throw new IllegalArgumentException("test_variable / test_answer는 배열이어야 합니다.");
+            throw new Exception404("test_variable / test_answer는 배열이어야 합니다.");
         }
         int n = Math.min(vars.size(), answers.size());
         List<CheckRequest.DTO.TestSpecDTO> list = new ArrayList<>(n);
