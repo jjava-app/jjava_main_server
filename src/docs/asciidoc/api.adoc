@@ -3,6 +3,7 @@ ifndef::snippets[]
 endif::[]
 
 :auth: auth-controller-test
+:auth_oauth: auth-controller-o-auth-web-mvc-test
 :compile: compile-controller-test
 :check: check-controller-test
 :user: user-controller-test
@@ -51,14 +52,37 @@ include::{snippets}/{auth}/login_wrong_password_test/http-request.adoc[]
 ===== Response Example
 include::{snippets}/{auth}/login_wrong_password_test/http-response.adoc[]
 
-=== 6. 마이 페이지
+=== 6. 소셜 로그인 - 네이버
+===== Request Example
+include::{snippets}/{auth_oauth}/naver_oauth_login_ok/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{auth_oauth}/naver_oauth_login_ok/http-response.adoc[]
+
+
+=== 7. 소셜 로그인 - 카카오
+===== Request Example
+include::{snippets}/{auth_oauth}/kakao_oauth_login_ok/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{auth_oauth}/kakao_oauth_login_ok/http-response.adoc[]
+
+
+=== 8. 소셜 로그인 - 구글
+===== Request Example
+include::{snippets}/{auth_oauth}/google_oauth_login_ok/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{auth_oauth}/google_oauth_login_ok/http-response.adoc[]
+
+=== 9. 마이 페이지
 ===== Request Example
 include::{snippets}/{user}/get_my_page_profile_success/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{user}/get_my_page_profile_success/http-response.adoc[]
 
-=== 7. 사용자 레벨 업데이트
+=== 10. 사용자 레벨 업데이트
 ===== Request Example
 include::{snippets}/{user}/update_user_level_success/http-request.adoc[]
 
