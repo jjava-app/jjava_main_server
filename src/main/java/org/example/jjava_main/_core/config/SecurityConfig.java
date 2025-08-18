@@ -67,8 +67,13 @@ public class SecurityConfig {
                 authorize -> authorize
                         .requestMatchers("/").authenticated()
                         .requestMatchers("/users/**").hasAnyRole("USER", "ADMIN")
-//                        .requestMatchers("/workspace/**").hasAnyRole("USER", "ADMIN")
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/workspace/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/leaderboard/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/compile/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/check/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/questions/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/solved-questions/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
         );
 

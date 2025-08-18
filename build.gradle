@@ -29,6 +29,10 @@ test {
     if (System.getenv('REDIS_PASSWORD') != null) {
         environment 'REDIS_PASSWORD', System.getenv('REDIS_PASSWORD')
     }
+
+    if(System.getenv('RESEND_API_KEY') != null) {
+        environment 'RESEND_API_KEY', System.getenv('RESEND_API_KEY')
+    }
 }
 
 dependencies {

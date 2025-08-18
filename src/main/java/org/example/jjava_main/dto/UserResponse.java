@@ -23,7 +23,7 @@ public class UserResponse {
         this.id = user.getId();
         this.email = user.getEmail();
         this.username = user.getUsername();
-        this.level = user.getLevel().toString();
+        this.level = user.getLevel() != null ? user.getLevel().name() : UserLevel.BEGINNER.name();
         this.score = user.getScore();
         this.rank = rank;
     }
@@ -138,14 +138,17 @@ public class UserResponse {
             this.score = user.getScore();
         }
     }
+
     @Data
     public static class UserUpdateDTO {
+        private Integer id;
         private String username;
         private String email;
         private UserRole role;
         private Integer score;
 
         public UserUpdateDTO(User user) {
+            this.id = user.getId();
             this.username = user.getUsername();
             this.email = user.getEmail();
             this.role = user.getRole();

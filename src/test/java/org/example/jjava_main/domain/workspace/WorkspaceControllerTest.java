@@ -87,8 +87,8 @@ public class WorkspaceControllerTest extends MyRestDoc {
 
     @Test
     void get_workspace_list() throws Exception {
-        Workspace workspace = Workspace.builder().id(1).title("워크스페이스1").userId(1).build();
-        when(workspaceService.workspaceList(1)).thenReturn(List.of(workspace));
+        Workspace workspace = Workspace.builder().id(1).title("워크스페이스1").user(mockUser).build();
+        when(workspaceService.workspaceList(mockUser)).thenReturn(List.of(workspace));
 
         mockMvc.perform(get("/workspace"))
                 .andExpect(status().isOk())
@@ -99,8 +99,8 @@ public class WorkspaceControllerTest extends MyRestDoc {
 
     @Test
     void get_workspace_detail() throws Exception {
-        Workspace workspace = Workspace.builder().id(1).title("워크스페이스1").userId(1).build();
-        when(workspaceService.workspaceDetail(1, 1)).thenReturn(workspace);
+        Workspace workspace = Workspace.builder().id(1).title("워크스페이스1").user(mockUser).build();
+        when(workspaceService.workspaceDetail(1, mockUser)).thenReturn(workspace);
 
         mockMvc.perform(get("/workspace/1"))
                 .andExpect(status().isOk())
@@ -111,7 +111,7 @@ public class WorkspaceControllerTest extends MyRestDoc {
 
     @Test
     void get_workspace_detail_not_found() throws Exception {
-        when(workspaceService.workspaceDetail(999, 1))
+        when(workspaceService.workspaceDetail(999, mockUser))
                 .thenThrow(new Exception404("해당 워크스페이스가 존재하지 않습니다."));
 
         mockMvc.perform(get("/workspace/999"))
@@ -122,7 +122,7 @@ public class WorkspaceControllerTest extends MyRestDoc {
 
     @Test
     void get_workspace_detail_forbidden() throws Exception {
-        when(workspaceService.workspaceDetail(1, 1))
+        when(workspaceService.workspaceDetail(1, mockUser))
                 .thenThrow(new Exception403("해당 워크스페이스의 소유자가 아닙니다."));
 
         mockMvc.perform(get("/workspace/1"))
@@ -135,13 +135,13 @@ public class WorkspaceControllerTest extends MyRestDoc {
     void create_workspace() throws Exception {
         Workspace workspace = Workspace.builder()
                 .id(1)
-                .userId(1)
+                .user(mockUser)
                 .title("새 워크스페이스")
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
         WorkspaceResponse.CreateDTO dto = new WorkspaceResponse.CreateDTO(workspace);
-        when(workspaceService.workspaceCreate(1)).thenReturn(dto);
+        when(workspaceService.workspaceCreate(mockUser)).thenReturn(dto);
 
         mockMvc.perform(post("/workspace"))
                 .andExpect(status().isOk())
@@ -161,20 +161,20 @@ public class WorkspaceControllerTest extends MyRestDoc {
 
         Workspace workspace = Workspace.builder()
                 .id(1)
-                .userId(1)
+                .user(mockUser)
                 .title(reqDTO.getTitle())
                 .serializedJson(reqDTO.getSerializedJson())
                 .build();
 
         BlockLibrary blockLibrary = BlockLibrary.builder()
                 .id(1)
-                .userId(1)
+                .user(mockUser)
                 .libraryJson(reqDTO.getLibraryJson())
                 .build();
 
         WorkspaceResponse.DTO respDTO = new WorkspaceResponse.DTO(workspace, blockLibrary);
 
-        when(workspaceService.workspaceUpdate(eq(1), any(), eq(1))).thenReturn(respDTO);
+        when(workspaceService.workspaceUpdate(eq(1), any(), eq(mockUser))).thenReturn(respDTO);
 
         mockMvc.perform(put("/workspace/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -195,7 +195,7 @@ public class WorkspaceControllerTest extends MyRestDoc {
         reqDTO.setTitle("업데이트된 제목");
         reqDTO.setSerializedJson("{\"blocks\":[]}");
 
-        when(workspaceService.workspaceUpdate(eq(1), any(), eq(1)))
+        when(workspaceService.workspaceUpdate(eq(1), any(), eq(mockUser)))
                 .thenThrow(new Exception404("해당 워크스페이스가 존재하지 않습니다."));
 
         mockMvc.perform(put("/workspace/1")
@@ -212,7 +212,7 @@ public class WorkspaceControllerTest extends MyRestDoc {
         reqDTO.setTitle("업데이트된 제목");
         reqDTO.setSerializedJson("{\"blocks\":[]}");
 
-        when(workspaceService.workspaceUpdate(eq(1), any(), eq(1)))
+        when(workspaceService.workspaceUpdate(eq(1), any(), eq(mockUser)))
                 .thenThrow(new Exception403("해당 워크스페이스의 소유자가 아닙니다."));
 
         mockMvc.perform(put("/workspace/1")
@@ -225,7 +225,7 @@ public class WorkspaceControllerTest extends MyRestDoc {
 
     @Test
     void delete_workspace() throws Exception {
-        doNothing().when(workspaceService).workspaceDelete(1, 1);
+        doNothing().when(workspaceService).workspaceDelete(1, mockUser);
 
         mockMvc.perform(delete("/workspace/1"))
                 .andExpect(status().isOk())
@@ -237,7 +237,7 @@ public class WorkspaceControllerTest extends MyRestDoc {
     @Test
     void delete_workspace_not_found() throws Exception {
         doThrow(new Exception404("해당 워크스페이스가 존재하지 않습니다."))
-                .when(workspaceService).workspaceDelete(1, 1);
+                .when(workspaceService).workspaceDelete(1, mockUser);
 
         mockMvc.perform(delete("/workspace/1"))
                 .andExpect(status().isNotFound())
@@ -248,7 +248,7 @@ public class WorkspaceControllerTest extends MyRestDoc {
     @Test
     void delete_workspace_forbidden() throws Exception {
         doThrow(new Exception403("해당 워크스페이스의 소유자가 아닙니다."))
-                .when(workspaceService).workspaceDelete(1, 1);
+                .when(workspaceService).workspaceDelete(1, mockUser);
 
         mockMvc.perform(delete("/workspace/1"))
                 .andExpect(status().isForbidden())

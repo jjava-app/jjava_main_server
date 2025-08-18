@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
-import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.springframework.stereotype.Repository;
 
@@ -101,11 +100,11 @@ public class UserRepository {
         }
     }
 
-    public int findRankByScoreAndId(Integer score, Integer id) {
+    public int findRankByScoreAndId(Integer score) {
         String sql = """
-                  SELECT COUNT(*) + 1
+                  SELECT COALESCE(COUNT(*), 0) + 1
                   FROM user_tb
-                  WHERE score > :score
+                  WHERE score > COALESCE(:score, 0)
                 """;
         Number n = (Number) em.createNativeQuery(sql)
                 .setParameter("score", score)
@@ -113,14 +112,15 @@ public class UserRepository {
         return n.intValue();
 
     }
-    public UserResponse.UserUpdateDTO updateUser(Integer id,String username, String email){
+
+    public UserResponse.UserUpdateDTO updateUser(Integer id, String username, String email) {
         Query query = em.createQuery("update User u set u.email = :email,u.username = :username where u.id = :id");
         query.setParameter("email", email);
         query.setParameter("username", username);
-        query.setParameter("id",id);
+        query.setParameter("id", id);
         int updateCount = query.executeUpdate();
 
-        if(updateCount == 0) {
+        if (updateCount == 0) {
             throw new RuntimeException("업데이트 실패: 해당 유저 없음");
         }
 
@@ -131,4 +131,7 @@ public class UserRepository {
         return new UserResponse.UserUpdateDTO(updatedUser);
     }
 
+    public void deleteById(Integer id) {
+        em.remove(em.find(User.class, id));
+    }
 }

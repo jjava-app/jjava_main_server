@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main._core.util.HttpUtil;
 import org.example.jjava_main.controller.CheckController;
+import org.example.jjava_main.domain.question.ProgressStatus;
 import org.example.jjava_main.domain.question.Question;
 import org.example.jjava_main.domain.question.QuestionRepository;
 import org.example.jjava_main.domain.question.QuestionType;
@@ -12,6 +13,7 @@ import org.example.jjava_main.domain.user.UserLevel;
 import org.example.jjava_main.domain.user.UserRole;
 import org.example.jjava_main.dto.CheckRequest;
 import org.example.jjava_main.dto.CheckResponse;
+import org.example.jjava_main.dto.QuestionRequest;
 import org.example.jjava_main.dto.QuestionResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,8 +95,8 @@ public class CheckControllerTest extends MyRestDoc {
                 .build();
 
         mockSolvedQuestion = SolvedQuestion.builder()
-                .questionId(mockQuestion.getId())
-                .userId(mockUser.getId())
+                .question(mockQuestion)
+                .user(mockUser)
                 .AiComment("comment")
                 .serializedJson("serializedJson")
                 .blockExtensionJson("blockExtensionJson")
@@ -140,7 +142,11 @@ public class CheckControllerTest extends MyRestDoc {
 
         // ai 리팩토링 Mock 처리
         Mockito.when(checkService.checkAndCodeRefactor(
-                Mockito.eq(payload), Mockito.anyInt(), Mockito.anyInt()
+                Mockito.eq(payload),
+                Mockito.eq(1),
+                Mockito.eq(1),
+                Mockito.nullable(String.class),
+                Mockito.nullable(String.class)
         )).thenReturn(aiRefactor);
 
 
@@ -240,7 +246,11 @@ public class CheckControllerTest extends MyRestDoc {
                         new QuestionResponse.ListDTO.QuestionDTO(1, "텍스트", "dummy"),
                         new QuestionResponse.ListDTO.QuestionDTO(2, "텍스트", "dummy")
                 ),
-                List.of(1, 2, 3)
+                List.of(
+                        Question.builder().id(1).type(QuestionType.TEXT).title("테스트1").build(),
+                        Question.builder().id(2).type(QuestionType.TEXT).title("테스트2").build(),
+                        Question.builder().id(3).type(QuestionType.TEXT).title("테스트3").build()
+                )
         );
 
         //  Stub 설정
@@ -305,5 +315,112 @@ public class CheckControllerTest extends MyRestDoc {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.title").value("title"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.content").value("content"))
                 .andDo(document);
+    }
+
+
+    @Test
+    public void solved_question_upsert_test() throws Exception {
+        // given
+        QuestionRequest.SolvedQuestionCreateDTO reqDTO = new QuestionRequest.SolvedQuestionCreateDTO(
+                1,
+                1,
+                "json~~~`",
+                "json~~~~"
+        );
+
+
+        QuestionResponse.SolvedQuestionCreateDTO respDTO = new QuestionResponse.SolvedQuestionCreateDTO(
+                1,
+                1,
+                1,
+                "json~~~~",
+                "json~~~~",
+                ProgressStatus.IN_PROGRESS
+        );
+
+        //  Stub 설정
+        Mockito.when(checkService.solvedQuestionUpsert(
+                reqDTO.getUserId(),
+                reqDTO.getQuestionId(),
+                reqDTO.getSerializedJson(),
+                reqDTO.getBlockExtensionJson()
+        )).thenReturn(respDTO);
+
+        // when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/solved-questions/{questionId}/{userId}", reqDTO.getQuestionId(), reqDTO.getUserId())
+
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(reqDTO)) // ← DTO → JSON 변환
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        // eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        //then
+        actions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestionId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.userId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.questionId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.serializedJson").value("json~~~~"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.blockExtensionJson").value("json~~~~"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.status").value("IN_PROGRESS"))
+                .andDo(document);
+    }
+
+    @Test
+    public void solved_question_detail_test() throws Exception {
+        // given
+        Integer questionId = 1;
+
+        Question question = new Question().builder()
+                .id(questionId)
+                .title("문제 제목")
+                .content("문제 내용")
+                .build();
+
+        SolvedQuestion solvedQuestion = new SolvedQuestion().builder()
+                .id(questionId)
+                .AiComment("AI 코멘트")
+                .serializedJson("json~~~")
+                .blockExtensionJson("json~~~")
+                .build();
+
+        QuestionResponse.SolvedQuestionDetailDTO respDTO = new QuestionResponse.SolvedQuestionDetailDTO(
+                question, solvedQuestion
+        );
+
+        // Stub 설정
+        Mockito.when(checkService.solvedQuestionDetailGet(questionId))
+                .thenReturn(respDTO);
+
+        // when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/solved-questions/{id}", questionId)
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        // eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        // then
+        actions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.questionId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.title").value("문제 제목"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.content").value("문제 내용"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.aiComment").value("AI 코멘트"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.serializedJson").value("json~~~"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.blockExtensionJson").value("json~~~"))
+                .andDo(document); // RestDocs 문서화
+
     }
 }
