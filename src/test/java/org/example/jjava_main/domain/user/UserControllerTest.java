@@ -7,7 +7,6 @@ import org.example.jjava_main.dto.UserResponse;
 import org.example.jjava_main.dto.UserResponse.LevelUpdateResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.MediaType;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,7 +22,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -41,7 +39,7 @@ class UserControllerTest extends MyRestDoc {
 
     private User mockUser;
 
-    // ✅ 테스트용 UserService Bean 등록
+    // 테스트용 UserService Bean 등록
     @TestConfiguration
     static class TestConfig {
         @Bean
@@ -50,7 +48,7 @@ class UserControllerTest extends MyRestDoc {
         }
     }
 
-    // ✅ 테스트용 SecurityFilterChain 등록 (모든 요청 허용)
+    // 테스트용 SecurityFilterChain 등록 (모든 요청 허용)
     @TestConfiguration
     static class TestSecurityConfig {
         @Bean
@@ -63,7 +61,7 @@ class UserControllerTest extends MyRestDoc {
 
     @BeforeEach
     void set_up_security_context() {
-        // ✅ mock 유저 생성
+        // mock 유저 생성
         mockUser = User.builder()
                 .id(1)
                 .email("ssar1234@nate.com")
