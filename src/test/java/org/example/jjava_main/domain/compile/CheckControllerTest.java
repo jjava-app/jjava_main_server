@@ -372,4 +372,55 @@ public class CheckControllerTest extends MyRestDoc {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.status").value("IN_PROGRESS"))
                 .andDo(document);
     }
+
+    @Test
+    public void solved_question_detail_test() throws Exception {
+        // given
+        Integer questionId = 1;
+
+        Question question = new Question().builder()
+                .id(questionId)
+                .title("문제 제목")
+                .content("문제 내용")
+                .build();
+
+        SolvedQuestion solvedQuestion = new SolvedQuestion().builder()
+                .id(questionId)
+                .AiComment("AI 코멘트")
+                .serializedJson("json~~~")
+                .blockExtensionJson("json~~~")
+                .build();
+
+        QuestionResponse.SolvedQuestionDetailDTO respDTO = new QuestionResponse.SolvedQuestionDetailDTO(
+                question, solvedQuestion
+        );
+
+        // Stub 설정
+        Mockito.when(checkService.solvedQuestionDetailGet(questionId))
+                .thenReturn(respDTO);
+
+        // when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/solved-questions/{id}", questionId)
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        // eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println(responseBody);
+
+        // then
+        actions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.questionId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.title").value("문제 제목"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.content").value("문제 내용"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.aiComment").value("AI 코멘트"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.serializedJson").value("json~~~"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.blockExtensionJson").value("json~~~"))
+                .andDo(document); // RestDocs 문서화
+
+    }
 }
