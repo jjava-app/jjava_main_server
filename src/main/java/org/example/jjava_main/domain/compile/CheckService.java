@@ -211,7 +211,7 @@ public class CheckService {
         return new QuestionResponse.SolvedQuestionDetailDTO(question,solvedQuestion);
     }
 
-    //내가 푼 문제 리스트
+    // 내가 푼 문제 리스트
     public QuestionResponse.SolvedQuestionListDTO solvedQuestionListGet(Integer userId) {
 
         // 1. 유저가 푼 문제 가져오기
@@ -222,4 +222,11 @@ public class CheckService {
     }
 
 
+    public QuestionResponse.HomeDTO solvedQuestionListLimit3(User user) {
+        // 1. 유저가 푼 문제 가져오기
+        List<SolvedQuestion> solvedQuestions = questionRepository.findSolvedQuestionByUserId(user.getId());
+        
+        // DTO 반환
+        return new QuestionResponse.HomeDTO(solvedQuestions);
+    }
 }

@@ -97,31 +97,54 @@ public class LeaderboardRepository {
     }
 
     public LeaderboardResponse.DTO findTop10() {
-        String sql = """
-            SELECT t.user_id AS userId, t.username, t.score, t.rnk AS rank
+        // 1) rank_tb 스냅샷 기반 조회
+        String bySnapshot = """
+        SELECT r.user_id       AS userId,
+               u.username      AS username,
+               r.after_score   AS currentScore,
+               r.delta_score   AS delta,
+               r.rank_number   AS rank
+        FROM rank_tb r
+        JOIN user_tb u ON u.id = r.user_id
+        ORDER BY r.rank_number, r.user_id
+        LIMIT 10
+    """;
+
+        List<Object[]> rows = em.createNativeQuery(bySnapshot).getResultList();
+
+        // 2) 스냅샷이 비어있으면 '지금 기준'으로 Δ 계산해 즉석 반환 (폴백)
+        if (rows == null || rows.isEmpty()) {
+            String liveQuery = """
+            SELECT t.user_id     AS userId,
+                   t.username    AS username,
+                   t.after_score AS currentScore,
+                   t.delta_score AS delta,
+                   t.rnk         AS rank
             FROM (
                 SELECT u.id AS user_id,
                        u.username,
-                       u.score,
-                       DENSE_RANK() OVER (ORDER BY u.score DESC, u.id ASC) AS rnk
+                       u.score AS after_score,
+                       (u.score - COALESCE(s.base_score, 0)) AS delta_score,
+                       DENSE_RANK() OVER (
+                           ORDER BY (u.score - COALESCE(s.base_score, 0)) DESC, u.id ASC
+                       ) AS rnk
                 FROM user_tb u
+                LEFT JOIN scoreboard_tb s ON s.user_id = u.id
             ) t
             ORDER BY t.rnk, t.user_id
             LIMIT 10
         """;
-
-        Query query = em.createNativeQuery(sql);
-
-        List<Object[]> rows = (List<Object[]>) query.getResultList();
+            rows = em.createNativeQuery(liveQuery).getResultList();
+        }
 
         List<LeaderboardResponse.ItemDTO> items = new ArrayList<>(rows.size());
         for (Object[] r : rows) {
-            // 컬럼 순서: userId(0), username(1), score(2), rank(3)
             items.add(LeaderboardResponse.ItemDTO.builder()
                     .userId(toInt(r[0]))
                     .username(r[1] != null ? r[1].toString() : null)
-                    .score(toInt(r[2]))
-                    .rank(toInt(r[3]))
+                    .currentScore(toInt(r[2])) // after_score
+                    .delta(toInt(r[3]))        // delta_score
+                    .rank(toInt(r[4]))
                     .build());
         }
 

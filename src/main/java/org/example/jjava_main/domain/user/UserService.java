@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserResponse userGet(User user) {
+    public UserResponse.DTO userGet(User user) {
 
         int rank = userRepository.findRankByScoreAndId(user.getScore());
 
-        return new UserResponse(user, rank);
+        return new UserResponse.DTO(user, rank);
     }
 
 

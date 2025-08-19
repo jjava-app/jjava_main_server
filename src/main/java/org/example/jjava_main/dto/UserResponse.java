@@ -12,20 +12,23 @@ import java.util.List;
 
 @Data
 public class UserResponse {
-    private Integer id;
-    private String email;
-    private String username;
-    private String level;
-    private Integer score;
-    private Integer rank;
+    @Data
+    public static class DTO {
+        private Integer id;
+        private String email;
+        private String username;
+        private String level;
+        private Integer score;
+        private Integer rank;
 
-    public UserResponse(User user, Integer rank) {
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.username = user.getUsername();
-        this.level = user.getLevel().toString();
-        this.score = user.getScore();
-        this.rank = rank;
+        public DTO(User user, Integer rank) {
+            this.id = user.getId();
+            this.email = user.getEmail();
+            this.username = user.getUsername();
+            this.level = user.getLevel() != null ? user.getLevel().name() : UserLevel.BEGINNER.name();
+            this.score = user.getScore() != null ? user.getScore() : 0;
+            this.rank = rank;
+        }
     }
 
     @Data
