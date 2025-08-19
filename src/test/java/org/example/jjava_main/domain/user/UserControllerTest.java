@@ -81,7 +81,7 @@ class UserControllerTest extends MyRestDoc {
     @Test
     void get_my_page_profile_success() throws Exception {
         // given
-        UserResponse response = new UserResponse(mockUser, 155);
+        UserResponse.DTO response = new UserResponse.DTO(mockUser, 155);
         when(userService.userGet(any(User.class))).thenReturn(response);
 
         // when
