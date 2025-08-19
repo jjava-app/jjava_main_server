@@ -68,7 +68,7 @@ public class AuthService implements UserDetailsService {
         String nickName = (n.getName() != null && !n.getName().isBlank())
                 ? n.getName() : (n.getNickname() != null ? n.getNickname() : "네이버사용자");
 
-        Provider naver = providerRepository.findByType(ProviderType.NAVER)
+        Provider naver = providerRepository.findByProviderType(ProviderType.NAVER)
                 .orElseThrow(() -> new IllegalStateException("Provider NAVER not seeded"));
 
 
@@ -119,7 +119,7 @@ public class AuthService implements UserDetailsService {
                 ? k.getKakaoAccount().getProfile().getNickname()
                 : "카카오사용자";
 
-        Provider kakao = providerRepository.findByType(ProviderType.KAKAO)
+        Provider kakao = providerRepository.findByProviderType(ProviderType.KAKAO)
                 .orElseThrow(() -> new IllegalStateException("Provider Kakao not seeded"));
 
         // (A) (provider, providerId) 매핑 존재 여부 확인
@@ -166,7 +166,7 @@ public class AuthService implements UserDetailsService {
         String email = g.getEmail();    // null 가능
         String nickName = (g.getName() != null && !g.getName().isBlank()) ? g.getName() : "Google사용자";
 
-        Provider google = providerRepository.findByType(ProviderType.GOOGLE)
+        Provider google = providerRepository.findByProviderType(ProviderType.GOOGLE)
                 .orElseThrow(() -> new IllegalStateException("Provider GOOGLE not seeded"));
 
 
