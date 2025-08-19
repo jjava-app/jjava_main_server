@@ -16,17 +16,17 @@ public class LeaderboardController {
 
     @PostMapping("/snapshot")
     public ResponseEntity<?> snapshot() {
-        return ResponseEntity.ok(leaderboardService.snapshotOnce());
+        return Resp.ok(leaderboardService.snapshotOnce());
     }
 
     @PostMapping("/increment/{userId}/{delta}")
     public ResponseEntity<?> incrementAndSnapshot(@PathVariable int userId, @PathVariable int delta) {
-        return ResponseEntity.ok(leaderboardService.incrementAndSnapshot(userId, delta));
+        return Resp.ok(leaderboardService.incrementAndSnapshot(userId, delta));
     }
 
     @PostMapping("/bulk-increment")
     public ResponseEntity<?> bulkIncrementAndSnapshot(@RequestBody Map<Integer, Integer> deltas) {
-        return ResponseEntity.ok(leaderboardService.bulkIncrementAndSnapshot(deltas));
+        return Resp.ok(leaderboardService.bulkIncrementAndSnapshot(deltas));
     }
 
     @GetMapping("/top10")

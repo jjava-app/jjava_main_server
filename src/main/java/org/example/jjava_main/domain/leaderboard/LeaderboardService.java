@@ -39,4 +39,11 @@ public class LeaderboardService {
     public LeaderboardResponse.DTO top10List() {
         return leaderboardRepository.findTop10();
     }
+
+    /** 주간 리셋: rank_tb 비우고, 모든 유저의 base_score를 현재 점수로 덮어쓰기 */
+    @Transactional
+    public int resetForNewWeek() {
+        leaderboardRepository.clearRankTable();
+        return leaderboardRepository.updateScoreboardsToCurrent();
+    }
 }
