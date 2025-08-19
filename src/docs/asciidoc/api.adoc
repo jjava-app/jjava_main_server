@@ -240,3 +240,13 @@ include::{snippets}/{admin}/question_delete_test/http-request.adoc[]
 ===== Response Example
 include::{snippets}/{admin}/question_delete_test/http-response.adoc[]
 
+== 6. 리더보드
+
+=== 1. Top10 조회
+
+==== Request
+include::{snippets}/leaderboard/top10_test/http-request.adoc[]
+
+==== Response
+include::{snippets}/leaderboard/top10_test/http-response.adoc[]
+
