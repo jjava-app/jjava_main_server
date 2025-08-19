@@ -14,22 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.*;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.ArgumentMatchers.contains;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@Sql(scripts = {"/db/clear.sql", "/db/data.sql"},
-        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class AuthControllerTest extends MyRestDoc {
 
     @Autowired
@@ -161,7 +156,7 @@ public class AuthControllerTest extends MyRestDoc {
                         .contentType(MediaType.APPLICATION_JSON)
         );
         actions.andDo(print())
-               .andExpect(status().isOk())
+                .andExpect(status().isOk())
                 // Resp.ok(...) 래핑 구조가 {"data": {...}} 라고 가정
                 .andExpect(jsonPath("$.body.email").value("ssar1234@nate.com"))
                 .andExpect(jsonPath("$.body.nickname").value("ssar"))
@@ -186,10 +181,11 @@ public class AuthControllerTest extends MyRestDoc {
                         .contentType(MediaType.APPLICATION_JSON)
         );
         actions.andDo(print())
-               .andExpect(status().isBadRequest())
+                .andExpect(status().isBadRequest())
                 // 에러 응답 바디 구조가 프로젝트마다 달라서, 메시지 텍스트로 판정 (필요 시 jsonPath로 조정)
-               .andExpect(jsonPath("$.status").value(400))
-               .andExpect(jsonPath("$.msg").value("비밀번호가 일치하지 않습니다."))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.msg").value("비밀번호가 일치하지 않습니다."))
                 .andDo(document);
     }
 }
+

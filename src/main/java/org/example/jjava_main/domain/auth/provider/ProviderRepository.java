@@ -14,7 +14,7 @@ public class ProviderRepository {
     @PersistenceContext
     private final EntityManager em;
 
-    public Optional<Provider> findByType(ProviderType type) {
+    public Optional<Provider> findByProviderType(ProviderType type) {
         List<Provider> list = em.createQuery(
                         "select p from Provider p where p.providerType = :type", Provider.class)
                 .setParameter("type", type)

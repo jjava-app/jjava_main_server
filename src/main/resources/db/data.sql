@@ -213,7 +213,7 @@ VALUES (1, null),
 
 
 INSERT INTO provider_tb (provider_type)
-VALUES ('GOOGLE'),
-       ('NAVER'),
-       ('KAKAO');
+VALUES ('NAVER'),
+       ('KAKAO'),
+       ('GOOGLE');
 
