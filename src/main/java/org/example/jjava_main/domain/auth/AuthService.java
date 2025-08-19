@@ -9,6 +9,7 @@ import org.example.jjava_main._core.util.JwtUtil;
 import org.example.jjava_main._core.util.PrincipalDetails;
 import org.example.jjava_main.domain.auth.provider.*;
 import org.example.jjava_main.domain.user.User;
+import org.example.jjava_main.domain.user.UserLevel;
 import org.example.jjava_main.domain.user.UserRepository;
 import org.example.jjava_main.domain.user.UserRole;
 import org.example.jjava_main.dto.SocialLoginResponse;
@@ -221,6 +222,8 @@ public class AuthService implements UserDetailsService {
                 .password(BCrypt.hashpw(UUID.randomUUID().toString(), BCrypt.gensalt()))
                 .email(email)        // null 허용
                 .role(UserRole.USER)
+                .level(UserLevel.BEGINNER)
+                .score(0)
                 .build();
     }
 

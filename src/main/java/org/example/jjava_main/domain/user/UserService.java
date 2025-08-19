@@ -26,7 +26,7 @@ public class UserService {
 
 
     @Transactional
-    public LevelUpdateResponse levelUpdate(UserRequest.LevelUpdateDTO reqDTO, User user) {
+    public LevelUpdateResponse userUpdate(UserRequest.LevelUpdateDTO reqDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new RuntimeException());
 

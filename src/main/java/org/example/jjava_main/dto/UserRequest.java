@@ -7,22 +7,17 @@ import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.domain.user.UserLevel;
 import org.example.jjava_main.domain.user.UserRole;
 
-import jakarta.validation.constraints.*;
-import lombok.Data;
-import org.example.jjava_main.domain.user.User;
-import org.example.jjava_main.domain.user.UserLevel;
-import org.example.jjava_main.domain.user.UserRole;
-
 public class UserRequest {
 
     @Data
     public static class LevelUpdateDTO {
-        private UserLevel level;
         private String username;
+        private UserLevel level;
 
-        public LevelUpdateDTO(UserLevel level, String username) {
-            this.level = level;
+
+        public LevelUpdateDTO(String username, UserLevel level) {
             this.username = username;
+            this.level = level;
         }
     }
 
@@ -70,7 +65,7 @@ public class UserRequest {
 
     //유저수정 - Min
     @Data
-    public static class UserUpdateDTO{
+    public static class UserUpdateDTO {
         private String username;
         private String email;
         private UserRole role;

@@ -117,7 +117,7 @@ class UserControllerTest extends MyRestDoc {
                 .build();
 
         LevelUpdateResponse respDTO = new LevelUpdateResponse(updatedUser);
-        when(userService.levelUpdate(any(UserRequest.LevelUpdateDTO.class), any(User.class)))
+        when(userService.userUpdate(any(UserRequest.LevelUpdateDTO.class), any(User.class)))
                 .thenReturn(respDTO);
 
         // when & then

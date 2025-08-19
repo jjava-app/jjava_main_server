@@ -24,7 +24,7 @@ public class UserResponse {
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.level = user.getLevel() != null ? user.getLevel().name() : UserLevel.BEGINNER.name();
-        this.score = user.getScore();
+        this.score = user.getScore() != null ? user.getScore() : 0;
         this.rank = rank;
     }
 
