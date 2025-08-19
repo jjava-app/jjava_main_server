@@ -102,4 +102,13 @@ public class QuestionRepository {
                         .getSingleResult()
         );
     }
+
+
+    // 내가 푼 문제 리스트
+//    public List<Question> findSolvedQuestionList(Integer userId) {
+//        Query query = em.createQuery("select q from Question q join fetch SolvedQuestion s where s.user.id = :userId");
+//        query.setParameter("userId", userId);
+//        return query.getResultList();
+//    }
+
 }

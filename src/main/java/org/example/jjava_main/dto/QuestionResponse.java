@@ -6,6 +6,8 @@ import org.example.jjava_main.domain.question.ProgressStatus;
 import org.example.jjava_main.domain.question.Question;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class QuestionResponse {
 
@@ -60,6 +62,7 @@ public class QuestionResponse {
         private String AiComment;
         private String serializedJson;
         private String blockExtensionJson;
+        private String createdAt;
 
         public SolvedQuestionDetailDTO(Question question, SolvedQuestion solvedQuestion) {
             this.questionId = question.getId();
@@ -68,6 +71,7 @@ public class QuestionResponse {
             this.AiComment = solvedQuestion.getAiComment();
             this.serializedJson = solvedQuestion.getSerializedJson();
             this.blockExtensionJson = solvedQuestion.getBlockExtensionJson();
+            this.createdAt = solvedQuestion.getCreatedAt().toString();
         }
     }
 
@@ -119,6 +123,37 @@ public class QuestionResponse {
             this.questionType = question.getType().toString();
             this.title = question.getTitle();
             this.content = question.getContent();
+        }
+    }
+    // 내가푼 문제 리스트
+    @Data
+    public static class SolvedQuestionListDTO {
+        private Map<String, List<SolvedQuestionDTO>> groupedSolvedQuestions;
+
+        @Data
+        public static class SolvedQuestionDTO {
+            private Integer solvedQuestionId;
+            private Integer questionId;
+            private String title;
+            private String questionType;
+
+            public SolvedQuestionDTO(SolvedQuestion solvedQuestion) {
+                this.solvedQuestionId = solvedQuestion.getId();
+                this.questionId = solvedQuestion.getQuestion().getId();
+                this.title = solvedQuestion.getQuestion().getTitle();
+                this.questionType = solvedQuestion.getQuestion().getType().toString();
+            }
+        }
+
+        public SolvedQuestionListDTO(List<SolvedQuestion> solvedQuestionList) {
+            // SolvedQuestion → SolvedQuestionDTO 변환
+            List<SolvedQuestionDTO> dtoList = solvedQuestionList.stream()
+                    .map(SolvedQuestionDTO::new)
+                    .collect(Collectors.toList());
+
+            // questionType별로 그룹핑
+            this.groupedSolvedQuestions = dtoList.stream()
+                    .collect(Collectors.groupingBy(SolvedQuestionDTO::getQuestionType));
         }
     }
 }
