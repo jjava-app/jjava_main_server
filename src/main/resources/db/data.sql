@@ -169,32 +169,32 @@ VALUES ('ARRAY',
 
 -- solved_question_tb
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
-                                progress_status)
-VALUES (2, 5, '리팩토링', 'json', 'json', 'IN_PROGRESS');
+                                progress_status, created_at)
+VALUES (2, 5, '리팩토링', 'json', 'json', 'IN_PROGRESS', now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
-                                progress_status)
-VALUES (2, 6, '리팩토링', 'json', 'json', 'IN_PROGRESS');
+                                progress_status, created_at)
+VALUES (2, 6, '리팩토링', 'json', 'json', 'IN_PROGRESS',now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
-                                progress_status)
-VALUES (2, 7, '리팩토링', 'json', 'json', 'IN_PROGRESS');
+                                progress_status, created_at)
+VALUES (2, 7, '리팩토링', 'json', 'json', 'IN_PROGRESS',now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
-                                progress_status)
-VALUES (3, 8, '리팩토링', 'json', 'json', 'IN_PROGRESS');
+                                progress_status, created_at)
+VALUES (3, 8, '리팩토링', 'json', 'json', 'IN_PROGRESS',now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
-                                progress_status)
-VALUES (3, 1, '리팩토링', 'json', 'json', 'REVIEWED');
+                                progress_status, created_at)
+VALUES (3, 1, '리팩토링', 'json', 'json', 'REVIEWED',now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
-                                progress_status)
-VALUES (3, 2, '리팩토링', 'json', 'json', 'REVIEWED');
+                                progress_status, created_at)
+VALUES (3, 2, '리팩토링', 'json', 'json', 'REVIEWED',now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
-                                progress_status)
-VALUES (3, 3, '리팩토링', 'json', 'json', 'REVIEWED');
+                                progress_status, created_at)
+VALUES (3, 3, '리팩토링', 'json', 'json', 'REVIEWED',now());
 
 
 INSERT INTO workspace_tb (user_id, title, serialized_json, block_extension_json, created_at)
