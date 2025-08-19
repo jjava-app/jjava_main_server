@@ -12,6 +12,7 @@ import java.util.List;
 
 @Data
 public class UserResponse {
+    @Data
     public static class DTO {
         private Integer id;
         private String email;

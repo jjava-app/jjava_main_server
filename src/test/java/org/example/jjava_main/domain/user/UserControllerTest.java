@@ -90,7 +90,7 @@ class UserControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andExpect(jsonPath("$.body.email").value("ssar1234@nate.com"))
                 .andExpect(jsonPath("$.body.username").value("ssar"))
-                .andExpect(jsonPath("$.body.level").value("EXPERT"))
+                .andExpect(jsonPath("$.body.level").value(UserLevel.EXPERT.name()))
                 .andExpect(jsonPath("$.body.score").value(2530))
                 .andExpect(jsonPath("$.body.rank").value(155))
                 .andDo(MockMvcResultHandlers.print())
