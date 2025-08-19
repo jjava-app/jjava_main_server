@@ -19,9 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -208,4 +210,16 @@ public class CheckService {
         // TODO 2 : DTO 반환
         return new QuestionResponse.SolvedQuestionDetailDTO(question,solvedQuestion);
     }
+
+    //내가 푼 문제 리스트
+    public QuestionResponse.SolvedQuestionListDTO solvedQuestionListGet(Integer userId) {
+
+        // 1. 유저가 푼 문제 가져오기
+        List<SolvedQuestion> solvedQuestions = questionRepository.findSolvedQuestionByUserId(userId);
+
+        // 2. 타입별로 그룹핑 후 DTO로 변환
+        return new QuestionResponse.SolvedQuestionListDTO(solvedQuestions);
+    }
+
+
 }

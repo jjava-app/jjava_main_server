@@ -35,6 +35,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -378,17 +380,21 @@ public class CheckControllerTest extends MyRestDoc {
         // given
         Integer questionId = 1;
 
-        Question question = new Question().builder()
+        Question question = Question.builder()
                 .id(questionId)
                 .title("문제 제목")
                 .content("문제 내용")
                 .build();
 
-        SolvedQuestion solvedQuestion = new SolvedQuestion().builder()
+        // 현재 시간 생성
+        Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+
+        SolvedQuestion solvedQuestion = SolvedQuestion.builder()
                 .id(questionId)
                 .AiComment("AI 코멘트")
                 .serializedJson("json~~~")
                 .blockExtensionJson("json~~~")
+                .createdAt(createdAt)  // 여기에 생성일 추가
                 .build();
 
         QuestionResponse.SolvedQuestionDetailDTO respDTO = new QuestionResponse.SolvedQuestionDetailDTO(
@@ -420,7 +426,7 @@ public class CheckControllerTest extends MyRestDoc {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.aiComment").value("AI 코멘트"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.serializedJson").value("json~~~"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.blockExtensionJson").value("json~~~"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.createdAt").value(createdAt.toString())) // createdAt 확인
                 .andDo(document); // RestDocs 문서화
-
     }
 }
