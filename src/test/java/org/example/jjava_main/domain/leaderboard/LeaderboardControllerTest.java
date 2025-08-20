@@ -1,6 +1,7 @@
 package org.example.jjava_main.domain.leaderboard;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main.controller.LeaderboardController;
 import org.example.jjava_main.domain.user.*;
 import org.example.jjava_main.dto.LeaderboardResponse;
@@ -35,9 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = LeaderboardController.class)
-@AutoConfigureRestDocs // build/generated-snippets/ 아래에 스니펫 생성
 @Import({LeaderboardControllerTest.TestConfig.class, LeaderboardControllerTest.TestSecurityConfig.class})
-public class LeaderboardControllerTest {
+public class LeaderboardControllerTest extends MyRestDoc {
 
     @Autowired
     private MockMvc mockMvc;
