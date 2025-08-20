@@ -81,7 +81,7 @@ class UserControllerTest extends MyRestDoc {
     @Test
     void get_my_page_profile_success() throws Exception {
         // given
-        UserResponse response = new UserResponse(mockUser, 155);
+        UserResponse.DTO response = new UserResponse.DTO(mockUser, 155);
         when(userService.userGet(any(User.class))).thenReturn(response);
 
         // when
@@ -90,7 +90,7 @@ class UserControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andExpect(jsonPath("$.body.email").value("ssar1234@nate.com"))
                 .andExpect(jsonPath("$.body.username").value("ssar"))
-                .andExpect(jsonPath("$.body.level").value("EXPERT"))
+                .andExpect(jsonPath("$.body.level").value(UserLevel.EXPERT.name()))
                 .andExpect(jsonPath("$.body.score").value(2530))
                 .andExpect(jsonPath("$.body.rank").value(155))
                 .andDo(MockMvcResultHandlers.print())

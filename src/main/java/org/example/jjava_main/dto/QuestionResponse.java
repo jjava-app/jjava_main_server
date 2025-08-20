@@ -5,8 +5,7 @@ import org.example.jjava_main.domain.compile.SolvedQuestion;
 import org.example.jjava_main.domain.question.ProgressStatus;
 import org.example.jjava_main.domain.question.Question;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class QuestionResponse {
@@ -125,25 +124,26 @@ public class QuestionResponse {
             this.content = question.getContent();
         }
     }
+    @Data
+    public static class SolvedQuestionDTO {
+        private Integer solvedQuestionId;
+        private Integer questionId;
+        private String title;
+        private String questionType;
+
+        public SolvedQuestionDTO(SolvedQuestion solvedQuestion) {
+            this.solvedQuestionId = solvedQuestion.getId();
+            this.questionId = solvedQuestion.getQuestion().getId();
+            this.title = solvedQuestion.getQuestion().getTitle();
+            this.questionType = solvedQuestion.getQuestion().getType().toString();
+        }
+    }
+
     // 내가푼 문제 리스트
     @Data
     public static class SolvedQuestionListDTO {
         private Map<String, List<SolvedQuestionDTO>> groupedSolvedQuestions;
 
-        @Data
-        public static class SolvedQuestionDTO {
-            private Integer solvedQuestionId;
-            private Integer questionId;
-            private String title;
-            private String questionType;
-
-            public SolvedQuestionDTO(SolvedQuestion solvedQuestion) {
-                this.solvedQuestionId = solvedQuestion.getId();
-                this.questionId = solvedQuestion.getQuestion().getId();
-                this.title = solvedQuestion.getQuestion().getTitle();
-                this.questionType = solvedQuestion.getQuestion().getType().toString();
-            }
-        }
 
         public SolvedQuestionListDTO(List<SolvedQuestion> solvedQuestionList) {
             // SolvedQuestion → SolvedQuestionDTO 변환
@@ -154,6 +154,20 @@ public class QuestionResponse {
             // questionType별로 그룹핑
             this.groupedSolvedQuestions = dtoList.stream()
                     .collect(Collectors.groupingBy(SolvedQuestionDTO::getQuestionType));
+        }
+    }
+
+    @Data
+    public static class HomeDTO {
+        private List<SolvedQuestionDTO> sqList;
+
+        public HomeDTO(List<SolvedQuestion> sqList) {
+            List<SolvedQuestion> safe = (sqList == null) ? Collections.emptyList() : sqList;
+
+            this.sqList = safe.stream()
+                    .limit(3)
+                    .map(SolvedQuestionDTO::new)
+                    .toList();
         }
     }
 }

@@ -10,14 +10,16 @@ public class LeaderboardResponse {
     public static class ItemDTO {
         private Integer userId;
         private String username;
-        private Integer score;
+        private Integer currentScore; // after_score
+        private Integer delta;        // delta_score
         private Integer rank;
 
         @Builder
-        public ItemDTO(Integer userId, String username, Integer score, Integer rank) {
+        public ItemDTO(Integer userId, String username, Integer currentScore, Integer delta, Integer rank) {
             this.userId = userId;
             this.username = username;
-            this.score = score;
+            this.currentScore = currentScore;
+            this.delta = delta;
             this.rank = rank;
         }
     }
