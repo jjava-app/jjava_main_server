@@ -138,7 +138,7 @@ include::{snippets}/{check}/check_proxy_and_code_refactor_fail_test/http-request
 ===== Response Example
 include::{snippets}/{check}/check_proxy_and_code_refactor_fail_test/http-response.adoc[]
 
-=== 4. 문제 저장
+=== 5. 문제 저장
 ===== Request Example
 include::{snippets}/{check}/solved_question_upsert_test/http-request.adoc[]
 
