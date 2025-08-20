@@ -15,20 +15,20 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserResponse userGet(User principal) {
-        User user = userRepository.findById(principal.getId())
+    public UserResponse userGet(User user) {
+        User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception404("유저를 찾을 수 없습니다."));
 
-        int safeScore = Optional.ofNullable(user.getScore()).orElse(0);
-        int rank = userRepository.findRankByScoreAndId(user.getScore());
-        return new UserResponse(user, rank);
+        int safeScore = Optional.ofNullable(userPS.getScore()).orElse(0);
+        int rank = userRepository.findRankByScoreAndId(userPS.getScore());
+        return new UserResponse(userPS, rank);
     }
 
 
     @Transactional
     public LevelUpdateResponse userUpdate(UserRequest.LevelUpdateDTO reqDTO, User user) {
         User userPS = userRepository.findById(user.getId())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new Exception404("유저를 찾을 수 없습니다."));
 
         userPS.userUpdate(reqDTO.getLevel(), reqDTO.getUsername());
 

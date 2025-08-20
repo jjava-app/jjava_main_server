@@ -65,7 +65,8 @@ public class AuthService implements UserDetailsService {
                 .map(NaverMeResponse::getResponse)
                 .orElseThrow(() -> new RuntimeException("Naver response empty"));
 
-        String email = n.getEmail();
+        String providerUserId = n.getId();
+        String providerEmail = n.getEmail();
         String nickName = (n.getName() != null && !n.getName().isBlank())
                 ? n.getName() : (n.getNickname() != null ? n.getNickname() : "네이버사용자");
 
@@ -74,23 +75,26 @@ public class AuthService implements UserDetailsService {
 
 
         // (A) (provider, providerId) 매핑 존재 여부 확인
-        var linkOpt = uapRepository.findLink(ProviderType.NAVER, n.getId());
+        var linkOpt = uapRepository.findLink(ProviderType.NAVER, providerUserId);
 
         User user;
 
         if (linkOpt.isPresent()) {
             // 이미 연결된 유저면 그 유저로 로그인
-            user = linkOpt.get().getUser();
+            var link = linkOpt.get();
+            user = link.getUser();
+            link.updateEmailIfChanged(providerEmail);
             log.info("[네이버] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), n.getId());
         } else {
             // (B) 없으면 기존 로직으로 유저 생성
-            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+            user = findOrCreateUser(nickName, providerEmail); // 네가 쓰던 생성 로직 그대로
 
             // (C) 매핑 저장
             var link = UserAccountProvider.builder()
                     .user(user)
                     .provider(naver)
-                    .providerUserId(n.getId())
+                    .providerUserId(providerUserId)
+                    .email(providerEmail)
                     .build();
             uapRepository.save(link);
             log.info("[네이버] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), n.getId());
