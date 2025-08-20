@@ -471,7 +471,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_2_문제_상세보기">2. 문제 상세보기</a></li>
 <li><a href="#_3_컴파일_검산_성공_ai_리팩토링">3. 컴파일 &amp; 검산 성공 &amp; AI 리팩토링</a></li>
 <li><a href="#_4_컴파일_검산_실패">4. 컴파일 &amp; 검산 실패</a></li>
-<li><a href="#_4_문제_저장">4. 문제 저장</a></li>
+<li><a href="#_5_문제_저장">5. 문제 저장</a></li>
 </ul>
 </li>
 <li><a href="#_4_워크_스페이스">4. 워크 스페이스</a>
@@ -637,7 +637,7 @@ Content-Length: 395
   "status" : 200,
   "msg" : "성공",
   "body" : {
-    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY29zIiwiZXhwIjoxNzU2Mjc1NDAwLCJpZCI6Niwicm9sZXMiOiJVU0VSIn0.iK_DylYKXWAa1U4t0g2J6QSQI3GFFzBNF1p8LYiiAnBxk_4pxUnMjww3Sh9z3j2nHYT1L8QEUsBB_FRyah2yWg",
+    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY29zIiwiZXhwIjoxNzU2MjgxMjU3LCJpZCI6Niwicm9sZXMiOiJVU0VSIn0.ApNclL4m57_m707y9AAqW1NlSzWNTkKghLHLyEDoAGIr2CCL9sqVaCMHH2FJRSxj6ccJ_wjwM5t4uCsSg94pkQ",
     "email" : "ccos@naver.com",
     "nickname" : "ccos",
     "level" : "EXPERT",
@@ -683,14 +683,14 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Set-Cookie: SESSION=MjAxNzQxYjYtNzEwYi00NjEwLWJhNDQtMmI2NGIxMDczYjI4; Path=/; HttpOnly; SameSite=Lax
+Set-Cookie: SESSION=ODcwNGRlOTgtNmUwMS00ZTA4LTgyYjItNTg5ZDE0M2Y1YTQy; Path=/; HttpOnly; SameSite=Lax
 Content-Length: 435
 
 {
   "status" : 200,
   "msg" : "성공",
   "body" : {
-    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzc2FyIiwiZXhwIjoxNzU2Mjc1Mzk5LCJpZCI6Miwicm9sZXMiOiJVU0VSIn0.ut7XftBrD61UNa-r0fne8n442yrav-QUs_ge6MVjIdRp2fwa3K46Ged9eHGVmL5ye6CU-7ZaviNVPVCkX497ag",
+    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzc2FyIiwiZXhwIjoxNzU2MjgxMjU3LCJpZCI6Miwicm9sZXMiOiJVU0VSIn0.C1smIBAA1KEFV5-iVMNfwKAH-tiw0uAZmOoKdJ78RK1mL9V83ibQWC5CLfNbDKZu9Yxex8knscJehuxdp8KG6Q",
     "id" : 2,
     "email" : "ssar1234@nate.com",
     "nickname" : "ssar",
@@ -922,7 +922,7 @@ Content-Length: 204
 <h5 id="_request_example_10">Request Example</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /users/mypage/level HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /users/update HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 52
 Host: localhost:8080
@@ -1068,7 +1068,7 @@ Content-Length: 177
 <h5 id="_request_example_13">Request Example</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /questions?userId=1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /questions HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
 </div>
@@ -1289,12 +1289,12 @@ Content-Length: 360
 </div>
 </div>
 <div class="sect2">
-<h3 id="_4_문제_저장">4. 문제 저장</h3>
+<h3 id="_5_문제_저장">5. 문제 저장</h3>
 <div class="sect4">
 <h5 id="_request_example_17">Request Example</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /solved-questions/1/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /solved-questions/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Content-Length: 113
@@ -1386,9 +1386,9 @@ Content-Length: 618
       "authorities" : [ {
         "authority" : "ROLE_USER"
       } ],
-      "credentialsNonExpired" : true,
+      "accountNonLocked" : true,
       "accountNonExpired" : true,
-      "accountNonLocked" : true
+      "credentialsNonExpired" : true
     },
     "title" : "워크스페이스1",
     "serializedJson" : null,
@@ -1442,9 +1442,9 @@ Content-Length: 614
       "authorities" : [ {
         "authority" : "ROLE_USER"
       } ],
-      "credentialsNonExpired" : true,
+      "accountNonLocked" : true,
       "accountNonExpired" : true,
-      "accountNonLocked" : true
+      "credentialsNonExpired" : true
     },
     "title" : "워크스페이스1",
     "serializedJson" : null,
@@ -1986,7 +1986,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1501
+Content-Length: 1500
 
 {
   "status" : 200,
@@ -1994,10 +1994,10 @@ Content-Length: 1501
   "body" : {
     "userDTO" : {
       "id" : 2,
-      "email" : "cos1234@naver.com",
-      "username" : "cos",
-      "level" : "INTERMEDIATE",
-      "score" : 0,
+      "email" : "ssar1234@nate.com",
+      "username" : "ssar",
+      "level" : "BEGINNER",
+      "score" : 120,
       "rank" : 1
     },
     "leaderboardDTO" : {
@@ -2063,7 +2063,7 @@ Content-Length: 1501
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2025-08-20 15:15:43 +0900
+Last updated 2025-08-20 16:53:59 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

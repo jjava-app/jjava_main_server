@@ -21,9 +21,9 @@ public class UserController {
         return Resp.ok(respDTO);
     }
 
-    @PutMapping("/mypage/level")
-    public ResponseEntity<?> levelUpdate(@AuthenticationPrincipal User user, @RequestBody UserRequest.LevelUpdateDTO reqDTO) {
-        var respDTO = userService.levelUpdate(reqDTO, user);
+    @PutMapping("/update")
+    public ResponseEntity<?> userUpdate(@AuthenticationPrincipal User user, @RequestBody UserRequest.LevelUpdateDTO reqDTO) {
+        var respDTO = userService.userUpdate(reqDTO, user);
         return Resp.ok(respDTO);
     }
 }

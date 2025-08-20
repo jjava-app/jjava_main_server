@@ -34,8 +34,8 @@ public class HomeControllerTest extends MyRestDoc {
     void set_up_security_context() {
         mockUser = User.builder()
                 .id(2)
-                .email("cos1234@naver.com")
-                .username("cos")
+                .email("ssar1234@naver.com")
+                .username("ssar")
                 .level(UserLevel.INTERMEDIATE)
                 .role(UserRole.USER)
                 .build();
@@ -64,10 +64,10 @@ public class HomeControllerTest extends MyRestDoc {
         actions.andExpect(jsonPath("$.msg").value("성공"));
 
         actions.andExpect(jsonPath("$.body.userDTO.id").value(2));
-        actions.andExpect(jsonPath("$.body.userDTO.email").value("cos1234@naver.com"));
-        actions.andExpect(jsonPath("$.body.userDTO.username").value("cos"));
-        actions.andExpect(jsonPath("$.body.userDTO.level").value("INTERMEDIATE"));
-        actions.andExpect(jsonPath("$.body.userDTO.score").value(0));
+        actions.andExpect(jsonPath("$.body.userDTO.email").value("ssar1234@nate.com"));
+        actions.andExpect(jsonPath("$.body.userDTO.username").value("ssar"));
+        actions.andExpect(jsonPath("$.body.userDTO.level").value("BEGINNER"));
+        actions.andExpect(jsonPath("$.body.userDTO.score").value(120));
         actions.andExpect(jsonPath("$.body.userDTO.rank").value(1));
 
         actions.andExpect(jsonPath("$.body.leaderboardDTO.rankingList[0].userId").value(2));
