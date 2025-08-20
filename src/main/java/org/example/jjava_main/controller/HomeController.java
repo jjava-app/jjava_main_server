@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
     private final UserService userService;
     private final LeaderboardService leaderboardService;
-    private final QuestionService questionService;
     private final CheckService checkService;
 
     @GetMapping("/home")
