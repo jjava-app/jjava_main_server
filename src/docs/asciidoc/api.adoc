@@ -9,6 +9,8 @@ endif::[]
 :user: user-controller-test
 :admin: admin-controller-test
 :workspace: workspace-controller-test
+:leaderboard: leaderboard
+:home: home-controller-test
 
 
 = REST API
@@ -250,3 +252,12 @@ include::{snippets}/leaderboard/top10_test/http-request.adoc[]
 ==== Response
 include::{snippets}/leaderboard/top10_test/http-response.adoc[]
 
+== 7. 홈 화면
+
+=== 1. 홈 화면 정보 조회
+
+==== Request
+include::{snippets}/{home}/home_test/http-request.adoc[]
+
+==== Response
+include::{snippets}/{home}/home_test/http-response.adoc[]
