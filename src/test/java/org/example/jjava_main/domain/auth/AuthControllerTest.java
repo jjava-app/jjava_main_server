@@ -17,11 +17,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.*;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.Matchers.nullValue;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
 @AutoConfigureMockMvc
@@ -71,7 +71,7 @@ public class AuthControllerTest extends MyRestDoc {
         actions.andExpect(jsonPath("$.body.available").value(false));
 
 
-        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
+        actions.andDo(print()).andDo(document);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class AuthControllerTest extends MyRestDoc {
         actions.andExpect(jsonPath("$.body.available").value(true));
 
 
-        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
+        actions.andDo(print()).andDo(document);
     }
 
     @Test
@@ -139,6 +139,54 @@ public class AuthControllerTest extends MyRestDoc {
         actions.andExpect(jsonPath("$.body.role").value("USER"));
 
 
-        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
+        actions.andDo(print()).andDo(document);
+    }
+
+    @Test
+    @DisplayName("로그인 성공 - 세션과 응답 확인")
+    void login_test() throws Exception {
+        // given
+        UserRequest.LoginDTO req = new UserRequest.LoginDTO();
+        req.setEmail("ssar1234@nate.com");
+        req.setPassword("1234");
+
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/login")
+                        .content(om.writeValueAsString(req))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+        actions.andDo(print())
+                .andExpect(status().isOk())
+                // Resp.ok(...) 래핑 구조가 {"data": {...}} 라고 가정
+                .andExpect(jsonPath("$.body.email").value("ssar1234@nate.com"))
+                .andExpect(jsonPath("$.body.nickname").value("ssar"))
+                // 토큰은 실제 값이 무엇이든 비어있지 않으면 OK (JwtUtil.create(...) 결과)
+                .andExpect(jsonPath("$.body.accessToken").exists())
+                .andDo(document);
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 비밀번호 불일치 시 400")
+    void login_wrong_password_test() throws Exception {
+        // given
+        UserRequest.LoginDTO req = new UserRequest.LoginDTO();
+        req.setEmail("ssar1234@nate.com");
+        req.setPassword("wrong-password");
+
+        // when & then
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/login")
+                        .content(om.writeValueAsString(req))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+        actions.andDo(print())
+                .andExpect(status().isBadRequest())
+                // 에러 응답 바디 구조가 프로젝트마다 달라서, 메시지 텍스트로 판정 (필요 시 jsonPath로 조정)
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.msg").value("비밀번호가 일치하지 않습니다."))
+                .andDo(document);
     }
 }
+

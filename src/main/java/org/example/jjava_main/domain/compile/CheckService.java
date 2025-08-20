@@ -1,7 +1,9 @@
 package org.example.jjava_main.domain.compile;
 
 import lombok.RequiredArgsConstructor;
+import org.example.jjava_main._core.error.ex.Exception403;
 import org.example.jjava_main._core.error.ex.Exception404;
+import org.example.jjava_main.domain.question.ProgressStatus;
 import org.example.jjava_main.domain.question.Question;
 import org.example.jjava_main.domain.question.QuestionRepository;
 import org.example.jjava_main.domain.user.User;
@@ -17,8 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -30,10 +35,13 @@ public class CheckService {
 
 
     @Transactional
-    public CheckResponse.PassDTO checkAndCodeRefactor(String userCode, Integer questionId, Integer userId) {
+    public CheckResponse.PassDTO checkAndCodeRefactor(String userCode, Integer questionId, Integer userId, String serializedJson, String blockExtensionJson) {
+        User userPS = userRepository.findById(userId).orElseThrow(() -> new Exception404("존재하지 않는 회원입니다."));
+
+        if (!userPS.getId().equals(userId)) throw new Exception403("권한이 없습니다.");
+
         // 문제 조회
-        Question question = questionRepository.findById(questionId);
-        if (question == null) throw new Exception404("문제를 찾을 수 없습니다.");
+        Question questionPS = questionRepository.findById(questionId).orElseThrow(() -> new Exception404("문제를 찾을 수 없습니다."));
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -89,16 +97,32 @@ public class CheckService {
             }
         }
 
+        // user score update
+        int score = 1;
+        userPS.scoreUpdate(userPS.getScore() + score);
+
+        // 3) SolvedQuestion upsert + REVIEWED 전환 + aiComment 저장
+        SolvedQuestion sq = questionRepository
+                .findSolvedQuestionByUserIdQuestionId(userId, questionId)
+                .orElseGet(() -> SolvedQuestion.builder()
+                        .user(userPS)
+                        .question(questionPS)
+                        .progressStatus(ProgressStatus.IN_PROGRESS) // 최초 생성 시점값
+                        .build());
+
+        if (serializedJson != null) sq.setSerializedJson(serializedJson);
+        if (blockExtensionJson != null) sq.setBlockExtensionJson(blockExtensionJson);
+        sq.updateProgressStatus(ProgressStatus.REVIEWED);
+        sq.updateAiComment(content); // 전체 응답 저장(원하면 notePart로 교체)
+
+
+        questionRepository.createSolvedQuestion(sq); // 저장/업데이트
+
         // 4. DTO 리턴
         CheckResponse.PassDTO passDTO = new CheckResponse.PassDTO();
         passDTO.setRefactoredCode(codePart);
         passDTO.setRefactorNote(notePart);
 
-        // user score update
-        User user = userRepository.findById(userId).orElseThrow();
-        if (user == null) throw new Exception404("존재하지 않는 회원입니다.");
-        int score = 1;
-        user.scoreUpdate(user.getScore() + score);
 
         // 결과 리턴 (refactoredCode, refactorNote 모두 포함됨)
         return passDTO;
@@ -106,14 +130,15 @@ public class CheckService {
 
 
     public QuestionResponse.ListDTO questionListGet(Integer userId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        if (user == null) throw new Exception404("존재하지 않는 회원입니다.");
+        User userPS = userRepository.findById(userId).orElseThrow(() -> new Exception404("존재하지 않는 회원입니다."));
+
+        if (!userPS.getId().equals(userId)) throw new Exception403("권한이 없습니다.");
 
         // 1) 전체 문제 조회
         List<Question> questions = questionRepository.findAll();
 
         // 2) 유저가 푼 문제 조회
-        List<SolvedQuestion> solvedList = questionRepository.findSolvedQuestionByUserId(userId);
+        List<SolvedQuestion> solvedList = questionRepository.findSolvedQuestionByUserId(userPS.getId());
 
         // 3) 응답 아이템 구성
         List<QuestionResponse.ListDTO.QuestionDTO> items = questions.stream()
@@ -133,14 +158,75 @@ public class CheckService {
         int totalCount = questions.size();
         int solvedCount = solvedList.size();
 
-        return new QuestionResponse.ListDTO(userId, totalCount, solvedCount, items, solvedQuestions);
+        return new QuestionResponse.ListDTO(userPS.getId(), totalCount, solvedCount, items, solvedQuestions);
     }
 
     public QuestionResponse.DetailDTO questionDetailGet(Integer questionId) {
         // 문제 조회
-        Question question = questionRepository.findById(questionId);
-        if (question == null) throw new Exception404("문제를 찾을 수 없습니다.");
+        Question questionPS = questionRepository.findById(questionId).orElse(null);
+        if (questionPS == null) throw new Exception404("문제를 찾을 수 없습니다.");
 
-        return new QuestionResponse.DetailDTO(questionId, question.getTitle(), question.getContent());
+        return new QuestionResponse.DetailDTO(questionPS.getId(), questionPS.getTitle(), questionPS.getContent());
+    }
+
+
+    // 푼 문제 저장 - 상태: IN_PROGRESS
+    @Transactional
+    public QuestionResponse.SolvedQuestionCreateDTO solvedQuestionUpsert(Integer userId, Integer questionId, String serializedJson, String blockExtensionJson) {
+        User userPS = userRepository.findById(userId).orElseThrow(() -> new Exception404("존재하지 않는 회원입니다."));
+        if (!userPS.getId().equals(userId)) throw new Exception403("권한이 없습니다.");
+
+        Question questionPS = questionRepository.findById(questionId).orElse(null);
+        if (questionPS == null) throw new Exception404("문제를 찾을 수 없습니다.");
+
+        SolvedQuestion solvedQuestionPS = questionRepository.findSolvedQuestionByUserIdQuestionId(userPS.getId(), questionId)
+                .map(sq -> {
+                    // 존재하면 필드 갱신
+                    if (serializedJson != null && blockExtensionJson != null)
+                        sq.updateJson(serializedJson, blockExtensionJson);
+                    return sq;
+                }).orElseGet(() -> SolvedQuestion.builder()
+                        .user(userPS)
+                        .question(questionPS)
+                        .serializedJson(serializedJson)
+                        .blockExtensionJson(blockExtensionJson)
+                        .progressStatus(ProgressStatus.IN_PROGRESS)
+                        .build());
+
+        SolvedQuestion newSolvedQuestion = questionRepository.createSolvedQuestion(solvedQuestionPS);
+
+        QuestionResponse.SolvedQuestionCreateDTO respDTO = new QuestionResponse.SolvedQuestionCreateDTO(newSolvedQuestion.getId(), newSolvedQuestion.getUser().getId(), newSolvedQuestion.getQuestion().getId(), newSolvedQuestion.getSerializedJson(), newSolvedQuestion.getBlockExtensionJson(), newSolvedQuestion.getProgressStatus());
+
+        return respDTO;
+    }
+
+    public QuestionResponse.SolvedQuestionDetailDTO solvedQuestionDetailGet(Integer questionId) {
+        SolvedQuestion solvedQuestion = questionRepository.findSolvedQuestionByQuestionId(questionId)
+                .orElseThrow(() -> new Exception404("해당 유저가 푼 문제가 아닙니다."));
+
+        Question question =  questionRepository.findById(questionId).orElse(null);
+        if(question == null) throw new Exception404("해당하는 문제가 없습니다.");
+
+        // TODO 2 : DTO 반환
+        return new QuestionResponse.SolvedQuestionDetailDTO(question,solvedQuestion);
+    }
+
+    // 내가 푼 문제 리스트
+    public QuestionResponse.SolvedQuestionListDTO solvedQuestionListGet(Integer userId) {
+
+        // 1. 유저가 푼 문제 가져오기
+        List<SolvedQuestion> solvedQuestions = questionRepository.findSolvedQuestionByUserId(userId);
+
+        // 2. 타입별로 그룹핑 후 DTO로 변환
+        return new QuestionResponse.SolvedQuestionListDTO(solvedQuestions);
+    }
+
+
+    public QuestionResponse.HomeDTO solvedQuestionListLimit3(User user) {
+        // 1. 유저가 푼 문제 가져오기
+        List<SolvedQuestion> solvedQuestions = questionRepository.findSolvedQuestionByUserId(user.getId());
+        
+        // DTO 반환
+        return new QuestionResponse.HomeDTO(solvedQuestions);
     }
 }
