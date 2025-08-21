@@ -13,39 +13,43 @@ import java.util.List;
 
 @Data
 public class UserResponse {
-    private Integer id;
-    private String email;
-    private String username;
-    private String level;
-    private Integer score;
-    private Integer rank;
+    @Data
+    public static class DTO {
+        private Integer id;
+        private String email;
+        private String username;
+        private String level;
+        private Integer score;
+        private Integer rank;
 
-    private List<LinkedAccountDTO> linked = Collections.emptyList();
+        private List<LinkedAccountDTO> linked = Collections.emptyList();
 
-    public UserResponse(User user, Integer rank) {
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.username = user.getUsername();
-        this.level = user.getLevel() != null ? user.getLevel().name() : UserLevel.BEGINNER.name();
-        this.score = user.getScore() != null ? user.getScore() : 0;
-        this.rank = rank;
 
+        public DTO(User user, Integer rank) {
+            this.id = user.getId();
+            this.email = user.getEmail();
+            this.username = user.getUsername();
+            this.level = user.getLevel() != null ? user.getLevel().name() : UserLevel.BEGINNER.name();
+            this.score = user.getScore() != null ? user.getScore() : 0;
+            this.rank = rank;
+        }
     }
 
     @Data
     public static class LinkedAccountDTO {
         private final String provider; // 'naver'|'google'|'kakao' (원하면 'local'도)
         private final String email;    // null 방지 위해 빈 문자열로 넣어줄 것
+
     }
 
     @Data
-    public static class LevelUpdateResponse {
+    public static class UpdateDTO {
         private Integer id;
         private String email;
         private String username;
         private String level;
 
-        public LevelUpdateResponse(User u) {
+        public UpdateDTO(User u) {
             this.id = u.getId();
             this.email = u.getEmail();
             this.username = u.getUsername();

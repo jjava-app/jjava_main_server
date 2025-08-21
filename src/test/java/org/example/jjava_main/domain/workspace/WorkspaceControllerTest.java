@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -87,24 +88,55 @@ public class WorkspaceControllerTest extends MyRestDoc {
 
     @Test
     void get_workspace_list() throws Exception {
-        Workspace workspace = Workspace.builder().id(1).title("워크스페이스1").user(mockUser).build();
-        when(workspaceService.workspaceList(mockUser)).thenReturn(List.of(workspace));
+        List<Workspace> workspaceList = List.of(
+                Workspace.builder().id(1).title("워크스페이스1").user(mockUser).build(),
+                Workspace.builder().id(2).title("워크스페이스2").user(mockUser).build(),
+                Workspace.builder().id(3).title("워크스페이스3").user(mockUser).build()
+        );
+
+
+        WorkspaceResponse.ListDTO respDTO = new WorkspaceResponse.ListDTO(workspaceList);
+        when(workspaceService.workspaceList(mockUser)).thenReturn(respDTO);
 
         mockMvc.perform(get("/workspace"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.body[0].title").value("워크스페이스1"))
+                .andExpect(jsonPath("$.body.workspaceList[0].id").value(1))
+                .andExpect(jsonPath("$.body.workspaceList[0].userId").value(1))
+                .andExpect(jsonPath("$.body.workspaceList[0].title").value("워크스페이스1"))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document);
     }
 
     @Test
     void get_workspace_detail() throws Exception {
-        Workspace workspace = Workspace.builder().id(1).title("워크스페이스1").user(mockUser).build();
-        when(workspaceService.workspaceDetail(1, mockUser)).thenReturn(workspace);
+        Integer workspaceId = 1;
+        String title = "워크스페이스1";
+        String serializedJson = "{\"blocks\":[]}";
+        String libraryJson = "{\"extensions\":[]}";
+
+        Workspace workspace = Workspace.builder()
+                .id(1)
+                .user(mockUser)
+                .title(title)
+                .serializedJson(serializedJson)
+                .build();
+
+        BlockLibrary blockLibrary = BlockLibrary.builder()
+                .id(1)
+                .user(mockUser)
+                .libraryJson(libraryJson)
+                .build();
+
+        WorkspaceResponse.DTO respDTO = new WorkspaceResponse.DTO(workspace, blockLibrary);
+        when(workspaceService.workspaceDetail(workspaceId, mockUser)).thenReturn(respDTO);
 
         mockMvc.perform(get("/workspace/1"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body.id").value(1))
+                .andExpect(jsonPath("$.body.userId").value(1))
                 .andExpect(jsonPath("$.body.title").value("워크스페이스1"))
+                .andExpect(jsonPath("$.body.serializedJson").value("{\"blocks\":[]}"))
+                .andExpect(jsonPath("$.body.libraryJson").value("{\"extensions\":[]}"))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document);
     }

@@ -9,6 +9,8 @@ endif::[]
 :user: user-controller-test
 :admin: admin-controller-test
 :workspace: workspace-controller-test
+:leaderboard: leaderboard
+:home: home-controller-test
 
 
 = REST API
@@ -136,7 +138,7 @@ include::{snippets}/{check}/check_proxy_and_code_refactor_fail_test/http-request
 ===== Response Example
 include::{snippets}/{check}/check_proxy_and_code_refactor_fail_test/http-response.adoc[]
 
-=== 4. 문제 저장
+=== 5. 문제 저장
 ===== Request Example
 include::{snippets}/{check}/solved_question_upsert_test/http-request.adoc[]
 
@@ -168,12 +170,63 @@ include::{snippets}/{workspace}/get_workspace_detail_not_found/http-request.adoc
 ===== Response Example
 include::{snippets}/{workspace}/get_workspace_detail_not_found/http-response.adoc[]
 
-=== 2. 워크 스페이스 상세보기 실패 - 권한 없음
+=== 4. 워크 스페이스 상세보기 실패 - 권한 없음
 ===== Request Example
 include::{snippets}/{workspace}/get_workspace_detail_forbidden/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/get_workspace_detail_forbidden/http-response.adoc[]
+
+=== 5. 워크 스페이스 생성
+===== Request Example
+include::{snippets}/{workspace}/create_workspace/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{workspace}/create_workspace/http-response.adoc[]
+
+=== 6. 워크 스페이스 저장
+===== Request Example
+include::{snippets}/{workspace}/update_workspace/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{workspace}/update_workspace/http-response.adoc[]
+
+=== 7. 워크 스페이스 저장 실패 - 권한 없음
+===== Request Example
+include::{snippets}/{workspace}/update_workspace_forbidden/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{workspace}/update_workspace_forbidden/http-response.adoc[]
+
+=== 8. 워크 스페이스 저장 실패 - 자원 부재
+===== Request Example
+include::{snippets}/{workspace}/update_workspace_not_found/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{workspace}/update_workspace_not_found/http-response.adoc[]
+
+=== 9. 워크 스페이스 삭제
+===== Request Example
+include::{snippets}/{workspace}/delete_workspace/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{workspace}/delete_workspace/http-response.adoc[]
+
+=== 10. 워크 스페이스 삭제 실패 - 권한 없음
+===== Request Example
+include::{snippets}/{workspace}/delete_workspace_forbidden/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{workspace}/delete_workspace_forbidden/http-response.adoc[]
+
+=== 11. 워크 스페이스 삭제 실패 - 자원 부재
+===== Request Example
+include::{snippets}/{workspace}/delete_workspace_not_found/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{workspace}/delete_workspace_not_found/http-response.adoc[]
+
+
 
 
 == 5. 관리자
@@ -240,3 +293,22 @@ include::{snippets}/{admin}/question_delete_test/http-request.adoc[]
 ===== Response Example
 include::{snippets}/{admin}/question_delete_test/http-response.adoc[]
 
+== 6. 리더보드
+
+=== 1. Top10 조회
+
+==== Request
+include::{snippets}/leaderboard/top10_test/http-request.adoc[]
+
+==== Response
+include::{snippets}/leaderboard/top10_test/http-response.adoc[]
+
+== 7. 홈 화면
+
+=== 1. 홈 화면 정보 조회
+
+==== Request
+include::{snippets}/{home}/home_test/http-request.adoc[]
+
+==== Response
+include::{snippets}/{home}/home_test/http-response.adoc[]

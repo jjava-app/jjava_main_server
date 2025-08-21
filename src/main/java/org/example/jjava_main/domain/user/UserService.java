@@ -6,7 +6,6 @@ import org.example.jjava_main.domain.auth.provider.UserAccountProvider;
 import org.example.jjava_main.domain.auth.provider.UserAccountProviderRepository;
 import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
-import org.example.jjava_main.dto.UserResponse.LevelUpdateResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,14 +18,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserAccountProviderRepository userAccountProviderRepository;
 
-    public UserResponse userGet(User user) {
+    public UserResponse.DTO userGet(User user) {
         User userPS = userRepository.findById(user.getId())
-                .orElseThrow(() -> new Exception404("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404("해당하는 유저가 없습니다."));
 
         int safeScore = Optional.ofNullable(userPS.getScore()).orElse(0);
         int rank = userRepository.findRankByScoreAndId(userPS.getScore());
 
-        UserResponse resp = new UserResponse(userPS, rank);
+        UserResponse.DTO resp = new UserResponse.DTO(userPS, rank);
 
         List<UserAccountProvider> links = userAccountProviderRepository.findAllByUserId(userPS.getId());
         List<UserResponse.LinkedAccountDTO> linked = links.stream()
@@ -41,18 +40,17 @@ public class UserService {
 
         resp.setLinked(linked);
         return resp;
-
     }
 
 
     @Transactional
-    public LevelUpdateResponse userUpdate(UserRequest.LevelUpdateDTO reqDTO, User user) {
+    public UserResponse.UpdateDTO userUpdate(UserRequest.LevelUpdateDTO reqDTO, User user) {
         User userPS = userRepository.findById(user.getId())
-                .orElseThrow(() -> new Exception404("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404("해당하는 유저가 없습니다."));
 
         userPS.userUpdate(reqDTO.getLevel(), reqDTO.getUsername());
 
         // user 객체 그대로 응답에 사용
-        return new LevelUpdateResponse(userPS);
+        return new UserResponse.UpdateDTO(userPS);
     }
 }
