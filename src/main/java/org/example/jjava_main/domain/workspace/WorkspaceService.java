@@ -31,16 +31,21 @@ public class WorkspaceService {
         return new WorkspaceResponse.CreateDTO(workspacePS);
     }
 
-    public List<Workspace> workspaceList(User user) {
+    public WorkspaceResponse.ListDTO workspaceList(User user) {
         List<Workspace> workspaceList = workspaceRepository.findAllbyUserId(user.getId());
-        return workspaceList;
+        return new WorkspaceResponse.ListDTO(workspaceList);
     }
 
-    public Workspace workspaceDetail(Integer workspaceId, User user) {
+    public WorkspaceResponse.DTO workspaceDetail(Integer workspaceId, User user) {
         Workspace workspacePS = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new Exception404("해당 워크스페이스가 존재하지 않습니다."));
         if(!workspacePS.getUser().getId().equals(user.getId())) throw new Exception403("해당 워크스페이스의 소유자가 아닙니다.");
-        return workspacePS;
+
+        BlockLibrary blockLibraryPS = workspaceRepository.findBlockLibraryByUserId(user.getId())
+                .orElseGet(null);
+        if(blockLibraryPS != null && !blockLibraryPS.getUser().getId().equals(user.getId())) throw new Exception403("해당 유저의 라이브러리가 아닙니다.");
+
+        return new WorkspaceResponse.DTO(workspacePS, blockLibraryPS);
     }
 
     @Transactional
@@ -61,8 +66,9 @@ public class WorkspaceService {
         workspacePS.update(reqDTO.getTitle(), reqDTO.getSerializedJson());
 
         BlockLibrary blockLibraryPS = workspaceRepository.findBlockLibraryByUserId(user.getId())
-                .orElseThrow(() -> new Exception404("해당 유저의 라이브러리가 없습니다."));
-        if(!blockLibraryPS.getUser().getId().equals(user.getId())) throw new Exception403("해당 유저의 라이브러리가 아닙니다.");
+                .orElseGet(null);
+        if(blockLibraryPS != null && !blockLibraryPS.getUser().getId().equals(user.getId())) throw new Exception403("해당 유저의 라이브러리가 아닙니다.");
+        blockLibraryPS.update(reqDTO.getLibraryJson());
 
         return new WorkspaceResponse.DTO(workspacePS, blockLibraryPS);
     }
