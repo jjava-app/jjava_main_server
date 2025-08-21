@@ -32,13 +32,13 @@ public class UserResponse {
     }
 
     @Data
-    public static class LevelUpdateResponse {
+    public static class UpdateDTO {
         private Integer id;
         private String email;
         private String username;
         private String level;
 
-        public LevelUpdateResponse(User u) {
+        public UpdateDTO(User u) {
             this.id = u.getId();
             this.email = u.getEmail();
             this.username = u.getUsername();
