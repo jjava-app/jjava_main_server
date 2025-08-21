@@ -1,7 +1,9 @@
 package org.example.jjava_main.domain.question;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -12,6 +14,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
+    @Enumerated(EnumType.STRING)
     private QuestionType type;
     private String title;
     private String content;
@@ -21,6 +24,14 @@ public class Question {
     @Builder
     public Question(Integer id, QuestionType type, String title, String content, String testVariable, String testAnswer) {
         this.id = id;
+        this.type = type;
+        this.title = title;
+        this.content = content;
+        this.testVariable = testVariable;
+        this.testAnswer = testAnswer;
+    }
+
+    public void update(QuestionType type, String title, String content, String testVariable, String testAnswer) {
         this.type = type;
         this.title = title;
         this.content = content;

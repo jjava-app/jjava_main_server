@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,7 +15,9 @@ import java.util.Collection;
 @Getter
 @Entity
 @Table(name = "user_tb")
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
+    private static final long serialVersionUID = 1L;
+
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -42,6 +45,26 @@ public class User implements UserDetails {
     }
 
     @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
 
@@ -55,4 +78,17 @@ public class User implements UserDetails {
         this.username = username;
     }
 
+
+    // score update 함수
+    public void scoreUpdate(Integer newScore) {
+        this.score = newScore;
+    }
+
+    //회원 수정 - min
+    public void adminUpdate(String username, String email, UserRole role,  Integer score) {
+        this.username = username;
+        this.email = email;
+        this.role = role;
+        this.score = score;
+    }
 }

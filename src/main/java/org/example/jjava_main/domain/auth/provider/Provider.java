@@ -1,7 +1,9 @@
 package org.example.jjava_main.domain.auth.provider;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -12,11 +14,13 @@ public class Provider {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
-    private String name;
+
+    @Enumerated(EnumType.STRING)
+    private ProviderType providerType;
 
     @Builder
-    public Provider(Integer id, String name) {
+    public Provider(Integer id, ProviderType providerType) {
         this.id = id;
-        this.name = name;
+        this.providerType = providerType;
     }
 }
