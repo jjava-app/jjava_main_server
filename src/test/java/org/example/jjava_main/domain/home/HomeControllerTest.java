@@ -63,23 +63,23 @@ public class HomeControllerTest extends MyRestDoc {
         actions.andExpect(jsonPath("$.status").value(200));
         actions.andExpect(jsonPath("$.msg").value("성공"));
 
-        actions.andExpect(jsonPath("$.body.userDTO.id").value(2));
-        actions.andExpect(jsonPath("$.body.userDTO.email").value("ssar1234@nate.com"));
-        actions.andExpect(jsonPath("$.body.userDTO.username").value("ssar"));
-        actions.andExpect(jsonPath("$.body.userDTO.level").value("BEGINNER"));
-        actions.andExpect(jsonPath("$.body.userDTO.score").value(120));
-        actions.andExpect(jsonPath("$.body.userDTO.rank").value(1));
+        actions.andExpect(jsonPath("$.body.userInfo.id").value(2));
+        actions.andExpect(jsonPath("$.body.userInfo.email").value("ssar1234@nate.com"));
+        actions.andExpect(jsonPath("$.body.userInfo.username").value("ssar"));
+        actions.andExpect(jsonPath("$.body.userInfo.level").value("BEGINNER"));
+        actions.andExpect(jsonPath("$.body.userInfo.score").value(120));
+        actions.andExpect(jsonPath("$.body.userInfo.rank").value(1));
 
-        actions.andExpect(jsonPath("$.body.leaderboardDTO.rankingList[0].userId").value(2));
-        actions.andExpect(jsonPath("$.body.leaderboardDTO.rankingList[0].username").value("ssar"));
-        actions.andExpect(jsonPath("$.body.leaderboardDTO.rankingList[0].currentScore").value(120));
-        actions.andExpect(jsonPath("$.body.leaderboardDTO.rankingList[0].delta").value(120));
-        actions.andExpect(jsonPath("$.body.leaderboardDTO.rankingList[0].rank").value(1));
+        actions.andExpect(jsonPath("$.body.leaderboard.rankingList[0].userId").value(2));
+        actions.andExpect(jsonPath("$.body.leaderboard.rankingList[0].username").value("ssar"));
+        actions.andExpect(jsonPath("$.body.leaderboard.rankingList[0].currentScore").value(120));
+        actions.andExpect(jsonPath("$.body.leaderboard.rankingList[0].delta").value(120));
+        actions.andExpect(jsonPath("$.body.leaderboard.rankingList[0].rank").value(1));
 
-        actions.andExpect(jsonPath("$.body.sqDTO.sqList[0].solvedQuestionId").value(1));
-        actions.andExpect(jsonPath("$.body.sqDTO.sqList[0].questionId").value(5));
-        actions.andExpect(jsonPath("$.body.sqDTO.sqList[0].title").value("두 수의 몫 구하기"));
-        actions.andExpect(jsonPath("$.body.sqDTO.sqList[0].questionType").value("OPERATOR"));
+        actions.andExpect(jsonPath("$.body.sqList.sqList[0].solvedQuestionId").value(1));
+        actions.andExpect(jsonPath("$.body.sqList.sqList[0].questionId").value(5));
+        actions.andExpect(jsonPath("$.body.sqList.sqList[0].title").value("두 수의 몫 구하기"));
+        actions.andExpect(jsonPath("$.body.sqList.sqList[0].questionType").value("OPERATOR"));
 
 
 
