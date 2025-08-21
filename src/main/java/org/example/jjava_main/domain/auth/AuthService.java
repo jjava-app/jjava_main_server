@@ -30,10 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -100,7 +97,7 @@ public class AuthService implements UserDetailsService {
             log.info("[네이버] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), n.getId());
         }
 
-        return toLoginResponse(user);
+        return toLoginResponse(user, ProviderType.NAVER);
     }
 
     // ---------- KAKAO ----------
@@ -119,7 +116,7 @@ public class AuthService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Kakao response empty"));
 
         String kakaoId = String.valueOf(k.getId());
-        String email = (k.getKakaoAccount() != null) ? k.getKakaoAccount().getEmail() : null;
+        String providerEmail = (k.getKakaoAccount() != null) ? k.getKakaoAccount().getEmail() : null;
         String nickName = (k.getKakaoAccount() != null && k.getKakaoAccount().getProfile() != null)
                 ? k.getKakaoAccount().getProfile().getNickname()
                 : "카카오사용자";
@@ -138,19 +135,20 @@ public class AuthService implements UserDetailsService {
             log.info("[카카오] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), k.getId());
         } else {
             // (B) 없으면 기존 로직으로 유저 생성
-            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+            user = findOrCreateUser(nickName, providerEmail); // 네가 쓰던 생성 로직 그대로
 
             // (C) 매핑 저장
             var link = UserAccountProvider.builder()
                     .user(user)
                     .provider(kakao)
                     .providerUserId(kakaoId)
+                    .email(providerEmail)
                     .build();
             uapRepository.save(link);
             log.info("[카카오] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), k.getId());
         }
 
-        return toLoginResponse(user);
+        return toLoginResponse(user, ProviderType.KAKAO);
     }
 
     // ---------- GOOGLE ----------
@@ -168,7 +166,7 @@ public class AuthService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Google userinfo empty"));
 
         String googleId = g.getSub();
-        String email = g.getEmail();    // null 가능
+        String providerEmail = g.getEmail();    // null 가능
         String nickName = (g.getName() != null && !g.getName().isBlank()) ? g.getName() : "Google사용자";
 
         Provider google = providerRepository.findByProviderType(ProviderType.GOOGLE)
@@ -186,19 +184,20 @@ public class AuthService implements UserDetailsService {
             log.info("[구글] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), googleId);
         } else {
             // (B) 없으면 기존 로직으로 유저 생성
-            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+            user = findOrCreateUser(nickName, providerEmail); // 네가 쓰던 생성 로직 그대로
 
             // (C) 매핑 저장
             var link = UserAccountProvider.builder()
                     .user(user)
                     .provider(google)
                     .providerUserId(googleId)
+                    .email(providerEmail)
                     .build();
             uapRepository.save(link);
             log.info("[구글] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), googleId);
         }
 
-        return toLoginResponse(user);
+        return toLoginResponse(user, ProviderType.GOOGLE);
     }
 
     //공통모듈
@@ -231,15 +230,25 @@ public class AuthService implements UserDetailsService {
                 .build();
     }
 
-    private SocialLoginResponse.LoginDTO toLoginResponse(User user) {
-        String jwt = JwtUtil.create(user);
-        // 혹시 유틸이 "Bearer xxx"로 반환하면 접두어 제거
-        if (jwt != null && jwt.startsWith("Bearer ")) {
-            jwt = jwt.substring("Bearer ".length());
+    private SocialLoginResponse.LoginDTO toLoginResponse(User user, ProviderType currentProvider) {
+        String token = JwtUtil.create(user);
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring("Bearer ".length());
         }
+
+        // linked 구성
+        List<SocialLoginResponse.LinkedAccountDTO> linked =
+                uapRepository.findAllByUserId(user.getId()).stream()
+                        .map(uap -> new SocialLoginResponse.LinkedAccountDTO(
+                                uap.getProvider().getProviderType().name().toLowerCase(Locale.ROOT),
+                                Optional.ofNullable(uap.getEmail()).orElse("")
+                        ))
+                        .toList();
+
         return SocialLoginResponse.LoginDTO.builder()
-                .accessToken(jwt)                          // 순수 JWT
-                .user(SocialLoginResponse.UserDTO.of(user))// id/email/username/role 만
+                .accessToken(token)
+                .user(SocialLoginResponse.UserDTO.of(user))
+                .linked(linked) //
                 .build();
     }
 

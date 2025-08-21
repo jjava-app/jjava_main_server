@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.jjava_main.domain.user.User;
 
+import java.util.List;
+
 public class SocialLoginResponse {
 
     @Data
@@ -17,6 +19,14 @@ public class SocialLoginResponse {
     public static class LoginDTO {
         private String accessToken;
         private UserDTO user;
+
+        private List<LinkedAccountDTO> linked;
+    }
+
+    @Data
+    public static class LinkedAccountDTO {
+        private final String provider; // 'naver'|'google'|'kakao' (원하면 'local'도)
+        private final String email;    // null 방지 위해 빈 문자열로 넣어줄 것
     }
 
     @Data

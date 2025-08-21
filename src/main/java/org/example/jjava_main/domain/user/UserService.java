@@ -2,18 +2,22 @@ package org.example.jjava_main.domain.user;
 
 import lombok.RequiredArgsConstructor;
 import org.example.jjava_main._core.error.ex.Exception404;
+import org.example.jjava_main.domain.auth.provider.UserAccountProvider;
+import org.example.jjava_main.domain.auth.provider.UserAccountProviderRepository;
 import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.example.jjava_main.dto.UserResponse.LevelUpdateResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserAccountProviderRepository userAccountProviderRepository;
 
     public UserResponse userGet(User user) {
         User userPS = userRepository.findById(user.getId())
@@ -21,7 +25,23 @@ public class UserService {
 
         int safeScore = Optional.ofNullable(userPS.getScore()).orElse(0);
         int rank = userRepository.findRankByScoreAndId(userPS.getScore());
-        return new UserResponse(userPS, rank);
+
+        UserResponse resp = new UserResponse(userPS, rank);
+
+        List<UserAccountProvider> links = userAccountProviderRepository.findAllByUserId(userPS.getId());
+        List<UserResponse.LinkedAccountDTO> linked = links.stream()
+                .map(uap -> new UserResponse.LinkedAccountDTO(
+                        // providerType을 프론트 요구대로 소문자 문자열로
+                        uap.getProvider().getProviderType().name().toLowerCase(),
+                        // null 안전
+                        Optional.ofNullable(uap.getEmail()).orElse("")
+                ))
+                .toList();
+
+
+        resp.setLinked(linked);
+        return resp;
+
     }
 
 

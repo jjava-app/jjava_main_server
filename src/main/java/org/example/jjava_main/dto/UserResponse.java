@@ -8,6 +8,7 @@ import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.domain.user.UserLevel;
 import org.example.jjava_main.domain.user.UserRole;
 
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -19,6 +20,8 @@ public class UserResponse {
     private Integer score;
     private Integer rank;
 
+    private List<LinkedAccountDTO> linked = Collections.emptyList();
+
     public UserResponse(User user, Integer rank) {
         this.id = user.getId();
         this.email = user.getEmail();
@@ -26,6 +29,13 @@ public class UserResponse {
         this.level = user.getLevel() != null ? user.getLevel().name() : UserLevel.BEGINNER.name();
         this.score = user.getScore() != null ? user.getScore() : 0;
         this.rank = rank;
+
+    }
+
+    @Data
+    public static class LinkedAccountDTO {
+        private final String provider; // 'naver'|'google'|'kakao' (원하면 'local'도)
+        private final String email;    // null 방지 위해 빈 문자열로 넣어줄 것
     }
 
     @Data
