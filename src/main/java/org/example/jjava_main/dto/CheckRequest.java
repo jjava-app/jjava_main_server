@@ -11,7 +11,6 @@ public class CheckRequest {
     @Data
     @NoArgsConstructor // 기본 생성자 추가 (Jackson 역직렬화용)
     public static class DTO {
-        private String type;
         private String payload;
         private List<TestSpecDTO> tests;
         private String serializedJson;
@@ -29,8 +28,7 @@ public class CheckRequest {
         }
 
 
-        public DTO(String type, String payload, List<TestSpecDTO> tests) {
-            this.type = type;
+        public DTO(String payload, List<TestSpecDTO> tests) {
             this.payload = payload;
             this.tests = tests;
         }

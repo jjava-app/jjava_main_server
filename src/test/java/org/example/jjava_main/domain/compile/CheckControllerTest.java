@@ -36,7 +36,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -109,7 +108,6 @@ public class CheckControllerTest extends MyRestDoc {
     @Test
     public void check_proxy_and_code_refactor_success_test() throws Exception {
         // given
-        String type = "javascript";
         String payload = "function repeatHello(a) { return a.repeat(5); }";
 
 
@@ -120,7 +118,7 @@ public class CheckControllerTest extends MyRestDoc {
 
         CheckRequest.DTO.TestSpecDTO t3 = new CheckRequest.DTO.TestSpecDTO((Map.of("a", "int")), ("intintintintint"));
 
-        CheckRequest.DTO reqDTO = new CheckRequest.DTO(type, payload, List.of(t1, t2, t3));
+        CheckRequest.DTO reqDTO = new CheckRequest.DTO(payload, List.of(t1, t2, t3));
 
 
         // 컴파일 서버 결과(Proxy)를 Pass로 가짜 세팅
@@ -179,7 +177,6 @@ public class CheckControllerTest extends MyRestDoc {
     @Test
     public void check_proxy_and_code_refactor_fail_test() throws Exception {
         // given
-        String type = "javascript";
         String payload = "function repeatHello(a) { return a.repeat(3); }";
 
 
@@ -190,7 +187,7 @@ public class CheckControllerTest extends MyRestDoc {
 
         CheckRequest.DTO.TestSpecDTO t3 = new CheckRequest.DTO.TestSpecDTO((Map.of("a", "int")), ("intintintintint"));
 
-        CheckRequest.DTO reqDTO = new CheckRequest.DTO(type, payload, List.of(t1, t2, t3));
+        CheckRequest.DTO reqDTO = new CheckRequest.DTO(payload, List.of(t1, t2, t3));
 
 
         // 실패 응답 DTO (Proxy 서버)
