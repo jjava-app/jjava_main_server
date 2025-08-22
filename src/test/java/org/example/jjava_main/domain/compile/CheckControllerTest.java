@@ -36,6 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -374,19 +375,21 @@ public class CheckControllerTest extends MyRestDoc {
     @Test
     public void solved_question_detail_test() throws Exception {
         // given
-        Integer questionId = 1;
+        Integer solvedQuestionId = 1;
 
         Question question = Question.builder()
-                .id(questionId)
+                .id(1)
                 .title("문제 제목")
                 .content("문제 내용")
+                .type(QuestionType.TEXT)
                 .build();
 
         // 현재 시간 생성
         Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
         SolvedQuestion solvedQuestion = SolvedQuestion.builder()
-                .id(questionId)
+                .id(solvedQuestionId)
+                .question(question)
                 .AiComment("AI 코멘트")
                 .serializedJson("json~~~")
                 .blockExtensionJson("json~~~")
@@ -394,17 +397,17 @@ public class CheckControllerTest extends MyRestDoc {
                 .build();
 
         QuestionResponse.SolvedQuestionDetailDTO respDTO = new QuestionResponse.SolvedQuestionDetailDTO(
-                question, solvedQuestion
+                solvedQuestion
         );
 
         // Stub 설정
-        Mockito.when(checkService.solvedQuestionDetailGet(questionId))
+        Mockito.when(checkService.solvedQuestionDetailGet(solvedQuestionId))
                 .thenReturn(respDTO);
 
         // when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/solved-questions/{id}", questionId)
+                        .get("/solved-questions/{id}", solvedQuestionId)
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -416,12 +419,10 @@ public class CheckControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.questionId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestionId").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.title").value("문제 제목"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.content").value("문제 내용"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.aiComment").value("AI 코멘트"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.serializedJson").value("json~~~"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.blockExtensionJson").value("json~~~"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.createdAt").value(createdAt.toString())) // createdAt 확인
                 .andDo(document); // RestDocs 문서화
     }
@@ -459,21 +460,25 @@ public class CheckControllerTest extends MyRestDoc {
         SolvedQuestion solved1 = SolvedQuestion.builder()
                 .id(101)
                 .question(question1)
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
         SolvedQuestion solved2 = SolvedQuestion.builder()
                 .id(102)
                 .question(question2)
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
         SolvedQuestion solved3 = SolvedQuestion.builder()
                 .id(103)
                 .question(question1)
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
         SolvedQuestion solved4 = SolvedQuestion.builder()
                 .id(104)
                 .question(question2)
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
         List<SolvedQuestion> solvedList = List.of(solved1, solved2,solved3, solved4);
@@ -493,12 +498,10 @@ public class CheckControllerTest extends MyRestDoc {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.groupedSolvedQuestions.TEXT[0].solvedQuestionId").value(101))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.groupedSolvedQuestions.TEXT[0].questionId").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.groupedSolvedQuestions.TEXT[0].title").value("문제 1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.groupedSolvedQuestions.OPERATOR[0].solvedQuestionId").value(102))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.groupedSolvedQuestions.OPERATOR[0].questionId").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.groupedSolvedQuestions.OPERATOR[0].title").value("문제 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestions.TEXT[0].solvedQuestionId").value(101))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestions.TEXT[0].title").value("문제 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestions.OPERATOR[0].solvedQuestionId").value(102))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestions.OPERATOR[0].title").value("문제 2"))
                 .andDo(document); // RestDocs 문서화
     }
 }

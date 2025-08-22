@@ -642,7 +642,7 @@ Content-Length: 395
   "status" : 200,
   "msg" : "성공",
   "body" : {
-    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY29zIiwiZXhwIjoxNzU2NDUxNTAzLCJpZCI6Niwicm9sZXMiOiJVU0VSIn0.wwSxJytJE1xe9g8hXCIhfLWx2nL3OBvxu5k24PJS4ZtwGQKp2Tu-95SE9hYsdkrBH8Ms43trepw7XvZmhtFjPQ",
+    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY29zIiwiZXhwIjoxNzU2NDYxNDQ1LCJpZCI6Niwicm9sZXMiOiJVU0VSIn0.FK2fG3Rg8SwL_H-2r4p5OMh8EhpLgQCIuwMYPUOsBNpsAS9L9GnWwkFjojsmXCJSXrzPeGX4KKha8KrJuRN_mQ",
     "email" : "ccos@naver.com",
     "nickname" : "ccos",
     "level" : "EXPERT",
@@ -688,14 +688,14 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Set-Cookie: SESSION=ZDMxYjVkMGItNDgyMS00ZWQxLTliZWMtNzY0MDYxMGRhNWJm; Path=/; HttpOnly; SameSite=Lax
+Set-Cookie: SESSION=ZjhiZjg0OGMtNzNlZS00YWFhLTgxODQtYzUyMTdjYzZmMGM3; Path=/; HttpOnly; SameSite=Lax
 Content-Length: 435
 
 {
   "status" : 200,
   "msg" : "성공",
   "body" : {
-    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzc2FyIiwiZXhwIjoxNzU2NDUxNTAyLCJpZCI6Miwicm9sZXMiOiJVU0VSIn0.B_rkt-YD8U9JbRWkBYVEkGc_MofmD1StevetICX-RycUeHCdpij5vqtV5hMtOOnbkMqIqlQmGRvrgCg1ydU1bw",
+    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzc2FyIiwiZXhwIjoxNzU2NDYxNDQ0LCJpZCI6Miwicm9sZXMiOiJVU0VSIn0.J5HILB9pv-ww9wm-MPA59gv25M_fN6Ufwe1bBSgZh9ERYq8RPGswdP_Y4IdZDfzHbq9Szzgg3zdv3pPydYhY4A",
     "id" : 2,
     "email" : "ssar1234@nate.com",
     "nickname" : "ssar",
@@ -1268,38 +1268,42 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 823
+Content-Length: 1032
 
 {
   "status" : 200,
   "msg" : "성공",
   "body" : {
-    "groupedSolvedQuestions" : {
+    "solvedQuestions" : {
       "OPERATOR" : [ {
         "solvedQuestionId" : 102,
-        "questionId" : 2,
         "title" : "문제 2",
+        "content" : null,
+        "createdAt" : "2025-08-22 18:57:26.0929902",
         "questionType" : "OPERATOR",
-        "createdAt" : null
+        "aiComment" : null
       }, {
         "solvedQuestionId" : 104,
-        "questionId" : 2,
         "title" : "문제 2",
+        "content" : null,
+        "createdAt" : "2025-08-22 18:57:26.0929902",
         "questionType" : "OPERATOR",
-        "createdAt" : null
+        "aiComment" : null
       } ],
       "TEXT" : [ {
         "solvedQuestionId" : 101,
-        "questionId" : 1,
         "title" : "문제 1",
+        "content" : null,
+        "createdAt" : "2025-08-22 18:57:26.0929902",
         "questionType" : "TEXT",
-        "createdAt" : null
+        "aiComment" : null
       }, {
         "solvedQuestionId" : 103,
-        "questionId" : 1,
         "title" : "문제 1",
+        "content" : null,
+        "createdAt" : "2025-08-22 18:57:26.0929902",
         "questionType" : "TEXT",
-        "createdAt" : null
+        "aiComment" : null
       } ]
     }
   }
@@ -1332,18 +1336,17 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 306
+Content-Length: 268
 
 {
   "status" : 200,
   "msg" : "성공",
   "body" : {
-    "questionId" : 1,
+    "solvedQuestionId" : 1,
     "title" : "문제 제목",
     "content" : "문제 내용",
-    "serializedJson" : "json~~~",
-    "blockExtensionJson" : "json~~~",
-    "createdAt" : "2025-08-22 16:11:43.579",
+    "createdAt" : "2025-08-22 18:57:26.167",
+    "questionType" : "TEXT",
     "aiComment" : "AI 코멘트"
   }
 }</code></pre>
@@ -1477,17 +1480,17 @@ Content-Length: 506
       "id" : 1,
       "userId" : 1,
       "title" : "워크스페이스1",
-      "createdAt" : "2025-08-22 16:11:45.5478423"
+      "createdAt" : "2025-08-22 18:57:28.1855243"
     }, {
       "id" : 2,
       "userId" : 1,
       "title" : "워크스페이스2",
-      "createdAt" : "2025-08-22 16:11:45.5478423"
+      "createdAt" : "2025-08-22 18:57:28.1855243"
     }, {
       "id" : 3,
       "userId" : 1,
       "title" : "워크스페이스3",
-      "createdAt" : "2025-08-22 16:11:45.5478423"
+      "createdAt" : "2025-08-22 18:57:28.1855243"
     } ]
   }
 }</code></pre>
@@ -1636,7 +1639,7 @@ Content-Length: 187
     "id" : 1,
     "userId" : 1,
     "title" : "새 워크스페이스",
-    "createdAt" : "2025-08-22 16:11:45.5797317"
+    "createdAt" : "2025-08-22 18:57:28.2220808"
   }
 }</code></pre>
 </div>
@@ -1976,7 +1979,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1667
+Content-Length: 1254
 
 {
   "status" : 200,
@@ -2029,19 +2032,7 @@ Content-Length: 1667
         "questionId" : 5,
         "title" : "두 수의 몫 구하기",
         "questionType" : "OPERATOR",
-        "createdAt" : "2025-08-22T07:11:44.327+00:00"
-      }, {
-        "solvedQuestionId" : 2,
-        "questionId" : 6,
-        "title" : "문자열 붙이기",
-        "questionType" : "TEXT",
-        "createdAt" : "2025-08-22T07:11:44.328+00:00"
-      }, {
-        "solvedQuestionId" : 3,
-        "questionId" : 7,
-        "title" : "문자열 길이 구하기",
-        "questionType" : "TEXT",
-        "createdAt" : "2025-08-22T07:11:44.328+00:00"
+        "createdAt" : "2025-08-22T09:57:26.947+00:00"
       } ]
     }
   }

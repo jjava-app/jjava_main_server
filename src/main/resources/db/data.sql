@@ -170,7 +170,7 @@ VALUES ('ARRAY',
 -- solved_question_tb
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
                                 progress_status, created_at)
-VALUES (2, 5, '리팩토링', 'json', 'json', 'IN_PROGRESS', now());
+VALUES (2, 5, '리팩토링', 'json', 'json', 'REVIEWED', now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
                                 progress_status, created_at)

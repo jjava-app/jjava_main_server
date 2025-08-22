@@ -34,8 +34,9 @@ public class QuestionRepository {
 
     // 푼 문제 id 조회
     public List<SolvedQuestion> findSolvedQuestionByUserId(Integer userId) {
-        Query query = em.createQuery("select s from SolvedQuestion s where s.user.id = :userId");
+        Query query = em.createQuery("select s from SolvedQuestion s where s.user.id = :userId and s.progressStatus = :progress");
         query.setParameter("userId", userId);
+        query.setParameter("progress", ProgressStatus.REVIEWED);
         return query.getResultList();
     }
 
@@ -94,21 +95,21 @@ public class QuestionRepository {
         return question;
     }
 
-    public Optional<SolvedQuestion> findSolvedQuestionByQuestionId(Integer questionId) {
+    public Optional<SolvedQuestion> findSolvedQuestionById(Integer solvedQuestionId) {
         // TODO 1 : 쿼리 내부 완성하기
         return Optional.ofNullable(
-                em.createQuery("select s from SolvedQuestion s where s.question.id = :questionId", SolvedQuestion.class)
-                        .setParameter("questionId", questionId)
+                em.createQuery("select s from SolvedQuestion s where s.id = :id", SolvedQuestion.class)
+                        .setParameter("id", solvedQuestionId)
                         .getSingleResult()
         );
     }
 
 
     // 내가 푼 문제 리스트
-//    public List<Question> findSolvedQuestionList(Integer userId) {
-//        Query query = em.createQuery("select q from Question q join fetch SolvedQuestion s where s.user.id = :userId");
-//        query.setParameter("userId", userId);
-//        return query.getResultList();
-//    }
+    public List<Question> findSolvedQuestionList(Integer userId) {
+        Query query = em.createQuery("select q from Question q join fetch SolvedQuestion s where s.user.id = :userId");
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
 
 }
