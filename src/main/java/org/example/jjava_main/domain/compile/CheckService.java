@@ -19,11 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -204,11 +201,11 @@ public class CheckService {
         SolvedQuestion solvedQuestion = questionRepository.findSolvedQuestionByQuestionId(questionId)
                 .orElseThrow(() -> new Exception404("해당 유저가 푼 문제가 아닙니다."));
 
-        Question question =  questionRepository.findById(questionId).orElse(null);
-        if(question == null) throw new Exception404("해당하는 문제가 없습니다.");
+        Question question = questionRepository.findById(questionId).orElse(null);
+        if (question == null) throw new Exception404("해당하는 문제가 없습니다.");
 
         // TODO 2 : DTO 반환
-        return new QuestionResponse.SolvedQuestionDetailDTO(question,solvedQuestion);
+        return new QuestionResponse.SolvedQuestionDetailDTO(question, solvedQuestion);
     }
 
     // 내가 푼 문제 리스트
