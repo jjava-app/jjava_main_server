@@ -40,6 +40,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+
 @WebMvcTest(controllers = CheckController.class)
 @Import({CheckControllerTest.TestSecurityConfig.class})
 public class CheckControllerTest extends MyRestDoc {
@@ -132,8 +134,8 @@ public class CheckControllerTest extends MyRestDoc {
         // 통신 Mock 처리
         Mockito.when(httpUtil.checkServerSend(
                 Mockito.any(CheckRequest.DTO.class),
-                Mockito.anyInt(),
-                Mockito.anyInt()
+                anyInt(),
+                anyInt()
         )).thenReturn(passFromCompile);
 
         // AI 리팩토링 결과도 가짜 세팅
@@ -205,8 +207,8 @@ public class CheckControllerTest extends MyRestDoc {
         // 통신 Mock 처리 (실패 DTO 리턴)
         Mockito.when(httpUtil.checkServerSend(
                 Mockito.any(CheckRequest.DTO.class),
-                Mockito.anyInt(),
-                Mockito.anyInt()
+                anyInt(),
+                anyInt()
         )).thenReturn(failFromCompile);
 
         String requestBody = om.writeValueAsString(reqDTO);
@@ -322,7 +324,6 @@ public class CheckControllerTest extends MyRestDoc {
         // given
         QuestionRequest.SolvedQuestionCreateDTO reqDTO = new QuestionRequest.SolvedQuestionCreateDTO(
                 1,
-                1,
                 "json~~~`",
                 "json~~~~"
         );
@@ -339,7 +340,7 @@ public class CheckControllerTest extends MyRestDoc {
 
         //  Stub 설정
         Mockito.when(checkService.solvedQuestionUpsert(
-                reqDTO.getUserId(),
+                1,
                 reqDTO.getQuestionId(),
                 reqDTO.getSerializedJson(),
                 reqDTO.getBlockExtensionJson()
@@ -349,7 +350,6 @@ public class CheckControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .put("/solved-questions/{questionId}", reqDTO.getQuestionId())
-
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(reqDTO)) // ← DTO → JSON 변환
                         .accept(MediaType.APPLICATION_JSON)
@@ -481,7 +481,7 @@ public class CheckControllerTest extends MyRestDoc {
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
-        List<SolvedQuestion> solvedList = List.of(solved1, solved2,solved3, solved4);
+        List<SolvedQuestion> solvedList = List.of(solved1, solved2, solved3, solved4);
 
         // DTO 생성 (서비스 Stub)
         QuestionResponse.SolvedQuestionListDTO respDTO =
