@@ -225,7 +225,7 @@ public class CheckService {
     public QuestionResponse.HomeDTO solvedQuestionListLimit3(User user) {
         // 1. 유저가 푼 문제 가져오기
         List<SolvedQuestion> solvedQuestions = questionRepository.findSolvedQuestionByUserId(user.getId());
-        
+
         // DTO 반환
         return new QuestionResponse.HomeDTO(solvedQuestions);
     }

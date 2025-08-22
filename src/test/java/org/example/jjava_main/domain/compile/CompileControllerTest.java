@@ -79,7 +79,6 @@ public class CompileControllerTest extends MyRestDoc {
     @Test
     public void compile_proxy_success_test() throws Exception {
         // given
-        String type = "javascript";
         String payload = """
                 let score = 85;
                 if (score >= 90) {
@@ -91,7 +90,7 @@ public class CompileControllerTest extends MyRestDoc {
                 }
                 """;
 
-        CompileRequest.DTO reqDTO = new CompileRequest.DTO(type, payload);
+        CompileRequest.DTO reqDTO = new CompileRequest.DTO(payload);
 
         // 가짜 응답 세팅
         CompileResponse.DTO mockResp = new CompileResponse.DTO(1, payload, "B 학점");
@@ -101,6 +100,7 @@ public class CompileControllerTest extends MyRestDoc {
                 .thenReturn(mockResp);
 
         String requestBody = om.writeValueAsString(reqDTO);
+        System.out.println(requestBody);
 
         // when
         ResultActions actions = mvc.perform(
@@ -123,10 +123,9 @@ public class CompileControllerTest extends MyRestDoc {
     @Test
     public void compile_proxy_fail_test() throws Exception {
         // given
-        String type = "javascript";
         String payload = "window.alert(x); let x = 10;";
 
-        CompileRequest.DTO reqDTO = new CompileRequest.DTO(type, payload);
+        CompileRequest.DTO reqDTO = new CompileRequest.DTO(payload);
 
         // 가짜 응답 세팅
         CompileResponse.DTO mockResp = new CompileResponse.DTO(1, null, "정의되지 않은 변수를 사용하고 있습니다.");
