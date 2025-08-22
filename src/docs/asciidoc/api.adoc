@@ -93,23 +93,7 @@ include::{snippets}/{user}/update_user_level_success/http-response.adoc[]
 
 
 
-== 2. 코드 원격 컴파일
-=== 1. 컴파일 성공
-===== Request Example
-include::{snippets}/{compile}/compile_proxy_success_test/http-request.adoc[]
-
-===== Response Example
-include::{snippets}/{compile}/compile_proxy_success_test/http-response.adoc[]
-
-=== 2. 컴파일 실패
-===== Request Example
-include::{snippets}/{compile}/compile_proxy_fail_test/http-request.adoc[]
-
-===== Response Example
-include::{snippets}/{compile}/compile_proxy_fail_test/http-response.adoc[]
-
-
-== 3. 문제
+== 2. 문제
 === 1. 문제 목록 조회
 ===== Request Example
 include::{snippets}/{check}/question_list_get_test/http-request.adoc[]
@@ -148,78 +132,92 @@ include::{snippets}/{check}/solved_question_upsert_test/http-response.adoc[]
 
 
 
-== 4. 워크 스페이스
-=== 1. 워크 스페이스 목록 조회
+== 3. 워크 스페이스
+=== 1. 워크 스페이스 컴파일 성공
+===== Request Example
+include::{snippets}/{compile}/compile_proxy_success_test/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{compile}/compile_proxy_success_test/http-response.adoc[]
+
+=== 2. 워크 스페이스 컴파일 실패
+===== Request Example
+include::{snippets}/{compile}/compile_proxy_fail_test/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{compile}/compile_proxy_fail_test/http-response.adoc[]
+
+=== 3. 워크 스페이스 목록 조회
 ===== Request Example
 include::{snippets}/{workspace}/get_workspace_list/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/get_workspace_list/http-response.adoc[]
 
-=== 2. 워크 스페이스 상세보기
+=== 4. 워크 스페이스 상세보기
 ===== Request Example
 include::{snippets}/{workspace}/get_workspace_detail/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/get_workspace_detail/http-response.adoc[]
 
-=== 3. 워크 스페이스 상세보기 실패 - 자원 부재
+=== 5. 워크 스페이스 상세보기 실패 - 자원 부재
 ===== Request Example
 include::{snippets}/{workspace}/get_workspace_detail_not_found/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/get_workspace_detail_not_found/http-response.adoc[]
 
-=== 4. 워크 스페이스 상세보기 실패 - 권한 없음
+=== 6. 워크 스페이스 상세보기 실패 - 권한 없음
 ===== Request Example
 include::{snippets}/{workspace}/get_workspace_detail_forbidden/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/get_workspace_detail_forbidden/http-response.adoc[]
 
-=== 5. 워크 스페이스 생성
+=== 7. 워크 스페이스 생성
 ===== Request Example
 include::{snippets}/{workspace}/create_workspace/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/create_workspace/http-response.adoc[]
 
-=== 6. 워크 스페이스 저장
+=== 8. 워크 스페이스 저장
 ===== Request Example
 include::{snippets}/{workspace}/update_workspace/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/update_workspace/http-response.adoc[]
 
-=== 7. 워크 스페이스 저장 실패 - 권한 없음
+=== 9. 워크 스페이스 저장 실패 - 권한 없음
 ===== Request Example
 include::{snippets}/{workspace}/update_workspace_forbidden/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/update_workspace_forbidden/http-response.adoc[]
 
-=== 8. 워크 스페이스 저장 실패 - 자원 부재
+=== 10. 워크 스페이스 저장 실패 - 자원 부재
 ===== Request Example
 include::{snippets}/{workspace}/update_workspace_not_found/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/update_workspace_not_found/http-response.adoc[]
 
-=== 9. 워크 스페이스 삭제
+=== 11. 워크 스페이스 삭제
 ===== Request Example
 include::{snippets}/{workspace}/delete_workspace/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/delete_workspace/http-response.adoc[]
 
-=== 10. 워크 스페이스 삭제 실패 - 권한 없음
+=== 12. 워크 스페이스 삭제 실패 - 권한 없음
 ===== Request Example
 include::{snippets}/{workspace}/delete_workspace_forbidden/http-request.adoc[]
 
 ===== Response Example
 include::{snippets}/{workspace}/delete_workspace_forbidden/http-response.adoc[]
 
-=== 11. 워크 스페이스 삭제 실패 - 자원 부재
+=== 13. 워크 스페이스 삭제 실패 - 자원 부재
 ===== Request Example
 include::{snippets}/{workspace}/delete_workspace_not_found/http-request.adoc[]
 
@@ -227,9 +225,30 @@ include::{snippets}/{workspace}/delete_workspace_not_found/http-request.adoc[]
 include::{snippets}/{workspace}/delete_workspace_not_found/http-response.adoc[]
 
 
+== 4. 리더보드
+
+=== 1. Top10 조회
+
+==== Request
+include::{snippets}/leaderboard/top10_test/http-request.adoc[]
+
+==== Response
+include::{snippets}/leaderboard/top10_test/http-response.adoc[]
+
+== 5. 홈 화면
+
+=== 1. 홈 화면 정보 조회
+
+==== Request
+include::{snippets}/{home}/home_test/http-request.adoc[]
+
+==== Response
+include::{snippets}/{home}/home_test/http-response.adoc[]
 
 
-== 5. 관리자
+
+
+== 6. 관리자
 === 1. 사용자 목록 조회
 ===== Request Example
 include::{snippets}/{admin}/user_list_test/http-request.adoc[]
@@ -293,22 +312,3 @@ include::{snippets}/{admin}/question_delete_test/http-request.adoc[]
 ===== Response Example
 include::{snippets}/{admin}/question_delete_test/http-response.adoc[]
 
-== 6. 리더보드
-
-=== 1. Top10 조회
-
-==== Request
-include::{snippets}/leaderboard/top10_test/http-request.adoc[]
-
-==== Response
-include::{snippets}/leaderboard/top10_test/http-response.adoc[]
-
-== 7. 홈 화면
-
-=== 1. 홈 화면 정보 조회
-
-==== Request
-include::{snippets}/{home}/home_test/http-request.adoc[]
-
-==== Response
-include::{snippets}/{home}/home_test/http-response.adoc[]
