@@ -129,6 +129,19 @@ include::{snippets}/{check}/solved_question_upsert_test/http-request.adoc[]
 ===== Response Example
 include::{snippets}/{check}/solved_question_upsert_test/http-response.adoc[]
 
+=== 6. 지난 문제 리스트
+include::{snippets}/{check}/solved_question_list_test/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{check}/solved_question_list_test/http-response.adoc[]
+
+=== 7. 지난 문제 상세 보기
+===== Request Example
+include::{snippets}/{check}/solved_question_detail_test/http-request.adoc[]
+
+===== Response Example
+include::{snippets}/{check}/solved_question_detail_test/http-response.adoc[]
+
 
 
 
