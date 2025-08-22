@@ -5,6 +5,7 @@ import org.example.jjava_main.domain.compile.SolvedQuestion;
 import org.example.jjava_main.domain.question.ProgressStatus;
 import org.example.jjava_main.domain.question.Question;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -130,12 +131,14 @@ public class QuestionResponse {
         private Integer questionId;
         private String title;
         private String questionType;
+        private Timestamp createdAt;
 
         public SolvedQuestionDTO(SolvedQuestion solvedQuestion) {
             this.solvedQuestionId = solvedQuestion.getId();
             this.questionId = solvedQuestion.getQuestion().getId();
             this.title = solvedQuestion.getQuestion().getTitle();
             this.questionType = solvedQuestion.getQuestion().getType().toString();
+            this.createdAt = solvedQuestion.getCreatedAt();
         }
     }
 
