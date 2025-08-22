@@ -471,7 +471,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_2_문제_상세보기">2. 문제 상세보기</a></li>
 <li><a href="#_3_컴파일_검산_성공_ai_리팩토링">3. 컴파일 &amp; 검산 성공 &amp; AI 리팩토링</a></li>
 <li><a href="#_4_컴파일_검산_실패">4. 컴파일 &amp; 검산 실패</a></li>
-<li><a href="#_4_문제_저장">4. 문제 저장</a></li>
+<li><a href="#_5_문제_저장">5. 문제 저장</a></li>
+<li><a href="#_6_지난_문제_리스트">6. 지난 문제 리스트</a></li>
+<li><a href="#_7_지난_문제_상세_보기">7. 지난 문제 상세 보기</a></li>
 </ul>
 </li>
 <li><a href="#_4_워크_스페이스">4. 워크 스페이스</a>
@@ -632,7 +634,7 @@ Content-Length: 395
   "status" : 200,
   "msg" : "성공",
   "body" : {
-    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY29zIiwiZXhwIjoxNzU2MTg1NzM0LCJpZCI6Niwicm9sZXMiOiJVU0VSIn0.jzcvgl2S1x0iv96DbmgfWrFM2eJWTKFKOh2D9OTiT3AoIEVOKjDBG-jq0r98HgMu7RdBWo_Gj-KPqdBueDz62Q",
+    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY29zIiwiZXhwIjoxNzU2MTk1OTg3LCJpZCI6Niwicm9sZXMiOiJVU0VSIn0.xKeR0aTbQ8M_JYXnwfl4Q4P_CCqp7-Xtqy49BHFjFA2mef0CQlwjIqjnli2DDQyypYTXXFUM4t9Pot0DiOBVGQ",
     "email" : "ccos@naver.com",
     "nickname" : "ccos",
     "level" : "EXPERT",
@@ -678,14 +680,14 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Set-Cookie: SESSION=MTRkZjI3ZWYtZjU2Yy00MjI5LTk1NzEtYmUzMzZjNGQ0NzZi; Path=/; HttpOnly; SameSite=Lax
+Set-Cookie: SESSION=NmQyYjBhYzgtMzAzZi00N2JhLWIxNjAtZjM0Y2NhNjllOGY4; Path=/; HttpOnly; SameSite=Lax
 Content-Length: 435
 
 {
   "status" : 200,
   "msg" : "성공",
   "body" : {
-    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzc2FyIiwiZXhwIjoxNzU2MTg1NzMzLCJpZCI6Miwicm9sZXMiOiJVU0VSIn0.EzrvrRwE8KjxbNUrLqyusHSZU2yW4DaBCPyXRB4ribHSjwoBSPwkR66T4plAhwpZzwSnpiW8r5anZhRsFIlxRg",
+    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzc2FyIiwiZXhwIjoxNzU2MTk1OTg2LCJpZCI6Miwicm9sZXMiOiJVU0VSIn0.oYvbtTIj3TAWwcu4mGPkUCoUg0E3-fZafKIcUBaoPzl53iB8aoERtuLW8yUV4eqBG-1_7Xu_57vfVf6__wzepA",
     "id" : 2,
     "email" : "ssar1234@nate.com",
     "nickname" : "ssar",
@@ -1284,7 +1286,7 @@ Content-Length: 360
 </div>
 </div>
 <div class="sect2">
-<h3 id="_4_문제_저장">4. 문제 저장</h3>
+<h3 id="_5_문제_저장">5. 문제 저장</h3>
 <div class="sect4">
 <h5 id="_request_example_17">Request Example</h5>
 <div class="listingblock">
@@ -1334,6 +1336,106 @@ Content-Length: 240
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_6_지난_문제_리스트">6. 지난 문제 리스트</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /solved-questions/list HTTP/1.1
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_response_example_18">Response Example</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 707
+
+{
+  "status" : 200,
+  "msg" : "성공",
+  "body" : {
+    "groupedSolvedQuestions" : {
+      "OPERATOR" : [ {
+        "solvedQuestionId" : 102,
+        "questionId" : 2,
+        "title" : "문제 2",
+        "questionType" : "OPERATOR"
+      }, {
+        "solvedQuestionId" : 104,
+        "questionId" : 2,
+        "title" : "문제 2",
+        "questionType" : "OPERATOR"
+      } ],
+      "TEXT" : [ {
+        "solvedQuestionId" : 101,
+        "questionId" : 1,
+        "title" : "문제 1",
+        "questionType" : "TEXT"
+      }, {
+        "solvedQuestionId" : 103,
+        "questionId" : 1,
+        "title" : "문제 1",
+        "questionType" : "TEXT"
+      } ]
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_7_지난_문제_상세_보기">7. 지난 문제 상세 보기</h3>
+<div class="sect4">
+<h5 id="_request_example_18">Request Example</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /solved-questions/1 HTTP/1.1
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_response_example_19">Response Example</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 306
+
+{
+  "status" : 200,
+  "msg" : "성공",
+  "body" : {
+    "questionId" : 1,
+    "title" : "문제 제목",
+    "content" : "문제 내용",
+    "serializedJson" : "json~~~",
+    "blockExtensionJson" : "json~~~",
+    "createdAt" : "2025-08-19 17:13:08.224",
+    "aiComment" : "AI 코멘트"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1342,7 +1444,7 @@ Content-Length: 240
 <div class="sect2">
 <h3 id="_1_워크_스페이스_목록_조회">1. 워크 스페이스 목록 조회</h3>
 <div class="sect4">
-<h5 id="_request_example_18">Request Example</h5>
+<h5 id="_request_example_19">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /workspace HTTP/1.1
@@ -1351,7 +1453,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_18">Response Example</h5>
+<h5 id="_response_example_20">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1378,12 +1480,12 @@ Content-Length: 618
       "role" : "USER",
       "score" : null,
       "enabled" : true,
-      "accountNonLocked" : true,
       "authorities" : [ {
         "authority" : "ROLE_USER"
       } ],
-      "accountNonExpired" : true,
-      "credentialsNonExpired" : true
+      "accountNonLocked" : true,
+      "credentialsNonExpired" : true,
+      "accountNonExpired" : true
     },
     "title" : "워크스페이스1",
     "serializedJson" : null,
@@ -1398,7 +1500,7 @@ Content-Length: 618
 <div class="sect2">
 <h3 id="_2_워크_스페이스_상세보기">2. 워크 스페이스 상세보기</h3>
 <div class="sect4">
-<h5 id="_request_example_19">Request Example</h5>
+<h5 id="_request_example_20">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /workspace/1 HTTP/1.1
@@ -1407,7 +1509,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_19">Response Example</h5>
+<h5 id="_response_example_21">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1434,12 +1536,12 @@ Content-Length: 614
       "role" : "USER",
       "score" : null,
       "enabled" : true,
-      "accountNonLocked" : true,
       "authorities" : [ {
         "authority" : "ROLE_USER"
       } ],
-      "accountNonExpired" : true,
-      "credentialsNonExpired" : true
+      "accountNonLocked" : true,
+      "credentialsNonExpired" : true,
+      "accountNonExpired" : true
     },
     "title" : "워크스페이스1",
     "serializedJson" : null,
@@ -1454,7 +1556,7 @@ Content-Length: 614
 <div class="sect2">
 <h3 id="_3_워크_스페이스_상세보기_실패_자원_부재">3. 워크 스페이스 상세보기 실패 - 자원 부재</h3>
 <div class="sect4">
-<h5 id="_request_example_20">Request Example</h5>
+<h5 id="_request_example_21">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /workspace/999 HTTP/1.1
@@ -1463,7 +1565,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_20">Response Example</h5>
+<h5 id="_response_example_22">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 404 Not Found
@@ -1488,7 +1590,7 @@ Content-Length: 110
 <div class="sect2">
 <h3 id="_2_워크_스페이스_상세보기_실패_권한_없음">2. 워크 스페이스 상세보기 실패 - 권한 없음</h3>
 <div class="sect4">
-<h5 id="_request_example_21">Request Example</h5>
+<h5 id="_request_example_22">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /workspace/1 HTTP/1.1
@@ -1497,7 +1599,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_21">Response Example</h5>
+<h5 id="_response_example_23">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 403 Forbidden
@@ -1527,7 +1629,7 @@ Content-Length: 110
 <div class="sect2">
 <h3 id="_1_사용자_목록_조회">1. 사용자 목록 조회</h3>
 <div class="sect4">
-<h5 id="_request_example_22">Request Example</h5>
+<h5 id="_request_example_23">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /admin/users HTTP/1.1
@@ -1537,7 +1639,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_22">Response Example</h5>
+<h5 id="_response_example_24">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1569,7 +1671,7 @@ Content-Length: 324
 <div class="sect2">
 <h3 id="_2_사용자_목록_조회_페이지정렬_파라미터">2. 사용자 목록 조회 — 페이지/정렬 파라미터</h3>
 <div class="sect4">
-<h5 id="_request_example_23">Request Example</h5>
+<h5 id="_request_example_24">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /admin/users?page=10&amp;order=email&amp;sort=1 HTTP/1.1
@@ -1579,7 +1681,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_23">Response Example</h5>
+<h5 id="_response_example_25">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1604,7 +1706,7 @@ Content-Length: 167
 <div class="sect2">
 <h3 id="_3_사용자_수정">3. 사용자 수정</h3>
 <div class="sect4">
-<h5 id="_request_example_24">Request Example</h5>
+<h5 id="_request_example_25">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /admin/users/1 HTTP/1.1
@@ -1623,7 +1725,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_24">Response Example</h5>
+<h5 id="_response_example_26">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1648,7 +1750,7 @@ Content-Length: 186
 <div class="sect2">
 <h3 id="_4_사용자_삭제">4. 사용자 삭제</h3>
 <div class="sect4">
-<h5 id="_request_example_25">Request Example</h5>
+<h5 id="_request_example_26">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /admin/users/1 HTTP/1.1
@@ -1658,7 +1760,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_25">Response Example</h5>
+<h5 id="_response_example_27">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1677,7 +1779,7 @@ Content-Length: 61
 <div class="sect2">
 <h3 id="_5_문제_목록_조회">5. 문제 목록 조회</h3>
 <div class="sect4">
-<h5 id="_request_example_26">Request Example</h5>
+<h5 id="_request_example_27">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /admin/questions HTTP/1.1
@@ -1687,7 +1789,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_26">Response Example</h5>
+<h5 id="_response_example_28">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1733,7 +1835,7 @@ Content-Length: 811
 <div class="sect2">
 <h3 id="_6_문제_목록_조회_페이지정렬_파라미터">6. 문제 목록 조회 — 페이지/정렬 파라미터</h3>
 <div class="sect4">
-<h5 id="_request_example_27">Request Example</h5>
+<h5 id="_request_example_28">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /admin/questions?page=2&amp;order=title&amp;sort=1 HTTP/1.1
@@ -1743,7 +1845,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_27">Response Example</h5>
+<h5 id="_response_example_29">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1768,7 +1870,7 @@ Content-Length: 167
 <div class="sect2">
 <h3 id="_7_문제_생성">7. 문제 생성</h3>
 <div class="sect4">
-<h5 id="_request_example_28">Request Example</h5>
+<h5 id="_request_example_29">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /admin/questions HTTP/1.1
@@ -1788,7 +1890,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_28">Response Example</h5>
+<h5 id="_response_example_30">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1812,7 +1914,7 @@ Content-Length: 256
 <div class="sect2">
 <h3 id="_8_문제_수정">8. 문제 수정</h3>
 <div class="sect4">
-<h5 id="_request_example_29">Request Example</h5>
+<h5 id="_request_example_30">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /admin/questions/2 HTTP/1.1
@@ -1832,7 +1934,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_29">Response Example</h5>
+<h5 id="_response_example_31">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1856,7 +1958,7 @@ Content-Length: 225
 <div class="sect2">
 <h3 id="_9_문제_삭제">9. 문제 삭제</h3>
 <div class="sect4">
-<h5 id="_request_example_30">Request Example</h5>
+<h5 id="_request_example_31">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /admin/questions/3 HTTP/1.1
@@ -1866,7 +1968,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_example_30">Response Example</h5>
+<h5 id="_response_example_32">Response Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1950,7 +2052,7 @@ Content-Length: 479
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2025-08-19 14:21:46 +0900
+Last updated 2025-08-19 17:12:11 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
