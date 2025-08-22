@@ -1,6 +1,7 @@
 package org.example.jjava_main.domain.leaderboard;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main.controller.LeaderboardController;
 import org.example.jjava_main.domain.user.*;
 import org.example.jjava_main.dto.LeaderboardResponse;
@@ -31,12 +32,12 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = LeaderboardController.class)
-@AutoConfigureRestDocs // build/generated-snippets/ 아래에 스니펫 생성
 @Import({LeaderboardControllerTest.TestConfig.class, LeaderboardControllerTest.TestSecurityConfig.class})
-public class LeaderboardControllerTest {
+public class LeaderboardControllerTest extends MyRestDoc {
 
     @Autowired
     private MockMvc mockMvc;
@@ -83,35 +84,37 @@ public class LeaderboardControllerTest {
 
     @Test
     void top10_test() throws Exception {
-        // given: 서비스 응답 목킹
+        // given: 서비스 응답 목킹 (currentScore + delta + rank)
         var items = List.of(
-                LeaderboardResponse.ItemDTO.builder().userId(1).username("ssar").score(120).rank(1).build(),
-                LeaderboardResponse.ItemDTO.builder().userId(2).username("cos").score(95).rank(2).build(),
-                LeaderboardResponse.ItemDTO.builder().userId(3).username("love").score(90).rank(3).build(),
-                LeaderboardResponse.ItemDTO.builder().userId(4).username("haha").score(80).rank(4).build()
+                LeaderboardResponse.ItemDTO.builder().userId(1).username("ssar").currentScore(1230).delta(230).rank(1).build(),
+                LeaderboardResponse.ItemDTO.builder().userId(2).username("cos").currentScore(1180).delta(180).rank(2).build(),
+                LeaderboardResponse.ItemDTO.builder().userId(3).username("love").currentScore(1100).delta(100).rank(3).build(),
+                LeaderboardResponse.ItemDTO.builder().userId(4).username("haha").currentScore(1000).delta(90).rank(4).build()
         );
         var dto = LeaderboardResponse.DTO.builder().rankingList(items).build();
 
         when(leaderboardService.top10List()).thenReturn(dto);
 
-        // when + then: 호출/검증 + REST Docs 생성
-        mockMvc.perform(get("/leaderboard/top10")
-                        .accept(MediaType.APPLICATION_JSON))
+        // when + then
+        mockMvc.perform(get("/leaderboard/top10").accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
-                // 아래 JSONPath는 Resp.ok(...) 외피에 body가 있다고 가정
                 .andExpect(jsonPath("$.body.rankingList", hasSize(4)))
+
                 .andExpect(jsonPath("$.body.rankingList[0].userId").value(1))
                 .andExpect(jsonPath("$.body.rankingList[0].username").value("ssar"))
-                .andExpect(jsonPath("$.body.rankingList[0].score").value(120))
+                .andExpect(jsonPath("$.body.rankingList[0].currentScore").value(1230))
+                .andExpect(jsonPath("$.body.rankingList[0].delta").value(230))
                 .andExpect(jsonPath("$.body.rankingList[0].rank").value(1))
+
                 .andDo(document("leaderboard/top10_test",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        // 응답 외피(success, code, message 등)는 무시하고 필요한 부분만 문서화
                         relaxedResponseFields(
                                 fieldWithPath("body.rankingList[].userId").description("사용자 ID"),
                                 fieldWithPath("body.rankingList[].username").description("사용자 닉네임"),
-                                fieldWithPath("body.rankingList[].score").description("현재 점수"),
+                                fieldWithPath("body.rankingList[].currentScore").description("현재 점수(after_score)"),
+                                fieldWithPath("body.rankingList[].delta").description("증가분(오늘 상승량, Δ = after - before)"),
                                 fieldWithPath("body.rankingList[].rank").description("순위 (DENSE_RANK)")
                         )
                 ));

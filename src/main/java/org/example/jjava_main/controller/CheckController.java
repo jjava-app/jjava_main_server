@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -56,8 +59,8 @@ public class CheckController {
 
     // 문제 리스트
     @GetMapping("/questions")
-    public ResponseEntity<?> questionListGet(@RequestParam Integer userId) {
-        QuestionResponse.ListDTO respDTO = checkService.questionListGet(userId);
+    public ResponseEntity<?> questionListGet(@AuthenticationPrincipal User user) {
+        QuestionResponse.ListDTO respDTO = checkService.questionListGet(user.getId());
         return Resp.ok(respDTO);
     }
 
@@ -69,10 +72,10 @@ public class CheckController {
     }
 
     // 문제 저장 (문제 파일 전 중간 저장)
-    @PutMapping("/solved-questions/{questionId}/{userId}")
-    public ResponseEntity<?> solvedQuestionUpsert(@AuthenticationPrincipal User user, @PathVariable("questionId") Integer questionId, @PathVariable("userId") Integer userId, @RequestBody QuestionRequest.SolvedQuestionCreateDTO reqDTO) {
+    @PutMapping("/solved-questions/{questionId}")
+    public ResponseEntity<?> solvedQuestionUpsert(@AuthenticationPrincipal User user, @PathVariable("questionId") Integer questionId, @RequestBody QuestionRequest.SolvedQuestionCreateDTO reqDTO) {
         // userId를 Authentication에서 찾아옴
-        userId = user.getId();
+        Integer userId = user.getId();
 
         QuestionResponse.SolvedQuestionCreateDTO respDTO = checkService.solvedQuestionUpsert(userId, questionId, reqDTO.getSerializedJson(), reqDTO.getBlockExtensionJson());
 
@@ -83,6 +86,15 @@ public class CheckController {
     public ResponseEntity<?> solvedQuestionDetailGet(@PathVariable("id") Integer questionId) {
         QuestionResponse.SolvedQuestionDetailDTO respDTO = checkService.solvedQuestionDetailGet(questionId);
         // TODO 3 : body에 DTO 담기
+        return Resp.ok(respDTO);
+    }
+
+    // 내가 푼 문제 리스트
+    @GetMapping("/solved-questions/list")
+    public ResponseEntity<?> solvedQuestionListGet(@AuthenticationPrincipal User user) {
+        int userId = user.getId();
+
+        QuestionResponse.SolvedQuestionListDTO respDTO = checkService.solvedQuestionListGet(userId);
         return Resp.ok(respDTO);
     }
 
