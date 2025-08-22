@@ -59,8 +59,8 @@ public class CheckController {
 
     // 문제 리스트
     @GetMapping("/questions")
-    public ResponseEntity<?> questionListGet(@RequestParam Integer userId) {
-        QuestionResponse.ListDTO respDTO = checkService.questionListGet(userId);
+    public ResponseEntity<?> questionListGet(@AuthenticationPrincipal User user) {
+        QuestionResponse.ListDTO respDTO = checkService.questionListGet(user.getId());
         return Resp.ok(respDTO);
     }
 
@@ -72,10 +72,10 @@ public class CheckController {
     }
 
     // 문제 저장 (문제 파일 전 중간 저장)
-    @PutMapping("/solved-questions/{questionId}/{userId}")
-    public ResponseEntity<?> solvedQuestionUpsert(@AuthenticationPrincipal User user, @PathVariable("questionId") Integer questionId, @PathVariable("userId") Integer userId, @RequestBody QuestionRequest.SolvedQuestionCreateDTO reqDTO) {
+    @PutMapping("/solved-questions/{questionId}")
+    public ResponseEntity<?> solvedQuestionUpsert(@AuthenticationPrincipal User user, @PathVariable("questionId") Integer questionId, @RequestBody QuestionRequest.SolvedQuestionCreateDTO reqDTO) {
         // userId를 Authentication에서 찾아옴
-        userId = user.getId();
+        Integer userId = user.getId();
 
         QuestionResponse.SolvedQuestionCreateDTO respDTO = checkService.solvedQuestionUpsert(userId, questionId, reqDTO.getSerializedJson(), reqDTO.getBlockExtensionJson());
 

@@ -1,9 +1,9 @@
 package org.example.jjava_main.domain.user;
 
 import lombok.RequiredArgsConstructor;
+import org.example.jjava_main._core.error.ex.Exception404;
 import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
-import org.example.jjava_main.dto.UserResponse.LevelUpdateResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,22 +12,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserResponse userGet(User user) {
+    public UserResponse.DTO userGet(User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception404("해당하는 유저가 없습니다."));
+        int rank = userRepository.findRankByScoreAndId(userPS.getScore());
 
-        int rank = userRepository.findRankByScoreAndId(user.getScore());
-
-        return new UserResponse(user, rank);
+        return new UserResponse.DTO(userPS, rank);
     }
 
 
     @Transactional
-    public LevelUpdateResponse levelUpdate(UserRequest.LevelUpdateDTO reqDTO, User user) {
+    public UserResponse.UpdateDTO userUpdate(UserRequest.LevelUpdateDTO reqDTO, User user) {
         User userPS = userRepository.findById(user.getId())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new Exception404("해당하는 유저가 없습니다."));
 
         userPS.userUpdate(reqDTO.getLevel(), reqDTO.getUsername());
 
         // user 객체 그대로 응답에 사용
-        return new LevelUpdateResponse(userPS);
+        return new UserResponse.UpdateDTO(userPS);
     }
 }

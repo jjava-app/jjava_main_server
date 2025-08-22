@@ -263,7 +263,6 @@ public class CheckControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/questions")
-                        .param("userId", String.valueOf(1))
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -351,7 +350,7 @@ public class CheckControllerTest extends MyRestDoc {
         // when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
-                        .put("/solved-questions/{questionId}/{userId}", reqDTO.getQuestionId(), reqDTO.getUserId())
+                        .put("/solved-questions/{questionId}", reqDTO.getQuestionId())
 
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(reqDTO)) // ← DTO → JSON 변환
@@ -414,7 +413,7 @@ public class CheckControllerTest extends MyRestDoc {
 
         // eye
         String responseBody = actions.andReturn().getResponse().getContentAsString();
-        System.out.println("test  : " + responseBody);
+        System.out.println(responseBody);
 
         // then
         actions.andExpect(MockMvcResultMatchers.status().isOk())

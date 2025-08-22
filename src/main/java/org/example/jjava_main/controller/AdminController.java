@@ -52,18 +52,21 @@ public class AdminController {
     @PostMapping("/questions")
     public ResponseEntity<?> questionCreate(@RequestBody QuestionRequest.DTO reqDTO) {
         QuestionResponse.DTO respDTO = adminService.questionCreate(reqDTO);
+        log.info("Admin : 새 문제를 생성했습니다.");
         return Resp.ok(respDTO);
     }
 
     @PutMapping("/questions/{id}")
     public ResponseEntity<?> questionUpdate(@PathVariable("id") Integer id, @RequestBody QuestionRequest.DTO reqDTO) {
         QuestionResponse.DTO respDTO = adminService.questionUpdate(reqDTO, id);
+        log.info("Admin : " + respDTO.getQuestionId() + "번 문제를 수정했습니다.");
         return Resp.ok(respDTO);
     }
 
     @DeleteMapping("/questions/{id}")
     public ResponseEntity<?> questionDelete(@PathVariable("id") Integer id) {
         adminService.questionDelete(id);
+        log.info("Admin : 문제를 삭제했습니다 : Question_ID = " + id);
         return Resp.ok(null);
     }
 }

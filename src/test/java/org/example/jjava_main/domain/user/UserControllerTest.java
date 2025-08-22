@@ -4,7 +4,6 @@ import org.example.jjava_main.MyRestDoc;
 import org.example.jjava_main.controller.UserController;
 import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
-import org.example.jjava_main.dto.UserResponse.LevelUpdateResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -81,7 +80,7 @@ class UserControllerTest extends MyRestDoc {
     @Test
     void get_my_page_profile_success() throws Exception {
         // given
-        UserResponse response = new UserResponse(mockUser, 155);
+        UserResponse.DTO response = new UserResponse.DTO(mockUser, 155);
         when(userService.userGet(any(User.class))).thenReturn(response);
 
         // when
@@ -90,7 +89,7 @@ class UserControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andExpect(jsonPath("$.body.email").value("ssar1234@nate.com"))
                 .andExpect(jsonPath("$.body.username").value("ssar"))
-                .andExpect(jsonPath("$.body.level").value("EXPERT"))
+                .andExpect(jsonPath("$.body.level").value(UserLevel.EXPERT.name()))
                 .andExpect(jsonPath("$.body.score").value(2530))
                 .andExpect(jsonPath("$.body.rank").value(155))
                 .andDo(MockMvcResultHandlers.print())
@@ -116,12 +115,12 @@ class UserControllerTest extends MyRestDoc {
                 .score(2530)
                 .build();
 
-        LevelUpdateResponse respDTO = new LevelUpdateResponse(updatedUser);
-        when(userService.levelUpdate(any(UserRequest.LevelUpdateDTO.class), any(User.class)))
+        UserResponse.UpdateDTO respDTO = new UserResponse.UpdateDTO(updatedUser);
+        when(userService.userUpdate(any(UserRequest.LevelUpdateDTO.class), any(User.class)))
                 .thenReturn(respDTO);
 
         // when & then
-        mockMvc.perform(put("/users/mypage/level")
+        mockMvc.perform(put("/users/update")
                         .contentType("application/json")
                         .content(reqJson))
                 .andExpect(status().isOk())

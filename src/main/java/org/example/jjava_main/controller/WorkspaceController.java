@@ -22,15 +22,15 @@ public class WorkspaceController {
     @GetMapping
     public ResponseEntity<?> workspaceList(@AuthenticationPrincipal User user) {
         // TODO : given data -> AuthUtil에서 로그인한 유저 객체를 꺼내오게 해야 함 => JPA 연관 관계 설정 이슈
-        List<Workspace> workspaceList = workspaceService.workspaceList(user);
-        return Resp.ok(workspaceList);
+        WorkspaceResponse.ListDTO respDTO = workspaceService.workspaceList(user);
+        return Resp.ok(respDTO);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> workspaceDetail(@PathVariable("id") Integer id, @AuthenticationPrincipal User user) {
         // TODO : given data -> AuthUtil에서 로그인한 유저 객체를 꺼내오게 해야 함 => JPA 연관 관계 설정 이슈
-        Workspace workspace = workspaceService.workspaceDetail(id, user);
-        return Resp.ok(workspace);
+        WorkspaceResponse.DTO respDTO = workspaceService.workspaceDetail(id, user);
+        return Resp.ok(respDTO);
     }
 
     @PostMapping
