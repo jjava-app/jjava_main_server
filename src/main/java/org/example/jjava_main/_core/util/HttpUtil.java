@@ -30,8 +30,8 @@ public class HttpUtil {
 
     private final QuestionRepository questionRepository;
 
-    //private static final String BASE_URL = "http://jjava-compile:8081";
-    private static final String BASE_URL = "http://localhost:8081";
+    private static final String BASE_URL = "http://jjava-compile:8081";
+    //private static final String BASE_URL = "http://localhost:8081";
     private static final String COMPILE_ENDPOINT = "/compile";
     private static final String CHECK_ENDPOINT = "/check";
 

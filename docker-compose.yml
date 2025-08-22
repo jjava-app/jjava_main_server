@@ -1,0 +1,65 @@
+version: '3.9'
+
+services:
+  blogdb:
+    image: mysql:8.0
+    container_name: main-db
+    environment:
+      MYSQL_ROOT_PASSWORD: "bitc5600!"
+      MYSQL_DATABASE: blogdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend-net
+    restart: always
+
+  redis:
+    build:
+      context: .
+      dockerfile: Dockerfile.redis
+    container_name: main-redis
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    networks:
+      - backend-net
+    restart: always
+
+
+  jjava-main:
+    build:
+      context: .
+      args:
+        - REDIS_PASSWORD=${REDIS_PASSWORD}
+        - RESEND_API_KEY=${RESEND_API_KEY}
+        - JJAVA_REFACTOR_API_KEY=${JJAVA_REFACTOR_API_KEY}
+    container_name: jjava_main
+    ports:
+      - "5000:5000"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_DATASOURCE_URL: "jdbc:mysql://main-db:3306/blogdb"
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "bitc5600!"
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      JJAVA_REFACTOR_API_KEY: ${JJAVA_REFACTOR_API_KEY}
+    depends_on:
+      - blogdb
+      - redis
+    networks:
+      - backend-net
+    restart: always
+
+
+networks:
+  backend-net:
+    external: true
+
+volumes:
+  mysql_data:

@@ -1,0 +1,4 @@
+FROM redis:7
+COPY redis/entrypoint.sh /usr/local/bin/redis-entrypoint.sh
+RUN chmod +x /usr/local/bin/redis-entrypoint.sh
+ENTRYPOINT ["sh", "/usr/local/bin/redis-entrypoint.sh"]
