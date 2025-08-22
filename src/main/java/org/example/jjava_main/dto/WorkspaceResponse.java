@@ -5,6 +5,7 @@ import org.example.jjava_main.domain.block.BlockLibrary;
 import org.example.jjava_main.domain.workspace.Workspace;
 import org.hibernate.jdbc.Work;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,11 +19,13 @@ public class WorkspaceResponse {
             private Integer id;
             private Integer userId;
             private String title;
+            private String createdAt;
 
             public WorkspaceDTO(Workspace workspace) {
                 this.id = workspace.getId();
                 this.userId = workspace.getUser().getId();
                 this.title = workspace.getTitle();
+                this.createdAt = workspace.getCreatedAt().toString();
             }
         }
 

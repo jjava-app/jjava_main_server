@@ -5,6 +5,7 @@ import org.example.jjava_main.domain.compile.SolvedQuestion;
 import org.example.jjava_main.domain.question.ProgressStatus;
 import org.example.jjava_main.domain.question.Question;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,22 +56,20 @@ public class QuestionResponse {
 
     @Data
     public static class SolvedQuestionDetailDTO {
-        private Integer questionId;
+        private Integer solvedQuestionId;
         private String title;
         private String content;
         private String AiComment;
-        private String serializedJson;
-        private String blockExtensionJson;
         private String createdAt;
+        private String questionType;
 
-        public SolvedQuestionDetailDTO(Question question, SolvedQuestion solvedQuestion) {
-            this.questionId = question.getId();
-            this.title = question.getTitle();
-            this.content = question.getContent();
+        public SolvedQuestionDetailDTO(SolvedQuestion solvedQuestion) {
+            this.solvedQuestionId = solvedQuestion.getId();
+            this.title = solvedQuestion.getQuestion().getTitle();
+            this.content = solvedQuestion.getQuestion().getContent();
             this.AiComment = solvedQuestion.getAiComment();
-            this.serializedJson = solvedQuestion.getSerializedJson();
-            this.blockExtensionJson = solvedQuestion.getBlockExtensionJson();
             this.createdAt = solvedQuestion.getCreatedAt().toString();
+            this.questionType = solvedQuestion.getQuestion().getType().name();
         }
     }
 
@@ -130,30 +129,27 @@ public class QuestionResponse {
         private Integer questionId;
         private String title;
         private String questionType;
+        private Timestamp createdAt;
 
         public SolvedQuestionDTO(SolvedQuestion solvedQuestion) {
             this.solvedQuestionId = solvedQuestion.getId();
             this.questionId = solvedQuestion.getQuestion().getId();
             this.title = solvedQuestion.getQuestion().getTitle();
             this.questionType = solvedQuestion.getQuestion().getType().toString();
+            this.createdAt = solvedQuestion.getCreatedAt();
         }
     }
 
     // 내가푼 문제 리스트
     @Data
     public static class SolvedQuestionListDTO {
-        private Map<String, List<SolvedQuestionDTO>> groupedSolvedQuestions;
+        private Map<String, List<SolvedQuestionDetailDTO>> solvedQuestions;
 
+        public SolvedQuestionListDTO(List<SolvedQuestion> solvedQuestions) {
+            List<SolvedQuestionDetailDTO> sqList = solvedQuestions.stream().map(SolvedQuestionDetailDTO::new).toList();
 
-        public SolvedQuestionListDTO(List<SolvedQuestion> solvedQuestionList) {
-            // SolvedQuestion → SolvedQuestionDTO 변환
-            List<SolvedQuestionDTO> dtoList = solvedQuestionList.stream()
-                    .map(SolvedQuestionDTO::new)
-                    .collect(Collectors.toList());
-
-            // questionType별로 그룹핑
-            this.groupedSolvedQuestions = dtoList.stream()
-                    .collect(Collectors.groupingBy(SolvedQuestionDTO::getQuestionType));
+            this.solvedQuestions = sqList.stream()
+                    .collect(Collectors.groupingBy(SolvedQuestionDetailDTO::getQuestionType));
         }
     }
 
