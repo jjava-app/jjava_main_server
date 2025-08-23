@@ -200,15 +200,15 @@ public class CheckService {
         return respDTO;
     }
 
-    public QuestionResponse.SolvedQuestionDetailDTO solvedQuestionDetailGet(Integer questionId) {
-        SolvedQuestion solvedQuestion = questionRepository.findSolvedQuestionByQuestionId(questionId)
+    public QuestionResponse.SolvedQuestionDetailDTO solvedQuestionDetailGet(Integer solvedQuestionId) {
+        SolvedQuestion solvedQuestion = questionRepository.findSolvedQuestionById(solvedQuestionId)
                 .orElseThrow(() -> new Exception404("해당 유저가 푼 문제가 아닙니다."));
 
-        Question question =  questionRepository.findById(questionId).orElse(null);
+        Question question =  questionRepository.findById(solvedQuestionId).orElse(null);
         if(question == null) throw new Exception404("해당하는 문제가 없습니다.");
 
         // TODO 2 : DTO 반환
-        return new QuestionResponse.SolvedQuestionDetailDTO(question,solvedQuestion);
+        return new QuestionResponse.SolvedQuestionDetailDTO(solvedQuestion);
     }
 
     // 내가 푼 문제 리스트
@@ -225,7 +225,7 @@ public class CheckService {
     public QuestionResponse.HomeDTO solvedQuestionListLimit3(User user) {
         // 1. 유저가 푼 문제 가져오기
         List<SolvedQuestion> solvedQuestions = questionRepository.findSolvedQuestionByUserId(user.getId());
-        
+
         // DTO 반환
         return new QuestionResponse.HomeDTO(solvedQuestions);
     }

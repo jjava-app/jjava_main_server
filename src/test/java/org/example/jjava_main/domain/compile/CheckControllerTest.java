@@ -36,9 +36,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.anyInt;
 
 @WebMvcTest(controllers = CheckController.class)
 @Import({CheckControllerTest.TestSecurityConfig.class})
@@ -109,7 +111,6 @@ public class CheckControllerTest extends MyRestDoc {
     @Test
     public void check_proxy_and_code_refactor_success_test() throws Exception {
         // given
-        String type = "javascript";
         String payload = "function repeatHello(a) { return a.repeat(5); }";
 
 
@@ -120,7 +121,7 @@ public class CheckControllerTest extends MyRestDoc {
 
         CheckRequest.DTO.TestSpecDTO t3 = new CheckRequest.DTO.TestSpecDTO((Map.of("a", "int")), ("intintintintint"));
 
-        CheckRequest.DTO reqDTO = new CheckRequest.DTO(type, payload, List.of(t1, t2, t3));
+        CheckRequest.DTO reqDTO = new CheckRequest.DTO(payload, List.of(t1, t2, t3));
 
 
         // 컴파일 서버 결과(Proxy)를 Pass로 가짜 세팅
@@ -133,8 +134,8 @@ public class CheckControllerTest extends MyRestDoc {
         // 통신 Mock 처리
         Mockito.when(httpUtil.checkServerSend(
                 Mockito.any(CheckRequest.DTO.class),
-                Mockito.anyInt(),
-                Mockito.anyInt()
+                anyInt(),
+                anyInt()
         )).thenReturn(passFromCompile);
 
         // AI 리팩토링 결과도 가짜 세팅
@@ -179,7 +180,6 @@ public class CheckControllerTest extends MyRestDoc {
     @Test
     public void check_proxy_and_code_refactor_fail_test() throws Exception {
         // given
-        String type = "javascript";
         String payload = "function repeatHello(a) { return a.repeat(3); }";
 
 
@@ -190,7 +190,7 @@ public class CheckControllerTest extends MyRestDoc {
 
         CheckRequest.DTO.TestSpecDTO t3 = new CheckRequest.DTO.TestSpecDTO((Map.of("a", "int")), ("intintintintint"));
 
-        CheckRequest.DTO reqDTO = new CheckRequest.DTO(type, payload, List.of(t1, t2, t3));
+        CheckRequest.DTO reqDTO = new CheckRequest.DTO(payload, List.of(t1, t2, t3));
 
 
         // 실패 응답 DTO (Proxy 서버)
@@ -207,8 +207,8 @@ public class CheckControllerTest extends MyRestDoc {
         // 통신 Mock 처리 (실패 DTO 리턴)
         Mockito.when(httpUtil.checkServerSend(
                 Mockito.any(CheckRequest.DTO.class),
-                Mockito.anyInt(),
-                Mockito.anyInt()
+                anyInt(),
+                anyInt()
         )).thenReturn(failFromCompile);
 
         String requestBody = om.writeValueAsString(reqDTO);
@@ -324,7 +324,6 @@ public class CheckControllerTest extends MyRestDoc {
         // given
         QuestionRequest.SolvedQuestionCreateDTO reqDTO = new QuestionRequest.SolvedQuestionCreateDTO(
                 1,
-                1,
                 "json~~~`",
                 "json~~~~"
         );
@@ -341,7 +340,7 @@ public class CheckControllerTest extends MyRestDoc {
 
         //  Stub 설정
         Mockito.when(checkService.solvedQuestionUpsert(
-                reqDTO.getUserId(),
+                1,
                 reqDTO.getQuestionId(),
                 reqDTO.getSerializedJson(),
                 reqDTO.getBlockExtensionJson()
@@ -351,7 +350,6 @@ public class CheckControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .put("/solved-questions/{questionId}", reqDTO.getQuestionId())
-
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(reqDTO)) // ← DTO → JSON 변환
                         .accept(MediaType.APPLICATION_JSON)
@@ -377,19 +375,21 @@ public class CheckControllerTest extends MyRestDoc {
     @Test
     public void solved_question_detail_test() throws Exception {
         // given
-        Integer questionId = 1;
+        Integer solvedQuestionId = 1;
 
         Question question = Question.builder()
-                .id(questionId)
+                .id(1)
                 .title("문제 제목")
                 .content("문제 내용")
+                .type(QuestionType.TEXT)
                 .build();
 
         // 현재 시간 생성
         Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
         SolvedQuestion solvedQuestion = SolvedQuestion.builder()
-                .id(questionId)
+                .id(solvedQuestionId)
+                .question(question)
                 .AiComment("AI 코멘트")
                 .serializedJson("json~~~")
                 .blockExtensionJson("json~~~")
@@ -397,17 +397,17 @@ public class CheckControllerTest extends MyRestDoc {
                 .build();
 
         QuestionResponse.SolvedQuestionDetailDTO respDTO = new QuestionResponse.SolvedQuestionDetailDTO(
-                question, solvedQuestion
+                solvedQuestion
         );
 
         // Stub 설정
-        Mockito.when(checkService.solvedQuestionDetailGet(questionId))
+        Mockito.when(checkService.solvedQuestionDetailGet(solvedQuestionId))
                 .thenReturn(respDTO);
 
         // when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/solved-questions/{id}", questionId)
+                        .get("/solved-questions/{id}", solvedQuestionId)
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -419,13 +419,89 @@ public class CheckControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.questionId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestionId").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.title").value("문제 제목"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.content").value("문제 내용"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.aiComment").value("AI 코멘트"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.serializedJson").value("json~~~"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body.blockExtensionJson").value("json~~~"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.body.createdAt").value(createdAt.toString())) // createdAt 확인
+                .andDo(document); // RestDocs 문서화
+    }
+
+    @Test
+    public void solved_question_list_test() throws Exception {
+        // given
+        Integer userId = 1;
+
+        // 예제 데이터 생성
+        Question question1 = Question.builder()
+                .id(1)
+                .title("문제 1")
+                .type(QuestionType.TEXT)
+                .build();
+
+        Question question2 = Question.builder()
+                .id(2)
+                .title("문제 2")
+                .type(QuestionType.OPERATOR)
+                .build();
+
+        Question question3 = Question.builder()
+                .id(3)
+                .title("문제 3")
+                .type(QuestionType.OPERATOR)
+                .build();
+
+        Question question4 = Question.builder()
+                .id(4)
+                .title("문제 4")
+                .type(QuestionType.OPERATOR)
+                .build();
+
+        SolvedQuestion solved1 = SolvedQuestion.builder()
+                .id(101)
+                .question(question1)
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
+
+        SolvedQuestion solved2 = SolvedQuestion.builder()
+                .id(102)
+                .question(question2)
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
+
+        SolvedQuestion solved3 = SolvedQuestion.builder()
+                .id(103)
+                .question(question1)
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
+
+        SolvedQuestion solved4 = SolvedQuestion.builder()
+                .id(104)
+                .question(question2)
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
+
+        List<SolvedQuestion> solvedList = List.of(solved1, solved2, solved3, solved4);
+
+        // DTO 생성 (서비스 Stub)
+        QuestionResponse.SolvedQuestionListDTO respDTO =
+                new QuestionResponse.SolvedQuestionListDTO(solvedList);
+
+        Mockito.when(checkService.solvedQuestionListGet(userId))
+                .thenReturn(respDTO);
+
+        // when
+        mvc.perform(MockMvcRequestBuilders.get("/solved-questions/list")
+                        .principal(() -> "1") // @AuthenticationPrincipal User Stub
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print()) // 콘솔에 JSON 응답 출력
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestions.TEXT[0].solvedQuestionId").value(101))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestions.TEXT[0].title").value("문제 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestions.OPERATOR[0].solvedQuestionId").value(102))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.body.solvedQuestions.OPERATOR[0].title").value("문제 2"))
                 .andDo(document); // RestDocs 문서화
     }
 }

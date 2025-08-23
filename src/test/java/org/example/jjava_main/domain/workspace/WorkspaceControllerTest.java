@@ -89,9 +89,9 @@ public class WorkspaceControllerTest extends MyRestDoc {
     @Test
     void get_workspace_list() throws Exception {
         List<Workspace> workspaceList = List.of(
-                Workspace.builder().id(1).title("워크스페이스1").user(mockUser).build(),
-                Workspace.builder().id(2).title("워크스페이스2").user(mockUser).build(),
-                Workspace.builder().id(3).title("워크스페이스3").user(mockUser).build()
+                Workspace.builder().id(1).title("워크스페이스1").user(mockUser).createdAt(Timestamp.valueOf(LocalDateTime.now())).build(),
+                Workspace.builder().id(2).title("워크스페이스2").user(mockUser).createdAt(Timestamp.valueOf(LocalDateTime.now())).build(),
+                Workspace.builder().id(3).title("워크스페이스3").user(mockUser).createdAt(Timestamp.valueOf(LocalDateTime.now())).build()
         );
 
 

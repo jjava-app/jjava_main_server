@@ -14,9 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -27,18 +24,15 @@ public class CheckController {
 
     @PostMapping("/check")
     public ResponseEntity<?> checkProxyAndCodeRefactor(@AuthenticationPrincipal User user, @RequestParam Integer questionId, @RequestBody CheckRequest.DTO reqDTO) {
-        // userId를 Authentication에서 찾아옴
-        Integer userId = user.getId();
-
         // 성공이면 PassDTO, 실패면 List<FailDTO>가 돌아옴
-        Object respDTO = httpUtil.checkServerSend(reqDTO, userId, questionId);
+        Object respDTO = httpUtil.checkServerSend(reqDTO, user.getId(), questionId);
 
         if (respDTO instanceof org.example.jjava_main.dto.CheckResponse.PassDTO pass) {
             // passed == true 일 때만 리팩토링
             if (pass.isPassed()) {
                 try {
                     // AI 리팩토링 요청
-                    CheckResponse.PassDTO aiResult = checkService.checkAndCodeRefactor(pass.getCode(), questionId, userId, reqDTO.getSerializedJson(), reqDTO.getBlockExtensionJson());
+                    CheckResponse.PassDTO aiResult = checkService.checkAndCodeRefactor(pass.getCode(), questionId, user.getId(), reqDTO.getSerializedJson(), reqDTO.getBlockExtensionJson());
 
                     // AI 응답에서 값 세팅
                     pass.setRefactoredCode(aiResult.getRefactoredCode());
@@ -74,17 +68,15 @@ public class CheckController {
     // 문제 저장 (문제 파일 전 중간 저장)
     @PutMapping("/solved-questions/{questionId}")
     public ResponseEntity<?> solvedQuestionUpsert(@AuthenticationPrincipal User user, @PathVariable("questionId") Integer questionId, @RequestBody QuestionRequest.SolvedQuestionCreateDTO reqDTO) {
-        // userId를 Authentication에서 찾아옴
-        Integer userId = user.getId();
 
-        QuestionResponse.SolvedQuestionCreateDTO respDTO = checkService.solvedQuestionUpsert(userId, questionId, reqDTO.getSerializedJson(), reqDTO.getBlockExtensionJson());
+        QuestionResponse.SolvedQuestionCreateDTO respDTO = checkService.solvedQuestionUpsert(user.getId(), questionId, reqDTO.getSerializedJson(), reqDTO.getBlockExtensionJson());
 
         return Resp.ok(respDTO);
     }
 
     @GetMapping("/solved-questions/{id}")
-    public ResponseEntity<?> solvedQuestionDetailGet(@PathVariable("id") Integer questionId) {
-        QuestionResponse.SolvedQuestionDetailDTO respDTO = checkService.solvedQuestionDetailGet(questionId);
+    public ResponseEntity<?> solvedQuestionDetailGet(@AuthenticationPrincipal User user, @PathVariable("id") Integer solvedQuestionId) {
+        QuestionResponse.SolvedQuestionDetailDTO respDTO = checkService.solvedQuestionDetailGet(solvedQuestionId);
         // TODO 3 : body에 DTO 담기
         return Resp.ok(respDTO);
     }
