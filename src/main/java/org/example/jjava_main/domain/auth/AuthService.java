@@ -231,10 +231,12 @@ public class AuthService implements UserDetailsService {
     }
 
     private SocialLoginResponse.LoginDTO toLoginResponse(User user, ProviderType currentProvider) {
-        String token = JwtUtil.create(user);
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring("Bearer ".length());
-        }
+        String jwt = JwtUtil.create(user);
+
+        // "Bearer "가 이미 붙어있으면 중복 방지
+        String accessToken = (jwt != null && jwt.startsWith("Bearer "))
+                ? jwt
+                : "Bearer " + jwt;
 
         // linked 구성
         List<SocialLoginResponse.LinkedAccountDTO> linked =
@@ -246,7 +248,7 @@ public class AuthService implements UserDetailsService {
                         .toList();
 
         return SocialLoginResponse.LoginDTO.builder()
-                .accessToken(token)
+                .accessToken(accessToken)
                 .user(SocialLoginResponse.UserDTO.of(user, false))
                 .linked(linked) //
                 .build();
