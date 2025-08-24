@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>짜바 관리자 페이지</title>
+    <link rel="stylesheet" href="../static/admin/dashboard.css" />
+  </head>
+  <body>
+    <div class="admin-wrapper">
+      <!-- 사이드바 -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>짜바 관리자</h2>
+        </div>
+        <nav class="sidebar-nav">
+          <ul>
+            <li><a href="users.html" class="nav-item">유저 관리</a></li>
+            <li><a href="problems.html" class="nav-item active">문제 관리</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- 메인 콘텐츠 -->
+      <main class="main-content">
+        <!-- 헤더 -->
+        <header class="main-header">
+          <div class="header-right">
+            <div class="admin-info">
+              <span class="admin-name">관리자</span>
+              <button class="logout-btn">로그아웃</button>
+            </div>
+          </div>
+        </header>
+
+        <!-- 콘텐츠 영역 -->
+        <div class="content-area">
+          <div class="section-header">
+            <div class="btns-left">
+              <button class="edit-btn" id="edit-selected-btn">선택 문제 수정</button>
+              <button class="delete-btn" id="delete-selected-btn">선택 문제 삭제</button>
+            </div>
+            <div class="btns-right">
+              <button class="add-btn" id="add-problem-btn">문제 추가</button>
+            </div>
+          </div>
+          
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="checkbox-header">
+                    <input type="checkbox" id="select-all" />
+                  </th>
+                  <th>Id</th>
+                  <th>타입</th>
+                  <th>제목</th>
+                  <th>내용</th>
+                  <th>테스트 변수</th>
+                  <th>테스트 답안</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="checkbox" class="row-checkbox" data-id="1" data-unit="연산" data-name="a + b 구하기" data-description="a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다." data-param1-name="" data-param1-value="" data-param2-name="" data-param2-value="" data-return="15" /></td>
+                  <td>1</td>
+                  <td>연산</td>
+                  <td>a + b 구하기</td>
+                  <td>a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요.</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="row-checkbox" data-id="2" data-unit="연산" data-name="a + b 구하기" data-description="a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다." data-param1-name="" data-param1-value="" data-param2-name="" data-param2-value="" data-return="15" /></td>
+                  <td>2</td>
+                  <td>연산</td>
+                  <td>a + b 구하기</td>
+                  <td>a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요.</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="row-checkbox" data-id="3" data-unit="연산" data-name="a + b 구하기" data-description="a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다." data-param1-name="" data-param1-value="" data-param2-name="" data-param2-value="" data-return="15" /></td>
+                  <td>3</td>
+                  <td>연산</td>
+                  <td>a + b 구하기</td>
+                  <td>a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요.</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="row-checkbox" data-id="4" data-unit="연산" data-name="a + b 구하기" data-description="a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다." data-param1-name="" data-param1-value="" data-param2-name="" data-param2-value="" data-return="15" /></td>
+                  <td>4</td>
+                  <td>연산</td>
+                  <td>a + b 구하기</td>
+                  <td>a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요.</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="row-checkbox" data-id="5" data-unit="연산" data-name="a + b 구하기" data-description="a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다." data-param1-name="" data-param1-value="" data-param2-name="" data-param2-value="" data-return="15" /></td>
+                  <td>5</td>
+                  <td>연산</td>
+                  <td>a + b 구하기</td>
+                  <td>a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요.</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="row-checkbox" data-id="6" data-unit="연산" data-name="a + b 구하기" data-description="a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다." data-param1-name="" data-param1-value="" data-param2-name="" data-param2-value="" data-return="15" /></td>
+                  <td>6</td>
+                  <td>연산</td>
+                  <td>a + b 구하기</td>
+                  <td>a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요.</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="row-checkbox" data-id="7" data-unit="연산" data-name="a + b 구하기" data-description="a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다." data-param1-name="" data-param1-value="" data-param2-name="" data-param2-value="" data-return="15" /></td>
+                  <td>7</td>
+                  <td>연산</td>
+                  <td>a + b 구하기</td>
+                  <td>a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요.</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="row-checkbox" data-id="8" data-unit="연산" data-name="a + b 구하기" data-description="a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다." data-param1-name="" data-param1-value="" data-param2-name="" data-param2-value="" data-return="15" /></td>
+                  <td>8</td>
+                  <td>연산</td>
+                  <td>a + b 구하기</td>
+                  <td>a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요.</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="row-checkbox" data-id="9" data-unit="연산" data-name="a + b 구하기" data-description="a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다." data-param1-name="" data-param1-value="" data-param2-name="" data-param2-value="" data-return="15" /></td>
+                  <td>9</td>
+                  <td>연산</td>
+                  <td>a + b 구하기</td>
+                  <td>a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요.</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="row-checkbox" data-id="10" data-unit="연산" data-name="a + b 구하기" data-description="a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다." data-param1-name="" data-param1-value="" data-param2-name="" data-param2-value="" data-return="15" /></td>
+                  <td>10</td>
+                  <td>연산</td>
+                  <td>a + b 구하기</td>
+                  <td>a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요.</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>15</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- 페이지네이션 -->
+          <div class="pagination">
+            <button class="page-btn prev">이전</button>
+            <button class="page-btn">1</button>
+            <button class="page-btn active">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn next">다음</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- 문제 수정/추가 모달 -->
+    <div class="modal-overlay" id="problem-modal">
+      <div class="modal problem-modal">
+        <h2 class="modal-title" id="problem-modal-title">문제 수정</h2>
+        <form class="modal-form" id="problem-form">
+          <div class="modal-content">
+            <div class="left-section">
+              <div class="form-group">
+                <label for="problem-id">Id</label>
+                <input type="text" id="problem-id" value="1" />
+              </div>
+              <div class="form-group">
+                <label for="problem-unit">단원</label>
+                <select id="problem-unit">
+                  <option value="연산">연산</option>
+                  <option value="반복문">반복문</option>
+                  <option value="조건문">조건문</option>
+                  <option value="배열">배열</option>
+                  <option value="함수">함수</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="problem-name">문제 명</label>
+                <input type="text" id="problem-name" value="a + b 구하기" />
+              </div>
+              <div class="form-group">
+                <label for="problem-description">문제 설명</label>
+                <textarea id="problem-description" rows="4">a와 b는 각각 정수형(int) 값을 가지고 있으며, 두 값을 더한 결과를 반환하는 프로그램을 작성하세요. 입력은 두 정수로 주어지며, 출력은 이들의 합입니다.</textarea>
+              </div>
+            </div>
+            <div class="right-section">
+              <div class="form-group">
+                <label for="param1-name">파라미터1</label>
+                <div class="param-inputs">
+                  <input type="text" id="param1-name" placeholder="변수명" />
+                  <input type="text" id="param1-value" placeholder="값" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="param2-name">파라미터2</label>
+                <div class="param-inputs">
+                  <input type="text" id="param2-name" placeholder="변수명" />
+                  <input type="text" id="param2-value" placeholder="값" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="problem-return">리턴값</label>
+                <input type="text" id="problem-return" value="15" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-buttons">
+            <button type="button" class="btn-cancel" id="cancel-problem">취소</button>
+            <button type="submit" class="btn-apply">적용</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 삭제 확인 팝업 -->
+    <div class="modal-overlay" id="delete-modal">
+      <div class="modal">
+        <h2 class="modal-title">문제 삭제</h2>
+        <p class="modal-message">문제를 삭제하시겠습니까?</p>
+        <div class="modal-buttons">
+          <button type="button" class="btn-cancel" id="cancel-delete">취소</button>
+          <button type="button" class="btn-apply" id="confirm-delete">삭제</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // API 기본 설정
+      const API_BASE_URL = 'http://localhost:8080';
+      
+      // 현재 페이지 상태
+      let currentPage = 0;
+      let currentOrder = 'id';
+      let currentSort = 0; // 0: 내림차순, 1: 오름차순
+      let totalCount = 0;
+      let questionsPerPage = 10;
+
+      // 페이지 로드 시 문제 목록 조회
+      document.addEventListener('DOMContentLoaded', function() {
+        loadQuestions();
+      });
+
+      // 문제 목록 조회
+      async function loadQuestions() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/admin/questions?page=${currentPage}&order=${currentOrder}&sort=${currentSort}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json'
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          
+          if (data.status === 200) {
+            displayQuestions(data.body.questions);
+            totalCount = data.body.totalCount;
+            updatePagination();
+          } else {
+            alert('문제 목록을 불러오는데 실패했습니다.');
+          }
+        } catch (error) {
+          console.error('Error loading questions:', error);
+          alert('문제 목록을 불러오는데 실패했습니다.');
+        }
+      }
+
+      // 문제 목록 표시
+      function displayQuestions(questions) {
+        const tbody = document.querySelector('.data-table tbody');
+        tbody.innerHTML = '';
+
+        questions.forEach(question => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><input type="checkbox" class="row-checkbox" data-id="${question.id}" data-type="${question.type}" data-title="${question.title}" data-content="${question.content}" data-test-variable="${question.testVariable}" data-test-answer="${question.testAnswer}" /></td>
+            <td>${question.id}</td>
+            <td>${question.type}</td>
+            <td>${question.title}</td>
+            <td>${question.content}</td>
+            <td>${question.testVariable}</td>
+            <td>${question.testAnswer}</td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        // 체크박스 이벤트 리스너 다시 설정
+        setupCheckboxListeners();
+      }
+
+      // 페이지네이션 업데이트
+      function updatePagination() {
+        const totalPages = Math.ceil(totalCount / questionsPerPage);
+        const pagination = document.querySelector('.pagination');
+        
+        // 페이지 버튼들 제거 (이전/다음 버튼 제외)
+        const pageButtons = pagination.querySelectorAll('.page-btn:not(.prev):not(.next)');
+        pageButtons.forEach(btn => btn.remove());
+
+        // 페이지 버튼들 생성
+        for (let i = 0; i < totalPages; i++) {
+          const pageBtn = document.createElement('button');
+          pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+          pageBtn.textContent = i + 1;
+          pageBtn.addEventListener('click', () => {
+            currentPage = i;
+            loadQuestions();
+          });
+          
+          // 이전 버튼 다음에 삽입
+          const prevBtn = pagination.querySelector('.prev');
+          prevBtn.after(pageBtn);
+        }
+
+        // 이전/다음 버튼 상태 업데이트
+        const prevBtn = pagination.querySelector('.prev');
+        const nextBtn = pagination.querySelector('.next');
+        
+        prevBtn.disabled = currentPage === 0;
+        nextBtn.disabled = currentPage >= totalPages - 1;
+      }
+
+      // 체크박스 이벤트 리스너 설정
+      function setupCheckboxListeners() {
+        // 전체 선택 체크박스
+        document.getElementById('select-all').addEventListener('change', function() {
+          const checkboxes = document.querySelectorAll('.row-checkbox');
+          checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+          });
+        });
+        
+        // 개별 행 체크박스
+        document.querySelectorAll('.row-checkbox').forEach(checkbox => {
+          checkbox.addEventListener('change', function() {
+            const allCheckboxes = document.querySelectorAll('.row-checkbox');
+            const checkedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+            const selectAllCheckbox = document.getElementById('select-all');
+            
+            if (checkedCheckboxes.length === allCheckboxes.length) {
+              selectAllCheckbox.checked = true;
+            } else {
+              selectAllCheckbox.checked = false;
+            }
+          });
+        });
+      }
+
+      // 모달 관련 요소들
+      const problemModal = document.getElementById('problem-modal');
+      const deleteModal = document.getElementById('delete-modal');
+      const addProblemBtn = document.getElementById('add-problem-btn');
+      const editSelectedBtn = document.getElementById('edit-selected-btn');
+      const deleteSelectedBtn = document.getElementById('delete-selected-btn');
+      const cancelProblemBtn = document.getElementById('cancel-problem');
+      const cancelDeleteBtn = document.getElementById('cancel-delete');
+      const confirmDeleteBtn = document.getElementById('confirm-delete');
+      const problemModalTitle = document.getElementById('problem-modal-title');
+      const problemForm = document.getElementById('problem-form');
+
+      // 문제 추가 버튼 클릭 시 모달 표시
+      addProblemBtn.addEventListener('click', function() {
+        problemModalTitle.textContent = '문제 추가';
+        
+        // 폼 초기화
+        document.getElementById('problem-id').value = '';
+        document.getElementById('problem-unit').value = 'OPERATOR';
+        document.getElementById('problem-name').value = '';
+        document.getElementById('problem-description').value = '';
+        document.getElementById('param1-name').value = '';
+        document.getElementById('param1-value').value = '';
+        document.getElementById('param2-name').value = '';
+        document.getElementById('param2-value').value = '';
+        document.getElementById('problem-return').value = '';
+        
+        problemModal.style.display = 'flex';
+      });
+
+      // 수정 버튼 클릭 시 모달 표시
+      editSelectedBtn.addEventListener('click', function() {
+        const checkedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+        if (checkedCheckboxes.length === 0) {
+          alert('수정할 문제를 선택해주세요.');
+          return;
+        }
+        if (checkedCheckboxes.length > 1) {
+          alert('한 번에 하나의 문제만 수정할 수 있습니다.');
+          return;
+        }
+        
+        problemModalTitle.textContent = '문제 수정';
+        
+        const selectedProblem = checkedCheckboxes[0];
+        const id = selectedProblem.getAttribute('data-id');
+        const type = selectedProblem.getAttribute('data-type');
+        const title = selectedProblem.getAttribute('data-title');
+        const content = selectedProblem.getAttribute('data-content');
+        const testVariable = selectedProblem.getAttribute('data-test-variable');
+        const testAnswer = selectedProblem.getAttribute('data-test-answer');
+        
+        document.getElementById('problem-id').value = id;
+        document.getElementById('problem-unit').value = type;
+        document.getElementById('problem-name').value = title;
+        document.getElementById('problem-description').value = content;
+        
+        // testVariable과 testAnswer를 파라미터로 파싱
+        try {
+          const variables = JSON.parse(testVariable);
+          const answers = JSON.parse(testAnswer);
+          
+          if (variables.length > 0) {
+            const firstVar = variables[0];
+            const keys = Object.keys(firstVar);
+            if (keys.length >= 1) {
+              document.getElementById('param1-name').value = keys[0];
+              document.getElementById('param1-value').value = firstVar[keys[0]];
+            }
+            if (keys.length >= 2) {
+              document.getElementById('param2-name').value = keys[1];
+              document.getElementById('param2-value').value = firstVar[keys[1]];
+            }
+          }
+          
+          if (answers.length > 0) {
+            document.getElementById('problem-return').value = answers[0];
+          }
+        } catch (e) {
+          console.error('Error parsing test data:', e);
+        }
+        
+        problemModal.style.display = 'flex';
+      });
+
+      // 삭제 버튼 클릭 시 모달 표시
+      deleteSelectedBtn.addEventListener('click', function() {
+        const checkedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+        if (checkedCheckboxes.length === 0) {
+          alert('삭제할 문제를 선택해주세요.');
+          return;
+        }
+        
+        deleteModal.style.display = 'flex';
+      });
+
+      // 모달 닫기
+      cancelProblemBtn.addEventListener('click', function() {
+        problemModal.style.display = 'none';
+      });
+
+      cancelDeleteBtn.addEventListener('click', function() {
+        deleteModal.style.display = 'none';
+      });
+
+      // 모달 외부 클릭 시 닫기
+      problemModal.addEventListener('click', function(e) {
+        if (e.target === problemModal) {
+          problemModal.style.display = 'none';
+        }
+      });
+
+      deleteModal.addEventListener('click', function(e) {
+        if (e.target === deleteModal) {
+          deleteModal.style.display = 'none';
+        }
+      });
+
+      // 문제 추가/수정 적용
+      problemForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const isEdit = problemModalTitle.textContent === '문제 수정';
+        const id = document.getElementById('problem-id').value;
+        const type = document.getElementById('problem-unit').value;
+        const title = document.getElementById('problem-name').value;
+        const content = document.getElementById('problem-description').value;
+        const param1Name = document.getElementById('param1-name').value;
+        const param1Value = document.getElementById('param1-value').value;
+        const param2Name = document.getElementById('param2-name').value;
+        const param2Value = document.getElementById('param2-value').value;
+        const returnValue = document.getElementById('problem-return').value;
+        
+        // testVariable과 testAnswer 생성
+        const testVariable = JSON.stringify([{
+          [param1Name]: param1Value,
+          [param2Name]: param2Value
+        }]);
+        const testAnswer = JSON.stringify([returnValue]);
+        
+        try {
+          let response;
+          let url;
+          let method;
+          
+          if (isEdit) {
+            // 문제 수정
+            url = `${API_BASE_URL}/admin/questions/${id}`;
+            method = 'PUT';
+          } else {
+            // 문제 추가
+            url = `${API_BASE_URL}/admin/questions`;
+            method = 'POST';
+          }
+          
+          response = await fetch(url, {
+            method: method,
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              type: type,
+              title: title,
+              content: content,
+              testVariable: testVariable,
+              testAnswer: testAnswer
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          
+          if (data.status === 200) {
+            problemModal.style.display = 'none';
+            alert(isEdit ? '문제가 수정되었습니다.' : '문제가 추가되었습니다.');
+            loadQuestions(); // 목록 새로고침
+          } else {
+            alert(isEdit ? '문제 수정에 실패했습니다.' : '문제 추가에 실패했습니다.');
+          }
+        } catch (error) {
+          console.error('Error saving question:', error);
+          alert(isEdit ? '문제 수정에 실패했습니다.' : '문제 추가에 실패했습니다.');
+        }
+      });
+
+      // 삭제 확인
+      confirmDeleteBtn.addEventListener('click', async function() {
+        const checkedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+        
+        try {
+          // 선택된 모든 문제 삭제
+          for (const checkbox of checkedCheckboxes) {
+            const questionId = checkbox.getAttribute('data-id');
+            
+            const response = await fetch(`${API_BASE_URL}/admin/questions/${questionId}`, {
+              method: 'DELETE',
+              headers: {
+                'Accept': 'application/json'
+              }
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (data.status !== 200) {
+              throw new Error('Delete failed');
+            }
+          }
+          
+          deleteModal.style.display = 'none';
+          alert('선택된 문제가 삭제되었습니다.');
+          
+          // 체크박스 해제
+          checkedCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+          });
+          document.getElementById('select-all').checked = false;
+          
+          // 목록 새로고침
+          loadQuestions();
+        } catch (error) {
+          console.error('Error deleting questions:', error);
+          alert('문제 삭제에 실패했습니다.');
+        }
+      });
+
+      // 페이지네이션 이벤트 리스너
+      document.querySelector('.prev').addEventListener('click', function() {
+        if (currentPage > 0) {
+          currentPage--;
+          loadQuestions();
+        }
+      });
+
+      document.querySelector('.next').addEventListener('click', function() {
+        const totalPages = Math.ceil(totalCount / questionsPerPage);
+        if (currentPage < totalPages - 1) {
+          currentPage++;
+          loadQuestions();
+        }
+      });
+    </script>
+  </body>
+</html>
