@@ -40,5 +40,78 @@
         </form>
       </div>
     </div>
+
+    <script>
+      // 임시 로그인 기능
+      document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        // 임시로 아무 값이나 입력하면 로그인 성공으로 처리
+        if (username && password) {
+          // 로그인 성공 시 어드민 페이지로 이동
+          localStorage.setItem('adminLoggedIn', 'true');
+          window.location.href = 'users.html';
+        } else {
+          alert('아이디와 비밀번호를 입력해주세요.');
+        }
+      });
+
+      // 나중에 사용할 백엔드 통신 코드 
+      /*
+      // API 기본 설정
+      const API_BASE_URL = 'http://localhost:8080';
+      
+      // 로그인 폼 제출 이벤트
+      document.getElementById('login-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        if (!username || !password) {
+          alert('아이디와 비밀번호를 입력해주세요.');
+          return;
+        }
+        
+        try {
+          const response = await fetch(`${API_BASE_URL}/admin/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              username: username,
+              password: password
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          
+          if (data.status === 200) {
+            // 로그인 성공
+            const token = data.body.token; // 백엔드 응답에 따라 수정 필요
+            localStorage.setItem('adminToken', token);
+            localStorage.setItem('adminLoggedIn', 'true');
+            
+            // 어드민 페이지로 이동
+            window.location.href = 'users.html';
+          } else {
+            alert('로그인에 실패했습니다: ' + data.msg);
+          }
+        } catch (error) {
+          console.error('Login error:', error);
+          alert('로그인 중 오류가 발생했습니다.');
+        }
+      });
+      */
+    </script>
   </body>
 </html>

@@ -15,7 +15,7 @@
         </div>
         <nav class="sidebar-nav">
           <ul>
-            <li><a href="index.html" class="nav-item active">유저 관리</a></li>
+            <li><a href="users.html" class="nav-item active">유저 관리</a></li>
             <li><a href="problems.html" class="nav-item">문제 관리</a></li>
           </ul>
         </nav>
@@ -278,7 +278,7 @@
         const totalPages = Math.ceil(totalCount / usersPerPage);
         const pagination = document.querySelector('.pagination');
         
-        // 페이지 버튼들 제거 (이전/다음 버튼 제외)
+        // 페이지 버튼들 제거 (이전,다음 버튼 제외)
         const pageButtons = pagination.querySelectorAll('.page-btn:not(.prev):not(.next)');
         pageButtons.forEach(btn => btn.remove());
 
