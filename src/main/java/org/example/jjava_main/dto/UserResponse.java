@@ -122,6 +122,7 @@ public class UserResponse {
         private String nickname;
         private UserLevel level;
         private UserRole role;
+        private Boolean isNewUser;
 
         public JoinDTO(User user, String accessToken) {
             this.accessToken = accessToken;
@@ -129,6 +130,7 @@ public class UserResponse {
             this.nickname = user.getUsername();
             this.level = user.getLevel();
             this.role = user.getRole();
+            this.isNewUser = true;
         }
     }
 

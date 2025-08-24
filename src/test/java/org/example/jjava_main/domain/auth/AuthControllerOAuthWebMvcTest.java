@@ -49,6 +49,7 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .email("ssar@naver.com")
                 .username("ssar")
                 .role("USER")
+                .isNewUser(false)
                 .build();
 
         var resp = SocialLoginResponse.LoginDTO.builder()
@@ -83,6 +84,7 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.user.email").value("ssar@naver.com"))
                 .andExpect(jsonPath("$.body.user.username").value("ssar"))
                 .andExpect(jsonPath("$.body.user.role").value("USER"))
+                .andExpect(jsonPath("$.body.user.isNewUser").value(false))
                 .andExpect(jsonPath("$.body.linked[0].provider").value("naver"))
                 .andExpect(jsonPath("$.body.linked[0].email").value("ssar@naver.com"))
                 .andDo(document);
@@ -101,6 +103,7 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .email("cos@kakao.com")
                 .username("cos")
                 .role("USER")
+                .isNewUser(false)
                 .build();
 
         var resp = SocialLoginResponse.LoginDTO.builder()
@@ -134,6 +137,7 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.user.email").value("cos@kakao.com"))
                 .andExpect(jsonPath("$.body.user.username").value("cos"))
                 .andExpect(jsonPath("$.body.user.role").value("USER"))
+                .andExpect(jsonPath("$.body.user.isNewUser").value(false))
                 .andExpect(jsonPath("$.body.linked[0].provider").value("kakao"))
                 .andExpect(jsonPath("$.body.linked[0].email").value("cos@kakao.com"))
                 .andDo(document);
@@ -152,6 +156,7 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .email("love@gmail.com")
                 .username("love")
                 .role("USER")
+                .isNewUser(false)
                 .build();
 
         var resp = SocialLoginResponse.LoginDTO.builder()
@@ -185,6 +190,7 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.user.email").value("love@gmail.com"))
                 .andExpect(jsonPath("$.body.user.username").value("love"))
                 .andExpect(jsonPath("$.body.user.role").value("USER"))
+                .andExpect(jsonPath("$.body.user.isNewUser").value(false))
                 .andExpect(jsonPath("$.body.linked[0].provider").value("google"))
                 .andExpect(jsonPath("$.body.linked[0].email").value("love@gmail.com"))
                 .andDo(document);

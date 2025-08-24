@@ -21,6 +21,8 @@ public class SocialLoginResponse {
         private UserDTO user;
 
         private List<LinkedAccountDTO> linked;
+
+
     }
 
     @Data
@@ -39,12 +41,16 @@ public class SocialLoginResponse {
         private String username;
         private String role;
 
-        public static UserDTO of(User u) {
+        @JsonProperty("isNewUser")      // 프론트 키와 맞춤
+        private Boolean isNewUser;
+
+        public static UserDTO of(User u, boolean isNewUser) {
             return UserDTO.builder()
                     .id(u.getId())
                     .email(u.getEmail())
                     .username(u.getUsername())
                     .role(u.getRole().name())
+                    .isNewUser(isNewUser)
                     .build();
         }
     }

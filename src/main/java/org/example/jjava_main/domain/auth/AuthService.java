@@ -247,10 +247,11 @@ public class AuthService implements UserDetailsService {
 
         return SocialLoginResponse.LoginDTO.builder()
                 .accessToken(token)
-                .user(SocialLoginResponse.UserDTO.of(user))
+                .user(SocialLoginResponse.UserDTO.of(user, false))
                 .linked(linked) //
                 .build();
     }
+
 
     /**
      * 이메일 검증 로직입니다.
@@ -334,6 +335,7 @@ public class AuthService implements UserDetailsService {
         String jwtToken = JwtUtil.create(user);
 
         return new UserResponse.JoinDTO(user, jwtToken);
+
     }
 
     @Override
