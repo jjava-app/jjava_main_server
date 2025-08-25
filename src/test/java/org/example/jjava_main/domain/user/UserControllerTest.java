@@ -19,6 +19,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -63,7 +65,7 @@ class UserControllerTest extends MyRestDoc {
         // mock 유저 생성
         mockUser = User.builder()
                 .id(1)
-                .email("ssar1234@nate.com")
+                .email("ssar1234@naver.com")
                 .username("ssar")
                 .level(UserLevel.EXPERT)
                 .role(UserRole.USER)
@@ -81,17 +83,25 @@ class UserControllerTest extends MyRestDoc {
     void get_my_page_profile_success() throws Exception {
         // given
         UserResponse.DTO response = new UserResponse.DTO(mockUser, 155);
+
+        response.setLinked(List.of(
+                new UserResponse.LinkedAccountDTO("naver", "ssar1234@naver.com")
+        ));
+
         when(userService.userGet(any(User.class))).thenReturn(response);
+
 
         // when
         mockMvc.perform(get("/users/mypage"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.id").value(1))
-                .andExpect(jsonPath("$.body.email").value("ssar1234@nate.com"))
+                .andExpect(jsonPath("$.body.email").value("ssar1234@naver.com"))
                 .andExpect(jsonPath("$.body.username").value("ssar"))
                 .andExpect(jsonPath("$.body.level").value(UserLevel.EXPERT.name()))
                 .andExpect(jsonPath("$.body.score").value(2530))
                 .andExpect(jsonPath("$.body.rank").value(155))
+                .andExpect(jsonPath("$.body.linked[0].provider").value("naver"))
+                .andExpect(jsonPath("$.body.linked[0].email").value("ssar1234@naver.com"))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document);
     }
@@ -102,14 +112,14 @@ class UserControllerTest extends MyRestDoc {
         String reqJson = """
                 {
                   "level": "BEGINNER",
-                  "username": "ssar"
+                  "username": "cos"
                 }
                 """;
 
         User updatedUser = User.builder()
                 .id(1)
-                .email("ssar1234@nate.com")
-                .username("ssar")
+                .email("ssar1234@naver.com")
+                .username("cos")
                 .level(UserLevel.BEGINNER)
                 .role(UserRole.USER)
                 .score(2530)
@@ -125,7 +135,7 @@ class UserControllerTest extends MyRestDoc {
                         .content(reqJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.level").value("BEGINNER"))
-                .andExpect(jsonPath("$.body.username").value("ssar"))
+                .andExpect(jsonPath("$.body.username").value("cos"))
                 .andExpect(jsonPath("$.body.id").value(1))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document);

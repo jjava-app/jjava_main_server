@@ -9,6 +9,7 @@ import org.example.jjava_main._core.util.JwtUtil;
 import org.example.jjava_main._core.util.PrincipalDetails;
 import org.example.jjava_main.domain.auth.provider.*;
 import org.example.jjava_main.domain.user.User;
+import org.example.jjava_main.domain.user.UserLevel;
 import org.example.jjava_main.domain.user.UserRepository;
 import org.example.jjava_main.domain.user.UserRole;
 import org.example.jjava_main.dto.SocialLoginResponse;
@@ -29,10 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -64,7 +62,8 @@ public class AuthService implements UserDetailsService {
                 .map(NaverMeResponse::getResponse)
                 .orElseThrow(() -> new RuntimeException("Naver response empty"));
 
-        String email = n.getEmail();
+        String providerUserId = n.getId();
+        String providerEmail = n.getEmail();
         String nickName = (n.getName() != null && !n.getName().isBlank())
                 ? n.getName() : (n.getNickname() != null ? n.getNickname() : "네이버사용자");
 
@@ -73,29 +72,32 @@ public class AuthService implements UserDetailsService {
 
 
         // (A) (provider, providerId) 매핑 존재 여부 확인
-        var linkOpt = uapRepository.findLink(ProviderType.NAVER, n.getId());
+        var linkOpt = uapRepository.findLink(ProviderType.NAVER, providerUserId);
 
         User user;
 
         if (linkOpt.isPresent()) {
             // 이미 연결된 유저면 그 유저로 로그인
-            user = linkOpt.get().getUser();
+            var link = linkOpt.get();
+            user = link.getUser();
+            link.updateEmailIfChanged(providerEmail);
             log.info("[네이버] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), n.getId());
         } else {
             // (B) 없으면 기존 로직으로 유저 생성
-            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+            user = findOrCreateUser(nickName, providerEmail); // 네가 쓰던 생성 로직 그대로
 
             // (C) 매핑 저장
             var link = UserAccountProvider.builder()
                     .user(user)
                     .provider(naver)
-                    .providerUserId(n.getId())
+                    .providerUserId(providerUserId)
+                    .email(providerEmail)
                     .build();
             uapRepository.save(link);
             log.info("[네이버] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), n.getId());
         }
 
-        return toLoginResponse(user);
+        return toLoginResponse(user, ProviderType.NAVER);
     }
 
     // ---------- KAKAO ----------
@@ -114,7 +116,7 @@ public class AuthService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Kakao response empty"));
 
         String kakaoId = String.valueOf(k.getId());
-        String email = (k.getKakaoAccount() != null) ? k.getKakaoAccount().getEmail() : null;
+        String providerEmail = (k.getKakaoAccount() != null) ? k.getKakaoAccount().getEmail() : null;
         String nickName = (k.getKakaoAccount() != null && k.getKakaoAccount().getProfile() != null)
                 ? k.getKakaoAccount().getProfile().getNickname()
                 : "카카오사용자";
@@ -133,19 +135,20 @@ public class AuthService implements UserDetailsService {
             log.info("[카카오] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), k.getId());
         } else {
             // (B) 없으면 기존 로직으로 유저 생성
-            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+            user = findOrCreateUser(nickName, providerEmail); // 네가 쓰던 생성 로직 그대로
 
             // (C) 매핑 저장
             var link = UserAccountProvider.builder()
                     .user(user)
                     .provider(kakao)
                     .providerUserId(kakaoId)
+                    .email(providerEmail)
                     .build();
             uapRepository.save(link);
             log.info("[카카오] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), k.getId());
         }
 
-        return toLoginResponse(user);
+        return toLoginResponse(user, ProviderType.KAKAO);
     }
 
     // ---------- GOOGLE ----------
@@ -163,7 +166,7 @@ public class AuthService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Google userinfo empty"));
 
         String googleId = g.getSub();
-        String email = g.getEmail();    // null 가능
+        String providerEmail = g.getEmail();    // null 가능
         String nickName = (g.getName() != null && !g.getName().isBlank()) ? g.getName() : "Google사용자";
 
         Provider google = providerRepository.findByProviderType(ProviderType.GOOGLE)
@@ -181,19 +184,20 @@ public class AuthService implements UserDetailsService {
             log.info("[구글] 계정 로그인 성공 — 기존 연동을 재사용합니다. -> userId={}, providerUserId={}", user.getId(), googleId);
         } else {
             // (B) 없으면 기존 로직으로 유저 생성
-            user = findOrCreateUser(nickName, email); // 네가 쓰던 생성 로직 그대로
+            user = findOrCreateUser(nickName, providerEmail); // 네가 쓰던 생성 로직 그대로
 
             // (C) 매핑 저장
             var link = UserAccountProvider.builder()
                     .user(user)
                     .provider(google)
                     .providerUserId(googleId)
+                    .email(providerEmail)
                     .build();
             uapRepository.save(link);
             log.info("[구글] 계정 로그인 성공 — 신규 연동을 생성했습니다. -> userId={}, providerUserId={}", user.getId(), googleId);
         }
 
-        return toLoginResponse(user);
+        return toLoginResponse(user, ProviderType.GOOGLE);
     }
 
     //공통모듈
@@ -221,20 +225,35 @@ public class AuthService implements UserDetailsService {
                 .password(BCrypt.hashpw(UUID.randomUUID().toString(), BCrypt.gensalt()))
                 .email(email)        // null 허용
                 .role(UserRole.USER)
+                .level(UserLevel.BEGINNER)
+                .score(0)
                 .build();
     }
 
-    private SocialLoginResponse.LoginDTO toLoginResponse(User user) {
+    private SocialLoginResponse.LoginDTO toLoginResponse(User user, ProviderType currentProvider) {
         String jwt = JwtUtil.create(user);
-        // 혹시 유틸이 "Bearer xxx"로 반환하면 접두어 제거
-        if (jwt != null && jwt.startsWith("Bearer ")) {
-            jwt = jwt.substring("Bearer ".length());
-        }
+
+        // "Bearer "가 이미 붙어있으면 중복 방지
+        String accessToken = (jwt != null && jwt.startsWith("Bearer "))
+                ? jwt
+                : "Bearer " + jwt;
+
+        // linked 구성
+        List<SocialLoginResponse.LinkedAccountDTO> linked =
+                uapRepository.findAllByUserId(user.getId()).stream()
+                        .map(uap -> new SocialLoginResponse.LinkedAccountDTO(
+                                uap.getProvider().getProviderType().name().toLowerCase(Locale.ROOT),
+                                Optional.ofNullable(uap.getEmail()).orElse("")
+                        ))
+                        .toList();
+
         return SocialLoginResponse.LoginDTO.builder()
-                .accessToken(jwt)                          // 순수 JWT
-                .user(SocialLoginResponse.UserDTO.of(user))// id/email/username/role 만
+                .accessToken(accessToken)
+                .user(SocialLoginResponse.UserDTO.of(user, false))
+                .linked(linked) //
                 .build();
     }
+
 
     /**
      * 이메일 검증 로직입니다.
@@ -318,6 +337,7 @@ public class AuthService implements UserDetailsService {
         String jwtToken = JwtUtil.create(user);
 
         return new UserResponse.JoinDTO(user, jwtToken);
+
     }
 
     @Override

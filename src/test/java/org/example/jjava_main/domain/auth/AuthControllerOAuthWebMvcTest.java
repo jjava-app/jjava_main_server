@@ -17,6 +17,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -47,11 +49,15 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .email("ssar@naver.com")
                 .username("ssar")
                 .role("USER")
+                .isNewUser(false)
                 .build();
 
         var resp = SocialLoginResponse.LoginDTO.builder()
                 .accessToken("server-jwt-token-naver")
                 .user(user)
+                .linked(List.of(
+                        new SocialLoginResponse.LinkedAccountDTO("naver", "ssar@naver.com")
+                ))
                 .build();
 
         Mockito.when(authService.naverOauthLogin(eq("dummy-token"))).thenReturn(resp);
@@ -78,6 +84,9 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.user.email").value("ssar@naver.com"))
                 .andExpect(jsonPath("$.body.user.username").value("ssar"))
                 .andExpect(jsonPath("$.body.user.role").value("USER"))
+                .andExpect(jsonPath("$.body.user.isNewUser").value(false))
+                .andExpect(jsonPath("$.body.linked[0].provider").value("naver"))
+                .andExpect(jsonPath("$.body.linked[0].email").value("ssar@naver.com"))
                 .andDo(document);
     }
 
@@ -94,11 +103,15 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .email("cos@kakao.com")
                 .username("cos")
                 .role("USER")
+                .isNewUser(false)
                 .build();
 
         var resp = SocialLoginResponse.LoginDTO.builder()
                 .accessToken("server-jwt-token-kakao")
                 .user(user)
+                .linked(List.of(
+                        new SocialLoginResponse.LinkedAccountDTO("kakao", "cos@kakao.com")
+                ))
                 .build();
 
         Mockito.when(authService.kakaoOauthLogin(eq("dummy-token"))).thenReturn(resp);
@@ -124,6 +137,9 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.user.email").value("cos@kakao.com"))
                 .andExpect(jsonPath("$.body.user.username").value("cos"))
                 .andExpect(jsonPath("$.body.user.role").value("USER"))
+                .andExpect(jsonPath("$.body.user.isNewUser").value(false))
+                .andExpect(jsonPath("$.body.linked[0].provider").value("kakao"))
+                .andExpect(jsonPath("$.body.linked[0].email").value("cos@kakao.com"))
                 .andDo(document);
     }
 
@@ -140,11 +156,15 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .email("love@gmail.com")
                 .username("love")
                 .role("USER")
+                .isNewUser(false)
                 .build();
 
         var resp = SocialLoginResponse.LoginDTO.builder()
                 .accessToken("server-jwt-token-google")
                 .user(user)
+                .linked(List.of(
+                        new SocialLoginResponse.LinkedAccountDTO("google", "love@gmail.com")
+                ))
                 .build();
 
         Mockito.when(authService.googleOauthLogin(eq("dummy-token"))).thenReturn(resp);
@@ -170,6 +190,9 @@ class AuthControllerOAuthWebMvcTest extends MyRestDoc {
                 .andExpect(jsonPath("$.body.user.email").value("love@gmail.com"))
                 .andExpect(jsonPath("$.body.user.username").value("love"))
                 .andExpect(jsonPath("$.body.user.role").value("USER"))
+                .andExpect(jsonPath("$.body.user.isNewUser").value(false))
+                .andExpect(jsonPath("$.body.linked[0].provider").value("google"))
+                .andExpect(jsonPath("$.body.linked[0].email").value("love@gmail.com"))
                 .andDo(document);
     }
 

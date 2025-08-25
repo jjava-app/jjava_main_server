@@ -84,7 +84,9 @@ include::{snippets}/{user}/get_my_page_profile_success/http-request.adoc[]
 ===== Response Example
 include::{snippets}/{user}/get_my_page_profile_success/http-response.adoc[]
 
-=== 10. 사용자 레벨 업데이트
+
+
+=== 10. 마이페이지 사용자 레벨 업데이트
 ===== Request Example
 include::{snippets}/{user}/update_user_level_success/http-request.adoc[]
 

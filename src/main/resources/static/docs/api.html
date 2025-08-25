@@ -456,7 +456,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_7_소셜_로그인_카카오">7. 소셜 로그인 - 카카오</a></li>
 <li><a href="#_8_소셜_로그인_구글">8. 소셜 로그인 - 구글</a></li>
 <li><a href="#_9_마이_페이지">9. 마이 페이지</a></li>
-<li><a href="#_10_사용자_레벨_업데이트">10. 사용자 레벨 업데이트</a></li>
+<li><a href="#_10_마이페이지_사용자_레벨_업데이트">10. 마이페이지 사용자 레벨 업데이트</a></li>
 </ul>
 </li>
 <li><a href="#_2_문제">2. 문제</a>
@@ -636,17 +636,18 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Content-Length: 395
+Content-Length: 420
 
 {
   "status" : 200,
   "msg" : "성공",
   "body" : {
-    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY29zIiwiZXhwIjoxNzU2NDYxODU5LCJpZCI6Niwicm9sZXMiOiJVU0VSIn0.V70dlkFIMcW22uL2SFWAu4fVWLgdBKI1ECyqC2I0LX84s_LuiNm9noVuhjY4CBJkwmR6ULjjE98105_SmbuoRg",
+    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY29zIiwiZXhwIjoxNzU2NjMyMjY3LCJpZCI6Niwicm9sZXMiOiJVU0VSIn0.g7aA6KAL7VeEzBUdUg72bPnY-BHlkeEG8L4cVaK3M0VsyFlSr2dbdk2WTtF_st1FMVs5VuPQ7NIwm5WNK5Y7zQ",
     "email" : "ccos@naver.com",
     "nickname" : "ccos",
     "level" : "EXPERT",
-    "role" : "USER"
+    "role" : "USER",
+    "isNewUser" : true
   }
 }</code></pre>
 </div>
@@ -688,14 +689,14 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Set-Cookie: SESSION=YWE4MDM5NWUtM2FhMi00OWNiLTg5OGItMmM2NWIwMDM2NWNk; Path=/; HttpOnly; SameSite=Lax
+Set-Cookie: SESSION=Zjk4OTUzNjctMmVkMC00MmI1LWI1OWYtNzg2MGYyNmQ2Nzhj; Path=/; HttpOnly; SameSite=Lax
 Content-Length: 435
 
 {
   "status" : 200,
   "msg" : "성공",
   "body" : {
-    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzc2FyIiwiZXhwIjoxNzU2NDYxODU5LCJpZCI6Miwicm9sZXMiOiJVU0VSIn0.-wOKFIQfPQItMmx4huDdoJESRpUdaYxvmi6iByi33F2HmhbgQuWdMKz7W2a2Yo03LQN1RavU3rLr3c5kpSXEFA",
+    "accessToken" : "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzc2FyIiwiZXhwIjoxNzU2NjMyMjY2LCJpZCI6Miwicm9sZXMiOiJVU0VSIn0.-jjxFYQe0ULj7r384myNuJ44cK1X7UhVZZ4WfjCyOxtVVRe4-LVAyVf8DtEYKoK5ctRIzk3WznjPVKFCfYGrzg",
     "id" : 2,
     "email" : "ssar1234@nate.com",
     "nickname" : "ssar",
@@ -777,7 +778,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 236
+Content-Length: 357
 
 {
   "status" : 200,
@@ -788,8 +789,13 @@ Content-Length: 236
       "id" : 1,
       "email" : "ssar@naver.com",
       "username" : "ssar",
-      "role" : "USER"
-    }
+      "role" : "USER",
+      "isNewUser" : false
+    },
+    "linked" : [ {
+      "provider" : "naver",
+      "email" : "ssar@naver.com"
+    } ]
   }
 }</code></pre>
 </div>
@@ -819,7 +825,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 234
+Content-Length: 354
 
 {
   "status" : 200,
@@ -830,8 +836,13 @@ Content-Length: 234
       "id" : 2,
       "email" : "cos@kakao.com",
       "username" : "cos",
-      "role" : "USER"
-    }
+      "role" : "USER",
+      "isNewUser" : false
+    },
+    "linked" : [ {
+      "provider" : "kakao",
+      "email" : "cos@kakao.com"
+    } ]
   }
 }</code></pre>
 </div>
@@ -861,7 +872,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 237
+Content-Length: 359
 
 {
   "status" : 200,
@@ -872,8 +883,13 @@ Content-Length: 237
       "id" : 3,
       "email" : "love@gmail.com",
       "username" : "love",
-      "role" : "USER"
-    }
+      "role" : "USER",
+      "isNewUser" : false
+    },
+    "linked" : [ {
+      "provider" : "google",
+      "email" : "love@gmail.com"
+    } ]
   }
 }</code></pre>
 </div>
@@ -903,18 +919,22 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 204
+Content-Length: 302
 
 {
   "status" : 200,
   "msg" : "성공",
   "body" : {
     "id" : 1,
-    "email" : "ssar1234@nate.com",
+    "email" : "ssar1234@naver.com",
     "username" : "ssar",
     "level" : "EXPERT",
     "score" : 2530,
-    "rank" : 155
+    "rank" : 155,
+    "linked" : [ {
+      "provider" : "naver",
+      "email" : "ssar1234@naver.com"
+    } ]
   }
 }</code></pre>
 </div>
@@ -922,19 +942,19 @@ Content-Length: 204
 </div>
 </div>
 <div class="sect2">
-<h3 id="_10_사용자_레벨_업데이트">10. 사용자 레벨 업데이트</h3>
+<h3 id="_10_마이페이지_사용자_레벨_업데이트">10. 마이페이지 사용자 레벨 업데이트</h3>
 <div class="sect4">
 <h5 id="_request_example_10">Request Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /users/update HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 52
+Content-Length: 51
 Host: localhost:8080
 
 {
   "level" : "BEGINNER",
-  "username" : "ssar"
+  "username" : "cos"
 }</code></pre>
 </div>
 </div>
@@ -958,8 +978,8 @@ Content-Length: 166
   "msg" : "성공",
   "body" : {
     "id" : 1,
-    "email" : "ssar1234@nate.com",
-    "username" : "ssar",
+    "email" : "ssar1234@naver.com",
+    "username" : "cos",
     "level" : "BEGINNER"
   }
 }</code></pre>
@@ -1278,14 +1298,14 @@ Content-Length: 1032
         "solvedQuestionId" : 102,
         "title" : "문제 2",
         "content" : null,
-        "createdAt" : "2025-08-22 19:04:20.0476334",
+        "createdAt" : "2025-08-24 18:24:28.2514517",
         "questionType" : "OPERATOR",
         "aiComment" : null
       }, {
         "solvedQuestionId" : 104,
         "title" : "문제 2",
         "content" : null,
-        "createdAt" : "2025-08-22 19:04:20.0476334",
+        "createdAt" : "2025-08-24 18:24:28.2514517",
         "questionType" : "OPERATOR",
         "aiComment" : null
       } ],
@@ -1293,14 +1313,14 @@ Content-Length: 1032
         "solvedQuestionId" : 101,
         "title" : "문제 1",
         "content" : null,
-        "createdAt" : "2025-08-22 19:04:20.0476334",
+        "createdAt" : "2025-08-24 18:24:28.2514517",
         "questionType" : "TEXT",
         "aiComment" : null
       }, {
         "solvedQuestionId" : 103,
         "title" : "문제 1",
         "content" : null,
-        "createdAt" : "2025-08-22 19:04:20.0476334",
+        "createdAt" : "2025-08-24 18:24:28.2514517",
         "questionType" : "TEXT",
         "aiComment" : null
       } ]
@@ -1344,7 +1364,7 @@ Content-Length: 268
     "solvedQuestionId" : 1,
     "title" : "문제 제목",
     "content" : "문제 내용",
-    "createdAt" : "2025-08-22 19:04:20.126",
+    "createdAt" : "2025-08-24 18:24:28.315",
     "questionType" : "TEXT",
     "aiComment" : "AI 코멘트"
   }
@@ -1479,17 +1499,17 @@ Content-Length: 506
       "id" : 1,
       "userId" : 1,
       "title" : "워크스페이스1",
-      "createdAt" : "2025-08-22 19:04:22.1577686"
+      "createdAt" : "2025-08-24 18:24:30.2351296"
     }, {
       "id" : 2,
       "userId" : 1,
       "title" : "워크스페이스2",
-      "createdAt" : "2025-08-22 19:04:22.1577686"
+      "createdAt" : "2025-08-24 18:24:30.2351296"
     }, {
       "id" : 3,
       "userId" : 1,
       "title" : "워크스페이스3",
-      "createdAt" : "2025-08-22 19:04:22.1577686"
+      "createdAt" : "2025-08-24 18:24:30.2351296"
     } ]
   }
 }</code></pre>
@@ -1638,7 +1658,7 @@ Content-Length: 187
     "id" : 1,
     "userId" : 1,
     "title" : "새 워크스페이스",
-    "createdAt" : "2025-08-22 19:04:22.1943553"
+    "createdAt" : "2025-08-24 18:24:30.2691166"
   }
 }</code></pre>
 </div>
@@ -1978,7 +1998,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1254
+Content-Length: 1277
 
 {
   "status" : 200,
@@ -1990,7 +2010,8 @@ Content-Length: 1254
       "username" : "ssar",
       "level" : "BEGINNER",
       "score" : 120,
-      "rank" : 1
+      "rank" : 1,
+      "linked" : [ ]
     },
     "leaderboard" : {
       "rankingList" : [ {
@@ -2031,7 +2052,7 @@ Content-Length: 1254
         "questionId" : 5,
         "title" : "두 수의 몫 구하기",
         "questionType" : "OPERATOR",
-        "createdAt" : "2025-08-22T10:04:20.867+00:00"
+        "createdAt" : "2025-08-24T09:24:29.077+00:00"
       } ]
     }
   }
@@ -2409,7 +2430,7 @@ Content-Length: 61
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2025-08-22 13:05:23 +0900
+Last updated 2025-08-24 18:22:02 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
