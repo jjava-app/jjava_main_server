@@ -2,7 +2,9 @@ package org.example.jjava_main.dto;
 
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.domain.user.UserLevel;
 import org.example.jjava_main.domain.user.UserRole;
@@ -77,5 +79,11 @@ public class UserRequest {
             this.role = role;
             this.score = score;
         }
+    }
+
+    @Data
+    public static class VerifyEmailReqDTO {
+        private String email;
+        private String code;
     }
 }
