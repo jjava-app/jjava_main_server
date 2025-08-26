@@ -50,11 +50,20 @@
 </table>
 <table>
     <tr>
-        <td align="center"><img src="https://cdn.simpleicons.org/firebase/FFCA28" width="50"/><br/>FCM</td>
-        <td align="center"><img src="https://cdn.simpleicons.org/kakao/FEE500" width="50"/><br/>Kakao OIDC</td>
+        <td align="center"><img src="https://cdn.simpleicons.org/kakao/FEE500" width="50"/><br/>Kakao OAuth</td>
+<td align="center"><img src="https://cdn.simpleicons.org/naver/03C75A" width="50"/><br/>Naver OAuth</td>
+<td align="center"><img src="https://cdn.simpleicons.org/googleauthenticator/4285F4" width="50"/><br/>Google Auth</td>
         <td align="center"><img src="https://cdn.simpleicons.org/githubactions/2088FF" width="50"/><br/>Github Action</td>
-        <td align="center"><img src="https://img.icons8.com/?size=256&id=33039&format=png" width="50"/><br/>aws</td>
-        <td align="center"><img src="https://cdn.simpleicons.org/sentry/362D59" width="50"/><br/>Sentry</td>
+        <td align="center"><img src="https://img.icons8.com/?size=256&id=33039&format=png" width="50"/><br/>AWS</td>
+        <td align="center"><img src="https://cdn.simpleicons.org/redis/FF4438" width="50"/><br/>Redis</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td align="center"><img src="https://cdn.simpleicons.org/docker/2496ED" width="50"/><br/>Docker</td>
+<td align="center"><img src="https://cdn.simpleicons.org/openai/412991" width="50"/><br/>OpenAI</td>
+<td align="center"><img src="https://cdn.simpleicons.org/resend" width="50"/><br/>Resend</td>
+        <td align="center"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReAmHAF2JtN_2382b4i4O6tJmOhyqnxOGmbg&s" width="50"/><br/>Google Blockly</td>
     </tr>
 </table>
 
@@ -74,6 +83,7 @@
         <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" width="50"/><br/>GitHub</td>
         <td align="center"><img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="50"/><br/>Notion</td>
         <td align="center"><img src="https://upload.wikimedia.org/wikipedia/commons/7/76/Slack_Icon.png" width="50"/><br/>Slack</td>
+<td align="center"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Google_Chat_icon_%282023%29.svg/250px-Google_Chat_icon_%282023%29.svg.png" width="50"/><br/>Google Chat</td>
     </tr>
 </table>
 
