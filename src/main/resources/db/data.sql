@@ -200,6 +200,8 @@ VALUES (3, 3, '리팩토링', 'json', 'json', 'REVIEWED', now());
 INSERT INTO workspace_tb (user_id, title, serialized_json, block_extension_json, created_at)
 VALUES (1, '짜바 연습', null, null, now()),
        (2, '짜바 연습', null, null, now()),
+       (2, '연산자 연습', null, null, now()),
+       (2, '문자 출력 연습', null, null, now()),
        (3, '짜바 연습', null, null, now()),
        (4, '짜바 연습', null, null, now()),
        (5, '짜바 연습', null, null, now());
