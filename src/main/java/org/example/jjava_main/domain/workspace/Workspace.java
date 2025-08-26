@@ -20,7 +20,9 @@ public class Workspace {
     private User user;
 
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String serializedJson;
+    @Column(columnDefinition = "TEXT")
     private String blockExtensionJson;
 
     @CreationTimestamp

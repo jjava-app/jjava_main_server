@@ -14,6 +14,7 @@ import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -70,6 +71,8 @@ public class AuthController {
     // 이메일 로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO reqDTO) {
+        reqDTO.setEmail("ssar1234@nate.com");
+        reqDTO.setPassword("1234");
         UserResponse.LoginDTO respDTO = authService.emailLogin(reqDTO);
         session.setAttribute("USER_ID", respDTO.getId());
         log.info(respDTO.getNickname() + "님이 로그인하였습니다.");

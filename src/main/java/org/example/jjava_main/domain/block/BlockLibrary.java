@@ -16,6 +16,7 @@ public class BlockLibrary {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+    @Column(columnDefinition = "TEXT")
     private String libraryJson;
 
     @Builder

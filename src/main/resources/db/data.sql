@@ -174,32 +174,34 @@ VALUES (2, 5, '리팩토링', 'json', 'json', 'REVIEWED', now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
                                 progress_status, created_at)
-VALUES (2, 6, '리팩토링', 'json', 'json', 'IN_PROGRESS',now());
+VALUES (2, 6, '리팩토링', 'json', 'json', 'IN_PROGRESS', now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
                                 progress_status, created_at)
-VALUES (2, 7, '리팩토링', 'json', 'json', 'IN_PROGRESS',now());
+VALUES (2, 7, '리팩토링', 'json', 'json', 'IN_PROGRESS', now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
                                 progress_status, created_at)
-VALUES (3, 8, '리팩토링', 'json', 'json', 'IN_PROGRESS',now());
+VALUES (3, 8, '리팩토링', 'json', 'json', 'IN_PROGRESS', now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
                                 progress_status, created_at)
-VALUES (3, 1, '리팩토링', 'json', 'json', 'REVIEWED',now());
+VALUES (3, 1, '리팩토링', 'json', 'json', 'REVIEWED', now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
                                 progress_status, created_at)
-VALUES (3, 2, '리팩토링', 'json', 'json', 'REVIEWED',now());
+VALUES (3, 2, '리팩토링', 'json', 'json', 'REVIEWED', now());
 
 INSERT INTO solved_question_tb (user_id, question_id, ai_comment, serialized_json, block_extension_json,
                                 progress_status, created_at)
-VALUES (3, 3, '리팩토링', 'json', 'json', 'REVIEWED',now());
+VALUES (3, 3, '리팩토링', 'json', 'json', 'REVIEWED', now());
 
 
 INSERT INTO workspace_tb (user_id, title, serialized_json, block_extension_json, created_at)
 VALUES (1, '짜바 연습', null, null, now()),
        (2, '짜바 연습', null, null, now()),
+       (2, '연산자 연습', null, null, now()),
+       (2, '문자 출력 연습', null, null, now()),
        (3, '짜바 연습', null, null, now()),
        (4, '짜바 연습', null, null, now()),
        (5, '짜바 연습', null, null, now());
