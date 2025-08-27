@@ -20,6 +20,8 @@ import org.example.jjava_main.dto.SocialLoginResponse.OAuth.NaverUser;
 import org.example.jjava_main.dto.UserRequest;
 import org.example.jjava_main.dto.UserResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
 import java.util.*;
 
 @Slf4j
@@ -44,6 +47,7 @@ public class AuthService implements UserDetailsService {
     @Value("${resend.api-key}")
     private String apiKey;
     private final PasswordEncoder passwordEncoder;
+    private final StringRedisTemplate redisTemplate;
 
 
     // ---------- NAVER ----------
@@ -256,38 +260,35 @@ public class AuthService implements UserDetailsService {
 
 
     /**
-     * 이메일 검증 로직입니다.
+     * 이메일 검증 로직입니다. 이메일 전송 . 이메일 코드 레디스에 저장
      *
      * @param email 유저가 입력한 email
      */
-    public UserResponse.CheckEmailDTO verificationEmail(String email) {
+    public UserResponse.SendEmailDTO sendVerificationEmail(String email) {
 
-        // 존재하는 이메일인지 체크
+        // 1. 중복 체크
         Optional<User> userOptional = userRepository.findByEmail(email);
-
         if (userOptional.isPresent()) {
             throw new Exception400("이미 존재하는 이메일입니다.");
         }
 
-        String authCode = EmailCode.generateAuthCode(); // 인증번호 생성
-        String url = "https://api.resend.com/emails"; // 이메일 보내주는 api 주소
+        // 2. 인증번호 생성 + Redis 저장
+        String authCode = EmailCode.generateAuthCode();
+        redisTemplate.opsForValue().set("email_auth:" + email, authCode, Duration.ofMinutes(5));
 
-        // 요청 바디 데이터
+        // 3. 이메일 발송
+        String url = "https://api.resend.com/emails";
         Map<String, Object> payload = new HashMap<>();
         payload.put("from", "짜바 <onboarding@resend.dev>");
         payload.put("to", email);
         payload.put("subject", "이메일 인증번호 안내");
         payload.put("html", "<p>당신의 인증번호는 <strong>" + authCode + "</strong> 입니다.</p>");
 
-        // HTTP 헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
 
-        // HttpEntity 생성 (헤더 + 바디)
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(payload, headers);
-
-        // POST 요청 보내기
         ResponseEntity<String> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
@@ -295,11 +296,11 @@ public class AuthService implements UserDetailsService {
                 String.class
         );
 
-        // 전송 실패 시 throw
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("이메일 전송 실패: " + response.getBody());
+            return new UserResponse.SendEmailDTO(email, false);
         }
-        return new UserResponse.CheckEmailDTO(response.getStatusCode().is2xxSuccessful());
+
+        return new UserResponse.SendEmailDTO(email, true);
     }
 
 
@@ -363,5 +364,23 @@ public class AuthService implements UserDetailsService {
 
         // 4. 응답 DTO 반환 (로그인 DTO 필요)
         return new UserResponse.LoginDTO(userOP, jwtToken);
+    }
+
+    public UserResponse.VerifyEmailRespDTO verifyEmailCode(String email, String code) {
+        String key = "email_auth:" + email;
+        String savedCode = redisTemplate.opsForValue().get(key);
+
+        if (savedCode == null) {
+            return new UserResponse.VerifyEmailRespDTO(email, false, "인증번호가 만료되었거나 존재하지 않습니다.");
+        }
+
+        if (!savedCode.equals(code)) {
+            return new UserResponse.VerifyEmailRespDTO(email, false, "인증번호가 일치하지 않습니다.");
+        }
+
+        // 성공 시 Redis에서 삭제 (1회용)
+        redisTemplate.delete(key);
+
+        return new UserResponse.VerifyEmailRespDTO(email, true, "인증이 완료되었습니다.");
     }
 }

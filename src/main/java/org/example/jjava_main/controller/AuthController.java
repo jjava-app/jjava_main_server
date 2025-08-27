@@ -49,8 +49,14 @@ public class AuthController {
 
     // 이메일 검증 어노테이션 @Email 이메일 검증 어노테이션
     @GetMapping("/auth/email/check/{email}")
-    public ResponseEntity<?> verificationEmail(@PathVariable("email") @Email String email) {
-        UserResponse.CheckEmailDTO respDTO = authService.verificationEmail(email);
+    public ResponseEntity<?> sendVerificationEmail(@PathVariable("email") @Email String email) {
+        UserResponse.SendEmailDTO respDTO = authService.sendVerificationEmail(email);
+        return Resp.ok(respDTO);
+    }
+
+    @PostMapping("/auth/email/verify")
+    public ResponseEntity<?> verifyEmailCode(@RequestBody UserRequest.VerifyEmailReqDTO reqDTO) {
+        UserResponse.VerifyEmailRespDTO respDTO = authService.verifyEmailCode(reqDTO.getEmail(), reqDTO.getCode());
         return Resp.ok(respDTO);
     }
 

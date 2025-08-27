@@ -4,6 +4,7 @@ package org.example.jjava_main.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.example.jjava_main.domain.user.User;
 import org.example.jjava_main.domain.user.UserLevel;
 import org.example.jjava_main.domain.user.UserRole;
@@ -169,6 +170,30 @@ public class UserResponse {
             this.email = user.getEmail();
             this.role = user.getRole();
             this.score = user.getScore();
+        }
+    }
+
+    @Data
+    public static class SendEmailDTO {
+        private String email;
+        private Boolean success;
+
+        public SendEmailDTO(String email, Boolean success) {
+            this.email = email;
+            this.success = success;
+        }
+    }
+
+    @Data
+    public static class VerifyEmailRespDTO {
+        private String email;
+        private Boolean success;
+        private String message;
+
+        public VerifyEmailRespDTO(String email, Boolean success, String message) {
+            this.email = email;
+            this.success = success;
+            this.message = message;
         }
     }
 }
