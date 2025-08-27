@@ -19,11 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -98,7 +95,7 @@ public class CheckService {
         }
 
         // user score update
-        int score = 1;
+        Integer score = questionPS.getScore();
         userPS.scoreUpdate(userPS.getScore() + score);
 
         // 3) SolvedQuestion upsert + REVIEWED 전환 + aiComment 저장
@@ -204,8 +201,8 @@ public class CheckService {
         SolvedQuestion solvedQuestion = questionRepository.findSolvedQuestionById(solvedQuestionId)
                 .orElseThrow(() -> new Exception404("해당 유저가 푼 문제가 아닙니다."));
 
-        Question question =  questionRepository.findById(solvedQuestionId).orElse(null);
-        if(question == null) throw new Exception404("해당하는 문제가 없습니다.");
+        Question question = questionRepository.findById(solvedQuestionId).orElse(null);
+        if (question == null) throw new Exception404("해당하는 문제가 없습니다.");
 
         // TODO 2 : DTO 반환
         return new QuestionResponse.SolvedQuestionDetailDTO(solvedQuestion);

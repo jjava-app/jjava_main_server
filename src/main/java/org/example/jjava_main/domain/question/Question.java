@@ -20,15 +20,17 @@ public class Question {
     private String content;
     private String testVariable;
     private String testAnswer;
+    private Integer score;
 
     @Builder
-    public Question(Integer id, QuestionType type, String title, String content, String testVariable, String testAnswer) {
+    public Question(Integer id, QuestionType type, String title, String content, String testVariable, String testAnswer, Integer score) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.content = content;
         this.testVariable = testVariable;
         this.testAnswer = testAnswer;
+        this.score = score;
     }
 
     public void update(QuestionType type, String title, String content, String testVariable, String testAnswer) {
